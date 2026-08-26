@@ -1,0 +1,156 @@
+/* ============================================================
+   site.css — Gemeinsame Basis + linke Navigationsleiste
+   Wird von index.html und allen Unterseiten eingebunden.
+   ============================================================ */
+
+/* ── Design-Tokens ─────────────────────────────────────────── */
+:root {
+    --bg:        #0a0a0a;
+    --nav-bg:    #0d1117;
+    --nav-bg2:   #111a22;
+    --line:      #1e2730;
+    --text:      #e0e0e0;
+    --muted:     #8a9aa6;
+    --faint:     #5c6b76;
+    --accent:    #4a9eff;
+    --sidebar-w: 264px;
+}
+
+/* ── Reset & Basis ─────────────────────────────────────────── */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Anker-Sprünge nicht unter einen (evtl.) fixen Rand schieben */
+:target { scroll-margin-top: 24px; }
+
+/* ── Layout: Inhalt neben der Sidebar ──────────────────────── */
+.page {
+    margin-left: var(--sidebar-w);
+    min-height: 100vh;
+}
+
+/* ── Navigations-Sidebar ───────────────────────────────────── */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-w);
+    height: 100vh;
+    background: linear-gradient(180deg, var(--nav-bg) 0%, var(--nav-bg2) 100%);
+    border-right: 1px solid var(--line);
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform 0.3s ease;
+}
+.sidebar-inner { padding: 28px 18px 40px; }
+
+/* Marke / Kopf der Navigation */
+.brand {
+    display: block;
+    text-decoration: none;
+    padding: 0 8px 22px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+}
+.brand-title {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.brand-sub {
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--faint);
+}
+
+/* Navigationsliste */
+.nav-list { list-style: none; }
+.nav-group {
+    margin: 20px 8px 8px;
+    font-size: 10px;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--accent);
+    opacity: 0.85;
+}
+.nav-list a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    border-left: 2px solid transparent;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.nav-list a:hover {
+    background: rgba(74, 158, 255, 0.08);
+    color: var(--text);
+}
+.nav-list a.active {
+    color: #fff;
+    border-left-color: var(--accent);
+    background: rgba(74, 158, 255, 0.10);
+}
+/* Verweis auf eine Unterseite (eingerückt, dezent hervorgehoben) */
+.nav-sub-link {
+    margin-left: 10px;
+    font-size: 13px !important;
+    color: var(--faint) !important;
+}
+.nav-sub-link:hover { color: var(--accent) !important; }
+
+/* ── Hamburger-Schalter (nur mobil sichtbar) ───────────────── */
+.nav-toggle {
+    display: none;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 120;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: rgba(13, 17, 23, 0.85);
+    backdrop-filter: blur(6px);
+    color: var(--text);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+.nav-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 90;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* ── Responsive: Sidebar wird zum Drawer ───────────────────── */
+@media (max-width: 900px) {
+    .page { margin-left: 0; }
+    .nav-toggle { display: block; }
+    .sidebar { transform: translateX(-100%); box-shadow: 4px 0 24px rgba(0,0,0,0.5); }
+    body.nav-open .sidebar { transform: translateX(0); }
+    body.nav-open .nav-backdrop { display: block; opacity: 1; }
+    /* Platz schaffen, damit der Hamburger nichts überdeckt */
+    .page > .hero,
+    .page > .subpage-head { padding-top: 72px; }
+}

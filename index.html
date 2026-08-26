@@ -1,23 +1,16 @@
-html_content = '''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="de">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Technik. Ideen. Lösungen.</title>
+<meta name="description" content="Bastian – Erfinder, Bastler, Ingenieur. Themenwelt rund um Elektromobilität, Energie & Wärme, Modellflug, Elektronik und eigene Patente.">
+<link rel="stylesheet" href="css/site.css">
 <style>
 
-/* ── Reset & Basis ────────────────────────────────── */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-    background: #0a0a0a;
-    color: #e0e0e0;
-    line-height: 1.6;
-    overflow-x: hidden;
-}
+/* ── Seiten-spezifisch: index.html ────────────────────────── */
 
-/* ── Hero-Sektion (volle Höhe) ────────────────────── */
+/* Hero-Sektion (volle Höhe) */
 .hero {
     min-height: 100vh;
     display: flex;
@@ -33,24 +26,23 @@ body {
 }
 .hero.visible { opacity: 1; transform: translateY(0); }
 
-/* ── Themen-Sektionen (kompakter) ─────────────────── */
+/* Themen-Sektionen */
 section {
-    min-height: 60vh;
+    min-height: 70vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    padding: 80px 30px;
+    padding: 90px 30px;
     position: relative;
     opacity: 0;
     transform: translateY(40px);
     transition: opacity 0.9s ease, transform 0.9s ease, filter 0.4s ease;
 }
 section.visible { opacity: 1; transform: translateY(0); }
-section.topic-section:hover { filter: brightness(1.12); }
 
-/* ── Trennlinien ──────────────────────────────────── */
+/* Trennlinie oben an jeder Sektion */
 section::before {
     content: "";
     position: absolute;
@@ -59,15 +51,15 @@ section::before {
     transform: translateX(-50%);
     width: 200px;
     height: 1px;
-    background: linear-gradient(90deg, transparent, #4a9eff, transparent);
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
 }
 
-/* ── Typografie ───────────────────────────────────── */
+/* Typografie */
 h1 {
     font-size: clamp(32px, 6vw, 56px);
     font-weight: 700;
     letter-spacing: 2px;
-    background: linear-gradient(135deg, #ffffff 30%, #4a9eff 100%);
+    background: linear-gradient(135deg, #ffffff 30%, var(--accent) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -88,7 +80,7 @@ h2 {
     color: #4a4a4a;
 }
 
-/* ── Themen ────────────────────────────────────────── */
+/* Themen-Kopf */
 .topic-title {
     font-size: clamp(24px, 4vw, 34px);
     font-weight: 600;
@@ -100,15 +92,58 @@ h2 {
     color: #777;
     letter-spacing: 3px;
     text-transform: uppercase;
-    margin-bottom: 40px;
+    margin-bottom: 34px;
+}
+.topic-desc {
+    max-width: 620px;
+    margin: 26px auto 0;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.7;
 }
 
-/* ── Bild-Platzhalter ─────────────────────────────── */
+/* Bild-Figur */
+figure.media {
+    margin: 0 auto;
+    max-width: min(560px, 88vw);
+}
+figure.media img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border: 1px solid #222;
+    border-radius: 10px;
+    background: #0f0f0f;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+}
+figure.media img:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 26px rgba(74, 158, 255, 0.14);
+    filter: brightness(1.04);
+}
+figure.media figcaption {
+    margin-top: 12px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--faint);
+}
+
+/* Zwei Bilder nebeneinander (Thermografie) */
+.media-row {
+    display: flex;
+    gap: 22px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+}
+.media-row figure.media { max-width: min(280px, 80vw); }
+
+/* Bild-Platzhalter (für Themen ohne Bild) */
 .img-placeholder {
-    width: min(380px, 80vw);
-    height: 220px;
+    width: min(420px, 84vw);
+    height: 230px;
     border: 1px dashed #2a2a2a;
-    border-radius: 8px;
+    border-radius: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -121,7 +156,27 @@ h2 {
 }
 .img-placeholder .icon { font-size: 32px; opacity: 0.35; }
 
-/* ── Patent-Grid ──────────────────────────────────── */
+/* Button-Link zur Unterseite */
+.topic-link {
+    display: inline-block;
+    margin-top: 26px;
+    padding: 11px 22px;
+    border: 1px solid var(--accent);
+    border-radius: 10px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+}
+.topic-link:hover {
+    background: var(--accent);
+    color: #0a0a0a;
+    box-shadow: 0 0 22px rgba(74, 158, 255, 0.30);
+}
+
+/* Patent-Grid */
 .patent-grid {
     display: flex;
     gap: 40px;
@@ -149,7 +204,7 @@ h2 {
     transition: border-color 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
 }
 .patent-card:hover img {
-    border-color: #4a9eff;
+    border-color: var(--accent);
     box-shadow: 0 0 20px rgba(74, 158, 255, 0.15);
     filter: brightness(1.05);
 }
@@ -160,9 +215,9 @@ h2 {
     text-transform: uppercase;
     transition: color 0.3s ease;
 }
-.patent-card:hover .patent-label { color: #4a9eff; }
+.patent-card:hover .patent-label { color: var(--accent); }
 
-/* ── Formeln (Hintergrund) ────────────────────────── */
+/* Formeln im Hintergrund */
 .formula {
     position: absolute;
     opacity: 0.05;
@@ -176,13 +231,12 @@ h2 {
 .formula.br { bottom: 12%; right: 8%;  animation-delay: -4s; }
 .formula.tr { top: 12%;  right: 8%; animation-delay: -2s; }
 .formula.bl { bottom: 12%; left: 8%;  animation-delay: -6s; }
-
 @keyframes float {
     0%, 100% { transform: translateY(0); }
     50%      { transform: translateY(-10px); }
 }
 
-/* ── Scroll-Indikator ─────────────────────────────── */
+/* Scroll-Indikator */
 .scroll-hint {
     position: absolute;
     bottom: 30px;
@@ -204,170 +258,308 @@ h2 {
     50%      { opacity: 0.8; }
 }
 
-/* ── Impressum ────────────────────────────────────── */
+/* Impressum & Footer */
 .impressum {
     text-align: center;
     padding: 30px 20px 10px 20px;
-    color: #222;
-    font-size: 10px;
+    color: #333;
+    font-size: 11px;
     letter-spacing: 1px;
     line-height: 1.8;
 }
 .impressum a {
-    color: #333;
+    color: #555;
     text-decoration: none;
-    border-bottom: 1px solid #222;
+    border-bottom: 1px solid #333;
     transition: color 0.3s ease;
 }
-.impressum a:hover { color: #4a9eff; }
-
-/* ── Footer ───────────────────────────────────────── */
+.impressum a:hover { color: var(--accent); }
 footer {
     text-align: center;
     padding: 10px 20px 40px 20px;
-    color: #1a1a1a;
+    color: #333;
     font-size: 10px;
     letter-spacing: 2px;
 }
 
-/* ── Responsive ───────────────────────────────────── */
 @media (max-width: 600px) {
     .patent-grid { gap: 24px; }
     .patent-card img { padding: 8px; }
+    section { padding: 70px 22px; }
 }
 
 </style>
 </head>
 <body>
 
+<!-- ═══════════════ NAVIGATION ═══════════════ -->
+<button class="nav-toggle" aria-label="Menü öffnen" aria-expanded="false">&#9776;</button>
+<div class="nav-backdrop"></div>
 
-<!-- ═══════════════ HERO ═══════════════ -->
-<div class="hero" id="hero">
-    <h1>Technik. Ideen. L&ouml;sungen.</h1>
-    <h2>Bastian</h2>
-    <div class="statement">Erfinder &middot; Bastler &middot; Ingenieur</div>
-
-    <div class="formula tl">E = mc&sup2;</div>
-    <div class="formula br">P = U &middot; I</div>
-
-    <div class="scroll-hint">
-        <span>Scroll</span>
-        <span class="arrow">&#8595;</span>
-    </div>
-</div>
-
-
-<!-- ═══════════════ ELEKTROFAHRZEUGE ═══════════════ -->
-<section class="topic-section">
-    <div class="topic-title">Elektrofahrzeuge</div>
-    <div class="topic-tagline">Hochvolt &middot; Leistungselektronik &middot; Rekuperation</div>
-    <div class="img-placeholder">
-        <span class="icon">&#128247;</span>
-        <span>Bild folgt</span>
-    </div>
-    <div class="formula br">E = &frac12;mv&sup2;</div>
-</section>
-
-
-<!-- ═══════════════ MODELLFLUG & DROHNEN ═══════════════ -->
-<section class="topic-section">
-    <div class="topic-title">Modellflug &amp; Drohnen</div>
-    <div class="topic-tagline">Aerodynamik &middot; Steuerung &middot; Eigenbau</div>
-    <div class="img-placeholder">
-        <span class="icon">&#128247;</span>
-        <span>Bild folgt</span>
-    </div>
-    <div class="formula tl">F<sub>a</sub> = &frac12;&rho;v&sup2;A&middot;c<sub>a</sub></div>
-</section>
-
-
-<!-- ═══════════════ WÄRMEPUMPEN ═══════════════ -->
-<section class="topic-section">
-    <div class="topic-title">W&auml;rmepumpen</div>
-    <div class="topic-tagline">Carnot-Prozess &middot; Invertertechnik &middot; Wirkungsgrad</div>
-    <div class="img-placeholder">
-        <span class="icon">&#128247;</span>
-        <span>Bild folgt</span>
-    </div>
-    <div class="formula br">COP = Q<sub>H</sub> / W</div>
-</section>
-
-
-<!-- ═══════════════ PHOTOVOLTAIK & SPEICHER ═══════════════ -->
-<section class="topic-section">
-    <div class="topic-title">Photovoltaik &amp; Speicher</div>
-    <div class="topic-tagline">Ertrag &middot; Eigenverbrauch &middot; Autarkie</div>
-    <div class="img-placeholder">
-        <span class="icon">&#128247;</span>
-        <span>Bild folgt</span>
-    </div>
-    <div class="formula tl">P = &eta; &middot; A &middot; G</div>
-</section>
-
-
-<!-- ═══════════════ ERFINDUNGEN ═══════════════ -->
-<section class="topic-section">
-    <div class="topic-title">Erfindungen</div>
-    <div class="topic-tagline">Fahrerassistenz &middot; Sensorik &middot; Funktionskonzepte</div>
-
-    <div class="patent-grid">
-
-        <a class="patent-card" href="https://patents.google.com/patent/EP4538132B1" target="_blank" rel="noopener">
-            <img src="img/patent_01.png" alt="Patent EP4538132B1">
-            <span class="patent-label">EP4538132B1</span>
+<nav class="sidebar" id="sidebar" aria-label="Hauptnavigation">
+    <div class="sidebar-inner">
+        <a class="brand" href="index.html">
+            <span class="brand-title">Technik &middot; Ideen &middot; L&ouml;sungen</span>
+            <span class="brand-sub">Bastian</span>
         </a>
+        <ul class="nav-list">
+            <li><a href="#start" data-nav>Start</a></li>
 
-        <a class="patent-card" href="https://patents.google.com/patent/DE102022201268B3" target="_blank" rel="noopener">
-            <img src="img/patent_02.png" alt="Patent DE102022201268B3">
-            <span class="patent-label">DE102022201268B3</span>
-        </a>
+            <li class="nav-group">Elektromobilit&auml;t</li>
+            <li><a href="#elektrofahrzeuge" data-nav>Elektrofahrzeuge</a></li>
+            <li><a href="#laden" data-nav>Laden &amp; Ladeinfrastruktur</a></li>
+            <li><a href="#batterie" data-nav>Batteriediagnose</a></li>
+            <li><a class="nav-sub-link" href="elektroauto-kostenvergleich.html">&#8627; Kostenvergleich E-Auto</a></li>
 
+            <li class="nav-group">Energie &amp; W&auml;rme</li>
+            <li><a href="#waermepumpen" data-nav>W&auml;rmepumpen</a></li>
+            <li><a href="#photovoltaik" data-nav>Photovoltaik &amp; Speicher</a></li>
+            <li><a href="#thermografie" data-nav>Thermografie</a></li>
+
+            <li class="nav-group">Weitere Themen</li>
+            <li><a href="#drohnen" data-nav>Modellflug &amp; Drohnen</a></li>
+            <li><a href="#elektronik" data-nav>Elektronik &amp; Embedded</a></li>
+            <li><a href="#erfindungen" data-nav>Erfindungen &amp; Patente</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<!-- ═══════════════ INHALT ═══════════════ -->
+<div class="page">
+
+    <!-- ── HERO ── -->
+    <div class="hero" id="start">
+        <h1>Technik. Ideen. L&ouml;sungen.</h1>
+        <h2>Bastian</h2>
+        <div class="statement">Erfinder &middot; Bastler &middot; Ingenieur</div>
+
+        <div class="formula tl">E = mc&sup2;</div>
+        <div class="formula br">P = U &middot; I</div>
+
+        <div class="scroll-hint">
+            <span>Scroll</span>
+            <span class="arrow">&#8595;</span>
+        </div>
     </div>
 
-    <div class="formula tl">&Sigma;F = 0</div>
-    <div class="formula br">&nabla; &times; E = &minus;&part;B/&part;t</div>
-</section>
+
+    <!-- ── ELEKTROFAHRZEUGE ── -->
+    <section id="elektrofahrzeuge" class="topic-section">
+        <div class="topic-title">Elektrofahrzeuge</div>
+        <div class="topic-tagline">Hochvolt &middot; Leistungselektronik &middot; Rekuperation</div>
+        <figure class="media">
+            <img src="img/bev_01.jpg" alt="Kombiinstrument eines Elektroautos mit Momentanverbrauch 19,1 kWh/100 km" loading="lazy">
+            <figcaption>Bordcomputer im Alltag &ndash; 19,1 kWh/100 km, Reichweite &amp; Ladezustand im Blick</figcaption>
+        </figure>
+        <p class="topic-desc">
+            Der reale Verbrauch entscheidet &uuml;ber Reichweite und Kosten. Hier geht es um
+            Fahrprofile, Rekuperation und darum, was ein E-Auto im Alltag wirklich zieht.
+        </p>
+        <div class="formula br">E = &frac12;mv&sup2;</div>
+    </section>
 
 
-<!-- ═══════════════ IMPRESSUM ═══════════════ -->
-<!-- HINWEIS: Bitte echte Daten eintragen (Name, Anschrift, E-Mail) – Pflicht nach § 5 DDG -->
-<div class="impressum">
-    Impressum: Bastian Goericke &middot; [Stra&szlig;e, PLZ Ort] &middot; <a href="mailto:deine@email.de">[E-Mail]</a>
-</div>
+    <!-- ── LADEN & LADEINFRASTRUKTUR ── -->
+    <section id="laden" class="topic-section">
+        <div class="topic-title">Laden &amp; Ladeinfrastruktur</div>
+        <div class="topic-tagline">CCS &middot; HPC &middot; Ladekurve</div>
+        <figure class="media">
+            <img src="img/PXL_20240322_222939640~2.jpg" alt="Display einer CCS-Schnellladesäule mit 125,9 kW Ladeleistung" loading="lazy">
+            <figcaption>CCS-HPC-Schnellladen &ndash; 125,9 kW Ladeleistung bei 13 % Ladestand</figcaption>
+        </figure>
+        <p class="topic-desc">
+            Von der heimischen Wallbox bis zur High-Power-Charging-S&auml;ule: Ladeleistung,
+            Ladekurve und Preise pro kWh bestimmen, wie schnell und wie g&uuml;nstig Strom
+            in die Batterie kommt.
+        </p>
+        <div class="formula tl">Q = I &middot; t</div>
+    </section>
 
 
-<!-- ═══════════════ FOOTER ═══════════════ -->
-<footer>
-    &copy; 2026 Bastian
-</footer>
+    <!-- ── BATTERIEDIAGNOSE ── -->
+    <section id="batterie" class="topic-section">
+        <div class="topic-title">Batteriediagnose</div>
+        <div class="topic-tagline">SoC &middot; Zelltemperatur &middot; BMS</div>
+        <figure class="media">
+            <img src="img/bev_02.png" alt="Live-Diagnose der Hochvoltbatterie: SoC, Spannung, Strom, Zelltemperaturen" loading="lazy">
+            <figcaption>Live-Auslese des BMS &ndash; Ladezustand, Spannung, Strom und Zelltemperaturen</figcaption>
+        </figure>
+        <p class="topic-desc">
+            Ein Blick unter die Haube der Hochvoltbatterie: reale Zellspannungen,
+            Temperaturfenster und dynamische Lade-/Entladegrenzen &ndash; ausgelesen direkt
+            aus dem Batteriemanagementsystem.
+        </p>
+        <div class="formula br">U = R &middot; I</div>
+    </section>
+
+
+    <!-- ── WÄRMEPUMPEN ── -->
+    <section id="waermepumpen" class="topic-section">
+        <div class="topic-title">W&auml;rmepumpen</div>
+        <div class="topic-tagline">Carnot-Prozess &middot; Invertertechnik &middot; Wirkungsgrad</div>
+        <figure class="media">
+            <img src="img/FLIR_20230604_055916_117.jpg" alt="Wärmebild der Heizungsanlage: Pumpen und Rohrleitungen bei 35,4 °C" loading="lazy">
+            <figcaption>W&auml;rmebild der Heizzentrale &ndash; Vorlauf, Pumpen und Rohrf&uuml;hrung sichtbar gemacht</figcaption>
+        </figure>
+        <p class="topic-desc">
+            Effizienz beginnt an der Anlage: Vorlauftemperaturen, Hydraulik und Regelung
+            entscheiden &uuml;ber die Arbeitszahl. Die W&auml;rmebildkamera macht Verluste und
+            Betriebszust&auml;nde direkt sichtbar.
+        </p>
+        <div class="formula br">COP = Q<sub>H</sub> / W</div>
+    </section>
+
+
+    <!-- ── PHOTOVOLTAIK & SPEICHER ── -->
+    <section id="photovoltaik" class="topic-section">
+        <div class="topic-title">Photovoltaik &amp; Speicher</div>
+        <div class="topic-tagline">Ertrag &middot; Eigenverbrauch &middot; Autarkie</div>
+        <div class="img-placeholder">
+            <span class="icon">&#9728;</span>
+            <span>Bild folgt</span>
+        </div>
+        <p class="topic-desc">
+            Sonnenertrag, Eigenverbrauch und Batteriespeicher &ndash; wie viel Autarkie ist
+            realistisch? Dieses Thema wird hier Schritt f&uuml;r Schritt ausgebaut.
+        </p>
+        <div class="formula tl">P = &eta; &middot; A &middot; G</div>
+    </section>
+
+
+    <!-- ── THERMOGRAFIE ── -->
+    <section id="thermografie" class="topic-section">
+        <div class="topic-title">Thermografie</div>
+        <div class="topic-tagline">W&auml;rmebild &middot; Emissionsgrad &middot; Diagnose</div>
+        <div class="media-row">
+            <figure class="media">
+                <img src="img/FLIR_20241201_032158_669.jpg" alt="Wärmebild einer Pfanne auf dem Herd bei 200,3 °C" loading="lazy">
+                <figcaption>Kochfeld &ndash; Spotmessung 200,3 &deg;C</figcaption>
+            </figure>
+            <figure class="media">
+                <img src="img/FLIR_20230604_055916_117.jpg" alt="Wärmebild von Heizungspumpen bei 35,4 °C" loading="lazy">
+                <figcaption>Heiztechnik &ndash; Vorlauf 35,4 &deg;C</figcaption>
+            </figure>
+        </div>
+        <p class="topic-desc">
+            Ob Heiztechnik, Elektronik oder Alltag &ndash; die W&auml;rmebildkamera zeigt, wo
+            Energie flie&szlig;t und verloren geht. Ein Werkzeug, das quer durch alle Themen
+            hier hilft.
+        </p>
+        <div class="formula tr">P = &epsilon;&sigma;AT&#8308;</div>
+    </section>
+
+
+    <!-- ── MODELLFLUG & DROHNEN ── -->
+    <section id="drohnen" class="topic-section">
+        <div class="topic-title">Modellflug &amp; Drohnen</div>
+        <div class="topic-tagline">Aerodynamik &middot; Steuerung &middot; Eigenbau</div>
+        <figure class="media">
+            <img src="img/DrohnenRecht-Banner_Copter2.png" alt="Eigenbau-Multicopter mit Kamera im Flug über Feldern und Ortschaft" loading="lazy">
+            <figcaption>Eigenbau-Multicopter im Flug &ndash; Luftbild &uuml;ber Feld und Ortschaft</figcaption>
+        </figure>
+        <p class="topic-desc">
+            Vom Eigenbau-Multicopter bis zu Steuerung und Luftbild: Aerodynamik, Antrieb
+            und die rechtlichen Rahmenbedingungen des Drohnenfliegens.
+        </p>
+        <div class="formula tl">F<sub>a</sub> = &frac12;&rho;v&sup2;A&middot;c<sub>a</sub></div>
+    </section>
+
+
+    <!-- ── ELEKTRONIK & EMBEDDED ── -->
+    <section id="elektronik" class="topic-section">
+        <div class="topic-title">Elektronik &amp; Embedded</div>
+        <div class="topic-tagline">Mikrocontroller &middot; Steuerger&auml;te &middot; Eigenentwicklung</div>
+        <figure class="media">
+            <img src="img/elektronik.JPG" alt="Entwicklungsboard mit Infineon-TriCore-Mikrocontroller und Debug-Schnittstelle" loading="lazy">
+            <figcaption>Infineon-TriCore-Entwicklungsboard &ndash; Steuerger&auml;te-Technik zum Anfassen</figcaption>
+        </figure>
+        <p class="topic-desc">
+            Wo Software auf Hardware trifft: Mikrocontroller, Sensorik und Steuerger&auml;te
+            &ndash; von der Schaltung bis zur eingebetteten Firmware.
+        </p>
+        <div class="formula br">V = I &middot; R</div>
+    </section>
+
+
+    <!-- ── ERFINDUNGEN & PATENTE ── -->
+    <section id="erfindungen" class="topic-section">
+        <div class="topic-title">Erfindungen &amp; Patente</div>
+        <div class="topic-tagline">Fahrerassistenz &middot; Sensorik &middot; Funktionskonzepte</div>
+
+        <div class="patent-grid">
+            <a class="patent-card" href="https://patents.google.com/patent/EP4538132B1" target="_blank" rel="noopener">
+                <img src="img/patent_01.png" alt="Patentschrift EP4538132B1">
+                <span class="patent-label">EP4538132B1</span>
+            </a>
+            <a class="patent-card" href="https://patents.google.com/patent/DE102022201268B3" target="_blank" rel="noopener">
+                <img src="img/patent_02.png" alt="Patentschrift DE102022201268B3">
+                <span class="patent-label">DE102022201268B3</span>
+            </a>
+        </div>
+
+        <p class="topic-desc">
+            Aus Ideen werden Schutzrechte: erteilte Patente rund um Fahrerassistenz,
+            Sensorik und Funktionskonzepte.
+        </p>
+
+        <div class="formula tl">&Sigma;F = 0</div>
+        <div class="formula br">&nabla; &times; E = &minus;&part;B/&part;t</div>
+    </section>
+
+
+    <!-- ── IMPRESSUM ── -->
+    <!-- HINWEIS: Anschrift bitte ergänzen – Pflichtangabe nach § 5 DDG -->
+    <div class="impressum">
+        Impressum: Bastian Goericke &middot; [Stra&szlig;e, PLZ Ort] &middot;
+        <a href="mailto:etechniker@quantentunnel.de">etechniker@quantentunnel.de</a>
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <footer>
+        &copy; 2026 Bastian
+    </footer>
+
+</div><!-- /.page -->
 
 
 <!-- ═══════════════ JAVASCRIPT ═══════════════ -->
 <script>
+// Einblenden der Sektionen beim Scrollen
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-        }
+        if (entry.isIntersecting) entry.target.classList.add('visible');
     });
 }, { threshold: 0.12 });
-
 document.querySelectorAll('section, .hero').forEach(el => observer.observe(el));
+
+// Mobiles Navigationsmenü öffnen/schließen
+const toggle   = document.querySelector('.nav-toggle');
+const backdrop = document.querySelector('.nav-backdrop');
+function closeNav() {
+    document.body.classList.remove('nav-open');
+    toggle.setAttribute('aria-expanded', 'false');
+}
+toggle.addEventListener('click', () => {
+    const open = document.body.classList.toggle('nav-open');
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+backdrop.addEventListener('click', closeNav);
+document.querySelectorAll('.sidebar a').forEach(a =>
+    a.addEventListener('click', closeNav));
+
+// Scrollspy: aktiven Navigationspunkt markieren
+const navLinks = [...document.querySelectorAll('.nav-list a[data-nav]')];
+const spy = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        const id = entry.target.id;
+        navLinks.forEach(l =>
+            l.classList.toggle('active', l.getAttribute('href') === '#' + id));
+    });
+}, { rootMargin: '-45% 0px -50% 0px' });
+document.querySelectorAll('.page [id]').forEach(el => spy.observe(el));
 </script>
 
 </body>
-</html>'''
-
-with open("index.html", "w", encoding="utf-8") as f:
-    f.write(html_content)
-
-print("index.html wurde erstellt.")
-print(f"Dateigröße: {len(html_content):,} Bytes")
-print()
-print("Benötigte Dateistruktur:")
-print("  /")
-print("  ├── index.html")
-print("  └── img/")
-print("      ├── patent_01.png   → verlinkt auf EP4538132B1")
-print("      └── patent_02.png   → verlinkt auf DE102022201268B3")
-
+</html>

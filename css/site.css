@@ -1,33 +1,64 @@
 /* ============================================================
-   site.css — Gemeinsame Basis + linke Navigationsleiste
-   Wird von index.html und allen Unterseiten eingebunden.
+   site.css — Zentrales Design-System (Tokens) + Basis + Navigation
+   Wird von JEDER Seite eingebunden. Tools/Rechner nutzen zusätzlich
+   css/tools.css, das ausschließlich auf diese Tokens aufbaut – so
+   sehen neue Unterseiten und Rechner automatisch gleich aus.
    ============================================================ */
 
 /* ── Design-Tokens ─────────────────────────────────────────── */
 :root {
-    --bg:        #0a0a0a;
-    --nav-bg:    #0d1117;
-    --nav-bg2:   #111a22;
-    --line:      #1e2730;
-    --text:      #e0e0e0;
-    --muted:     #8a9aa6;
-    --faint:     #5c6b76;
+    /* Flächen (dunkel, leicht blaustichig – zur Markenfarbe passend) */
+    --bg:        #0a0e13;
+    --nav-bg:    #0d1219;
+    --nav-bg2:   #10171f;
+    --panel:     #121a22;
+    --panel-2:   #172029;
+    --line:      #232f3a;
+
+    /* Text */
+    --text:      #e6edf2;
+    --muted:     #93a2ad;
+    --faint:     #61707b;
+
+    /* Marke / Akzent */
     --accent:    #4a9eff;
-    --sidebar-w: 264px;
+    --accent-2:  #7fc0ff;
+    --accent-weak: rgba(74, 158, 255, 0.10);
+
+    /* Datenreihen für Vergleiche in Tools (harmonisch zur Marke) */
+    --series-a:  #4a9eff;   /* Primär – nimmt die Markenfarbe (z. B. Elektro) */
+    --series-b:  #e8a13a;   /* Warmer Kontrast (z. B. Benzin) */
+    --pos:       #6fcf73;   /* positiv / Ersparnis */
+    --neg:       #e86a5c;   /* negativ */
+
+    /* Typo-Skala (bewusst etwas größer für gute Lesbarkeit) */
+    --fs-xs:   12px;
+    --fs-sm:   14px;
+    --fs-base: 16px;
+    --fs-md:   18px;
+    --fs-lg:   22px;
+
+    /* Radien */
+    --r-sm: 8px;
+    --r-md: 12px;
+    --r-lg: 16px;
+
+    --sidebar-w: 268px;
+    --font: "Segoe UI", system-ui, Arial, Helvetica, sans-serif;
+    --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 
 /* ── Reset & Basis ─────────────────────────────────────────── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
-    font-family: "Segoe UI", Arial, Helvetica, sans-serif;
+    font-family: var(--font);
     background: var(--bg);
     color: var(--text);
     line-height: 1.6;
+    font-size: var(--fs-base);
     overflow-x: hidden;
 }
-
-/* Anker-Sprünge nicht unter einen (evtl.) fixen Rand schieben */
 :target { scroll-margin-top: 24px; }
 
 /* ── Layout: Inhalt neben der Sidebar ──────────────────────── */
@@ -39,53 +70,41 @@ body {
 /* ── Navigations-Sidebar ───────────────────────────────────── */
 .sidebar {
     position: fixed;
-    top: 0;
-    left: 0;
+    top: 0; left: 0;
     width: var(--sidebar-w);
     height: 100vh;
     background: linear-gradient(180deg, var(--nav-bg) 0%, var(--nav-bg2) 100%);
     border-right: 1px solid var(--line);
-    overflow-y: auto;
     z-index: 100;
     transition: transform 0.3s ease;
 }
-.sidebar-inner { padding: 28px 18px 40px; }
-
-/* Marke / Kopf der Navigation – kompakte Wortmarke */
-.brand {
+.sidebar-inner {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    min-height: 100%;
+    padding: 26px 16px 16px;
+}
+
+/* Marke / Kopf – reine Wortmarke, ohne Kästchen */
+.brand {
+    display: block;
     text-decoration: none;
-    padding: 0 6px 20px;
+    padding: 2px 8px 20px;
     margin-bottom: 12px;
     border-bottom: 1px solid var(--line);
 }
-.brand-mark {
-    flex: 0 0 auto;
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 21px;
-    font-weight: 800;
-    color: #0a0f14;
-    background: linear-gradient(135deg, #7fc0ff 0%, var(--accent) 55%, #2b6fd6 100%);
-    box-shadow: 0 4px 16px rgba(74, 158, 255, 0.28);
-}
-.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
 .brand-name {
-    font-size: 18px;
+    display: block;
+    font-size: 20px;
     font-weight: 800;
     letter-spacing: 0.5px;
     color: #f4f8fc;
 }
 .brand-role {
-    margin-top: 2px;
-    font-size: 10.5px;
-    letter-spacing: 1.5px;
+    display: block;
+    margin-top: 3px;
+    font-size: 11px;
+    letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--muted);
 }
@@ -97,16 +116,15 @@ body {
     align-items: center;
     gap: 9px;
     margin: 22px 10px 8px;
-    font-size: 11.5px;
+    font-size: 12px;
     font-weight: 700;
-    letter-spacing: 1.4px;
+    letter-spacing: 1.3px;
     text-transform: uppercase;
-    color: #cdd8e0;                       /* deutlich lesbarer als zuvor */
+    color: #cfdae2;
 }
 .nav-group::before {
     content: "";
-    width: 16px;
-    height: 2px;
+    width: 16px; height: 2px;
     border-radius: 2px;
     background: var(--accent);
     flex: 0 0 auto;
@@ -114,42 +132,93 @@ body {
 .nav-list a {
     display: block;
     padding: 9px 12px;
-    border-radius: 8px;
+    border-radius: var(--r-sm);
     color: var(--muted);
     text-decoration: none;
-    font-size: 14.5px;
+    font-size: 15px;
     border-left: 2px solid transparent;
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
-.nav-list a:hover {
-    background: rgba(74, 158, 255, 0.08);
-    color: var(--text);
-}
+.nav-list a:hover { background: var(--accent-weak); color: var(--text); }
 .nav-list a.active {
     color: #fff;
     border-left-color: var(--accent);
-    background: rgba(74, 158, 255, 0.10);
+    background: var(--accent-weak);
 }
-/* Verweis auf eine Unterseite (eingerückt, dezent hervorgehoben) */
-.nav-sub-link {
-    margin-left: 10px;
-    font-size: 13px !important;
-    color: var(--faint) !important;
-}
-.nav-sub-link:hover { color: var(--accent) !important; }
 
-/* ── Hamburger-Schalter (nur mobil sichtbar) ───────────────── */
+/* ── Sidebar-Fußbereich: Zahnrad / Einstellungen ───────────── */
+.sidebar-foot {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    position: relative;
+}
+.gear-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid transparent;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+.gear-btn:hover { background: var(--accent-weak); color: var(--text); }
+.gear-ico {
+    display: inline-block;
+    font-size: 16px;
+    transition: transform 0.4s ease;
+}
+.gear-btn[aria-expanded="true"] .gear-ico { transform: rotate(90deg); }
+
+.gear-menu {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: calc(100% + 8px);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 8px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+}
+.gear-menu[hidden] { display: none; }
+.gear-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 9px 10px;
+    border: none;
+    border-radius: var(--r-sm);
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+.gear-item:hover { background: var(--accent-weak); }
+.gear-item[hidden] { display: none; }
+.gear-version {
+    padding: 8px 10px 4px;
+    font-size: 11px;
+    color: var(--faint);
+    letter-spacing: 0.4px;
+}
+
+/* ── Hamburger + Drawer (mobil) ────────────────────────────── */
 .nav-toggle {
     display: none;
     position: fixed;
-    top: 14px;
-    left: 14px;
+    top: 14px; left: 14px;
     z-index: 120;
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     border: 1px solid var(--line);
     border-radius: 10px;
-    background: rgba(13, 17, 23, 0.85);
+    background: rgba(13, 18, 25, 0.85);
     backdrop-filter: blur(6px);
     color: var(--text);
     font-size: 20px;
@@ -166,6 +235,51 @@ body {
     transition: opacity 0.3s ease;
 }
 
+/* ── Update-Banner ("Neue Version verfügbar") ──────────────── */
+.update-banner {
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translate(-50%, 140%);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    max-width: min(92vw, 460px);
+    padding: 12px 14px 12px 18px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    box-shadow: 0 14px 40px rgba(0,0,0,0.5);
+    transition: transform 0.35s cubic-bezier(.2,.7,.3,1), opacity 0.35s ease;
+    opacity: 0;
+}
+.update-banner.show { transform: translate(-50%, 0); opacity: 1; }
+.update-banner span { font-size: 14px; color: var(--text); }
+.update-banner button {
+    font: inherit;
+    cursor: pointer;
+    border-radius: 999px;
+}
+.update-banner .ub-reload {
+    padding: 8px 16px;
+    border: none;
+    background: var(--accent);
+    color: #06101c;
+    font-size: 13px;
+    font-weight: 700;
+}
+.update-banner .ub-reload:hover { background: var(--accent-2); }
+.update-banner .ub-close {
+    width: 26px; height: 26px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-size: 18px;
+    line-height: 1;
+}
+.update-banner .ub-close:hover { color: var(--text); }
+
 /* ── Responsive: Sidebar wird zum Drawer ───────────────────── */
 @media (max-width: 900px) {
     .page { margin-left: 0; }
@@ -173,7 +287,6 @@ body {
     .sidebar { transform: translateX(-100%); box-shadow: 4px 0 24px rgba(0,0,0,0.5); }
     body.nav-open .sidebar { transform: translateX(0); }
     body.nav-open .nav-backdrop { display: block; opacity: 1; }
-    /* Platz schaffen, damit der Hamburger nichts überdeckt */
     .page > .hero,
     .page > .subpage-head { padding-top: 72px; }
 }

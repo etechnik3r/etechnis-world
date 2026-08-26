@@ -1,0 +1,171 @@
+/* ============================================================
+   tools.css — Wiederverwendbare Bausteine für Rechner & Tools
+   Baut ausschließlich auf den Tokens aus site.css auf. Jede neue
+   Rechner-Unterseite bindet site.css + tools.css ein und erhält
+   damit automatisch das gleiche Look & Feel.
+   ============================================================ */
+
+.tool { max-width: 900px; margin: 0 auto; padding: 26px 18px 56px; }
+
+/* Zurück-Link */
+.backlink {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: var(--fs-sm);
+}
+.backlink:hover { color: var(--accent); }
+
+/* Kopf */
+.tool-kicker {
+    font-size: var(--fs-xs);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+}
+.tool-title {
+    font-size: clamp(24px, 4vw, 30px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--text);
+}
+.tool-sub { font-size: var(--fs-sm); color: var(--muted); margin-top: 8px; line-height: 1.55; }
+
+/* Kennzahlen (Readouts) */
+.readouts { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0; }
+.readout {
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 16px 18px;
+    flex: 1 1 160px;
+}
+.readout .r-label {
+    font-size: var(--fs-xs);
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+}
+.readout .r-value {
+    font-family: var(--mono);
+    font-size: 27px;
+    font-weight: 700;
+    line-height: 1;
+}
+.readout .r-sub { font-size: var(--fs-sm); color: var(--faint); margin-top: 7px; }
+
+/* Panel (z. B. Diagramm) */
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 16px;
+    margin-bottom: 22px;
+}
+
+/* Tabs */
+.tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.tab {
+    background: var(--panel-2);
+    color: var(--muted);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    padding: 7px 15px;
+    font: inherit;
+    font-size: var(--fs-sm);
+    font-weight: 600;
+    cursor: pointer;
+}
+.tab.active { background: var(--accent); color: #06101c; border-color: var(--accent); }
+
+/* Diagramm + Tooltip */
+.chart-wrap { position: relative; }
+.chart-wrap svg { width: 100%; height: auto; display: block; }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.legend span { font-size: var(--fs-sm); color: var(--muted); display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+.tip {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm);
+    padding: 8px 12px;
+    font-size: var(--fs-sm);
+    transform: translate(-50%, -110%);
+    white-space: nowrap;
+    z-index: 5;
+    transition: opacity 0.08s ease;
+}
+.tip .t-title { color: var(--text); font-weight: 600; margin-bottom: 4px; }
+
+/* Regler-Karten */
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.ctrl-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 18px 20px;
+}
+.ctrl-head {
+    font-size: var(--fs-sm);
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-weight: 700;
+}
+.slider { margin-bottom: 18px; }
+.slider-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.slider-row .s-label { font-size: var(--fs-sm); color: var(--muted); }
+.slider-row .s-value { font-family: var(--mono); font-size: var(--fs-base); color: var(--text); font-weight: 600; }
+.slider input[type=range] { width: 100%; height: 4px; cursor: pointer; accent-color: var(--accent); }
+.slider .s-hint { font-size: var(--fs-xs); color: var(--faint); margin-top: 4px; }
+.sub-divider {
+    margin: 6px 0 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-size: var(--fs-xs);
+    letter-spacing: 0.5px;
+    color: var(--muted);
+}
+
+/* Zusatz-Kennzahlen */
+.extras { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
+.extra {
+    flex: 1 1 130px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    padding: 12px 14px;
+}
+.extra .e-label { color: var(--muted); font-size: var(--fs-xs); margin-bottom: 4px; }
+.extra .e-value { font-family: var(--mono); font-size: var(--fs-md); font-weight: 600; }
+
+/* Tabelle */
+.table-box {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 4px 0;
+}
+.table-box summary { cursor: pointer; padding: 14px 20px; font-size: var(--fs-sm); color: var(--muted); user-select: none; }
+.table-scroll { overflow-x: auto; padding: 0 12px 12px; }
+table.data { width: 100%; border-collapse: collapse; font-size: var(--fs-sm); font-family: var(--mono); }
+table.data th {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--line);
+    font-weight: 500;
+    color: var(--muted);
+    text-align: right;
+}
+table.data th:first-child { text-align: left; }
+table.data td { padding: 6px 10px; text-align: right; color: var(--text); }
+table.data td:first-child { text-align: left; color: var(--muted); }
+
+.footnote { font-size: var(--fs-xs); color: var(--faint); margin-top: 16px; line-height: 1.6; }
+
+@media (max-width: 900px) { .tool { padding-top: 72px; } }

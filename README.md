@@ -2,49 +2,69 @@
 
 Persönliche Themenwelt von **Bastian** – Erfinder, Bastler, Ingenieur.
 Eine schlanke, statische Webseite (reines HTML/CSS/JS, ohne Build-Schritt),
-die als Sandbox dient und Schritt für Schritt um neue Themen erweitert wird.
+die als Sandbox dient und Schritt für Schritt um neue Themen und Rechner
+erweitert wird. Als **Progressive Web App** installierbar.
 
 ## Struktur
 
 ```
 /
-├── index.html                         Startseite mit linker Navigation und allen Themen
-├── elektroauto-kostenvergleich.html   Unterseite: Kostenvergleich E-Auto vs. Verbrenner
+├── index.html                         Startseite mit Navigation und allen Themen
+├── elektroauto-kostenvergleich.html   Rechner: Kostenvergleich E-Auto vs. Verbrenner
 ├── css/
-│   └── site.css                       Gemeinsame Basis + Navigationsleiste (Sidebar/Drawer)
+│   ├── site.css                       Design-System (Tokens) + Basis + Navigation
+│   └── tools.css                      Wiederverwendbare Bausteine für Rechner/Tools
+├── js/
+│   └── app.js                         Gemeinsame Logik (Nav, Update-Banner, PWA)
+├── sw.js                              Service Worker (Offline + Update-Erkennung)
+├── manifest.webmanifest               PWA-Manifest
+├── icons/                             App-Icons (SVG + PNG, inkl. maskable)
 └── img/                               Bilder zu den Themen
 ```
 
+## Design-System (wichtig für neue Rechner)
+
+Damit alle Seiten – besonders künftige Rechner/Tools – **automatisch gleich
+aussehen**, ist das Design zentral abgelegt:
+
+- **`css/site.css`** definiert alle **Design-Tokens** als CSS-Variablen
+  (`:root`): Farben (Markenfarbe Blau `--accent`, Flächen, Datenreihen
+  `--series-a`/`--series-b`), Typo-Skala (`--fs-*`), Radien. Farben und
+  Größen nur hier ändern – sie wirken überall.
+- **`css/tools.css`** enthält fertige Bausteine (`.tool`, `.panel`,
+  `.readout`, `.tabs`/`.tab`, `.controls`/`.slider`, `table.data`,
+  Tooltip …), die ausschließlich auf diesen Tokens aufbauen.
+
+**Neuen Rechner anlegen:** eine HTML-Seite erstellen, `site.css` **und**
+`tools.css` einbinden, die vorhandenen Klassen verwenden – fertig, das
+Look & Feel passt ohne zusätzliches Styling.
+
 ## Navigation & Themen
 
-Links liegt eine feste Navigationsleiste (auf Mobilgeräten als ausklappbares
-Menü), die die Themen gruppiert:
+Links liegt eine feste Navigationsleiste (mobil als ausklappbares Menü),
+die die Themen gruppiert: **Elektromobilität** (inkl. Kostenvergleich E-Auto),
+**Energie & Wärme**, **Weitere Themen**. Ganz unten ein Zahnrad-Menü mit
+„App installieren" und „Nach Updates suchen".
 
-- **Elektromobilität** – Elektrofahrzeuge, Laden & Ladeinfrastruktur,
-  Batteriediagnose sowie die Unterseite *Kostenvergleich E-Auto*
-- **Energie & Wärme** – Wärmepumpen, Photovoltaik & Speicher, Thermografie
-- **Weitere Themen** – Modellflug & Drohnen, Elektronik & Embedded,
-  Erfindungen & Patente
+## PWA & Update-Erkennung
 
-## Unterseite: Kostenvergleich E-Auto vs. Verbrenner
+- `manifest.webmanifest` + `sw.js` machen die Seite installierbar und offline
+  nutzbar. Installation über das Zahnrad-Menü unten in der Navigation.
+- Der Service Worker erkennt neue Versionen. **Beim Deploy die `CACHE`-Version
+  in `sw.js` erhöhen** – Besucher sehen dann automatisch das Banner
+  „Neue Version verfügbar – Neu laden".
 
-Interaktives Werkzeug (dependency-frei, Diagramme als Inline-SVG). Vergleicht
-die realen monatlichen Super-E10-Preise (Sep 2022 – Aug 2026) mit den
-einstellbaren Stromkosten eines E-Autos. Über Regler lassen sich Fahrleistung,
-Verbräuche, Ladeanteil und Strompreise anpassen; drei Ansichten zeigen
-Monatskosten, kumulierte Kosten und die Spritpreis-Entwicklung.
+## Rechner: Kostenvergleich E-Auto vs. Verbrenner
 
-## Neues Thema hinzufügen
-
-1. In `index.html` eine neue `<section>` mit eigener `id` anlegen.
-2. In `css/site.css` einen passenden Navigationspunkt in der `.nav-list`
-   ergänzen (in beiden HTML-Dateien, damit die Navigation überall gleich ist).
-3. Für umfangreichere Themen eine eigene Unterseite nach dem Muster von
-   `elektroauto-kostenvergleich.html` erstellen und verlinken.
+Interaktiv, dependency-frei (Diagramme als Inline-SVG). Vergleicht reale
+Super-E10-Monatspreise (Sep 2022 – Aug 2026) mit den einstellbaren Ladekosten
+eines E-Autos (Mix aus Photovoltaik, Netz und unterwegs). Reglerwerte werden
+lokal gespeichert (localStorage) und bleiben beim nächsten Besuch erhalten;
+neue Felder nach einem Update fallen sauber auf ihre Standardwerte zurück.
 
 ## Hinweise
 
-- Die Seite ist für GitHub Pages ausgelegt (statisch, relative Pfade).
-- Dateinamen der Bilder sind case-sensitive (z. B. `elektronik.JPG`).
-- Das Impressum in `index.html` muss noch um die vollständige Anschrift
-  ergänzt werden (Pflichtangabe nach § 5 DDG).
+- Ausgelegt für GitHub Pages (statisch, relative Pfade).
+- Bild-Dateinamen sind case-sensitive (z. B. `elektronik.JPG`).
+- **Offen:** Bilder für „Photovoltaik & Speicher" sowie ein Impressum nach
+  § 5 DDG (Name, Anschrift, Kontakt) ergänzen.

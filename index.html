@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Technik. Ideen. Lösungen.</title>
 <meta name="description" content="Bastian – Erfinder, Bastler, Ingenieur. Themenwelt rund um Elektromobilität, Energie & Wärme, Modellflug, Elektronik und eigene Patente.">
+<meta name="theme-color" content="#0a0e13">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="stylesheet" href="css/site.css">
 <style>
 
@@ -345,11 +349,8 @@ footer {
 <nav class="sidebar" id="sidebar" aria-label="Hauptnavigation">
     <div class="sidebar-inner">
         <a class="brand" href="index.html">
-            <span class="brand-mark" aria-hidden="true">B</span>
-            <span class="brand-text">
-                <span class="brand-name">Bastian</span>
-                <span class="brand-role">Erfinder &middot; Ingenieur</span>
-            </span>
+            <span class="brand-name">Bastian</span>
+            <span class="brand-role">Erfinder &middot; Ingenieur</span>
         </a>
         <ul class="nav-list">
             <li><a href="#start" data-nav>Start</a></li>
@@ -358,7 +359,7 @@ footer {
             <li><a href="#elektrofahrzeuge" data-nav>Elektrofahrzeuge</a></li>
             <li><a href="#laden" data-nav>Laden &amp; Ladeinfrastruktur</a></li>
             <li><a href="#batterie" data-nav>Batteriediagnose</a></li>
-            <li><a class="nav-sub-link" href="elektroauto-kostenvergleich.html">&#8627; Kostenvergleich E-Auto</a></li>
+            <li><a href="#kostenrechner" data-nav>Kostenvergleich E-Auto</a></li>
 
             <li class="nav-group">Energie &amp; W&auml;rme</li>
             <li><a href="#waermepumpen" data-nav>W&auml;rmepumpen</a></li>
@@ -370,8 +371,27 @@ footer {
             <li><a href="#elektronik" data-nav>Elektronik &amp; Embedded</a></li>
             <li><a href="#erfindungen" data-nav>Erfindungen &amp; Patente</a></li>
         </ul>
+
+        <!-- Fußbereich: Einstellungen / App installieren -->
+        <div class="sidebar-foot">
+            <button class="gear-btn" id="gearBtn" aria-expanded="false" aria-haspopup="true">
+                <span class="gear-ico" aria-hidden="true">&#9881;</span> Einstellungen
+            </button>
+            <div class="gear-menu" id="gearMenu" hidden>
+                <button class="gear-item" id="installBtn" hidden>App installieren</button>
+                <button class="gear-item" id="updateCheck">Nach Updates suchen</button>
+                <div class="gear-version" id="appVersion"></div>
+            </div>
+        </div>
     </div>
 </nav>
+
+<!-- Update-Hinweis -->
+<div class="update-banner" id="updateBanner" role="alert" aria-live="polite">
+    <span>Neue Version verf&uuml;gbar.</span>
+    <button class="ub-reload" id="ubReload">Neu laden</button>
+    <button class="ub-close" id="ubClose" aria-label="Hinweis schlie&szlig;en">&times;</button>
+</div>
 
 
 <!-- ═══════════════ INHALT ═══════════════ -->
@@ -447,6 +467,20 @@ footer {
             aus dem Batteriemanagementsystem.
         </p>
         <div class="formula br">U = R &middot; I</div>
+    </section>
+
+
+    <!-- ── KOSTENVERGLEICH E-AUTO (Verweis auf den Rechner) ── -->
+    <section id="kostenrechner" class="topic-section">
+        <div class="topic-title">Kostenvergleich E-Auto vs. Verbrenner</div>
+        <div class="topic-tagline">Interaktiv &middot; Echte Spritpreise &middot; Ladekosten</div>
+        <p class="topic-desc">
+            Was h&auml;tte mich das Benzin gekostet &ndash; und was ein E-Auto im gleichen
+            Zeitraum? Ein interaktiver Rechner mit echten Super-E10-Monatspreisen und
+            einstellbaren Ladekosten (Photovoltaik, Netz und unterwegs).
+        </p>
+        <a class="topic-link" href="elektroauto-kostenvergleich.html">Zum interaktiven Rechner &#8594;</a>
+        <div class="formula br">&euro; = f(t)</div>
     </section>
 
 
@@ -567,42 +601,17 @@ footer {
 </div><!-- /.page -->
 
 
-<!-- ═══════════════ JAVASCRIPT ═══════════════ -->
+<!-- Gemeinsame Logik: Navigation, Scrollspy, Update-Banner, PWA -->
+<script src="js/app.js"></script>
+
+<!-- Seiten-spezifisch: Sektionen beim Scrollen einblenden -->
 <script>
-// Einblenden der Sektionen beim Scrollen
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) entry.target.classList.add('visible');
     });
 }, { threshold: 0.12 });
 document.querySelectorAll('section, .hero').forEach(el => observer.observe(el));
-
-// Mobiles Navigationsmenü öffnen/schließen
-const toggle   = document.querySelector('.nav-toggle');
-const backdrop = document.querySelector('.nav-backdrop');
-function closeNav() {
-    document.body.classList.remove('nav-open');
-    toggle.setAttribute('aria-expanded', 'false');
-}
-toggle.addEventListener('click', () => {
-    const open = document.body.classList.toggle('nav-open');
-    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-});
-backdrop.addEventListener('click', closeNav);
-document.querySelectorAll('.sidebar a').forEach(a =>
-    a.addEventListener('click', closeNav));
-
-// Scrollspy: aktiven Navigationspunkt markieren
-const navLinks = [...document.querySelectorAll('.nav-list a[data-nav]')];
-const spy = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        const id = entry.target.id;
-        navLinks.forEach(l =>
-            l.classList.toggle('active', l.getAttribute('href') === '#' + id));
-    });
-}, { rootMargin: '-45% 0px -50% 0px' });
-document.querySelectorAll('.page [id]').forEach(el => spy.observe(el));
 </script>
 
 </body>

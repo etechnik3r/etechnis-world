@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kostenvergleich E-Auto vs. Verbrenner</title>
+<meta name="description" content="Interaktiver Kostenvergleich: Was hätte das Benzin gekostet – und was ein E-Auto? Mit echten Super-E10-Monatspreisen und einstellbaren Strompreisen.">
+<link rel="stylesheet" href="css/site.css">
+<style>
+/* ============================================================
+   Unterseite: Kostenvergleich E-Auto vs. Verbrenner
+   Instrumententafel-Optik, eigenständige Farbtokens (--c-*)
+   ============================================================ */
+.cost-page {
+    --c-bg:    #0E1418;
+    --c-panel: #161E24;
+    --c-panel2:#1B252C;
+    --c-line:  #24303A;
+    --c-text:  #E6EDF2;
+    --c-muted: #8A9AA6;
+    --c-faint: #5C6B76;
+    --c-benzin:#E8A13A;
+    --c-strom: #35C9C0;
+    --c-spar:  #6FCF73;
+    --c-warn:  #E86A5C;
+    background: var(--c-bg);
+    color: var(--c-text);
+}
+.cost-page .kv { max-width: 900px; margin: 0 auto; padding: 26px 18px 56px; }
+
+/* Zurück-Link */
+.backlink {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--c-muted);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+}
+.backlink:hover { color: var(--c-strom); }
+
+/* Kopf */
+.kv-kicker {
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--c-benzin); margin-bottom: 6px;
+}
+.kv h1.kv-title {
+    font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.5px;
+    color: var(--c-text); background: none; -webkit-text-fill-color: initial;
+}
+.kv-sub { font-size: 13px; color: var(--c-muted); margin-top: 8px; line-height: 1.5; }
+
+/* Kennzahlen (Readouts) */
+.readouts { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0; }
+.readout {
+    background: var(--c-panel2); border: 1px solid var(--c-line);
+    border-radius: 12px; padding: 16px 18px; flex: 1 1 150px;
+}
+.readout .r-label {
+    font-size: 11px; letter-spacing: 1.2px; text-transform: uppercase;
+    color: var(--c-muted); margin-bottom: 8px;
+}
+.readout .r-value {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, monospace;
+    font-size: 26px; font-weight: 700; line-height: 1;
+}
+.readout .r-sub { font-size: 12px; color: var(--c-faint); margin-top: 6px; }
+
+/* Diagramm-Panel */
+.panel {
+    background: var(--c-panel); border: 1px solid var(--c-line);
+    border-radius: 14px; padding: 16px; margin-bottom: 22px;
+}
+.tabs { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.tab {
+    background: var(--c-panel2); color: var(--c-muted);
+    border: 1px solid var(--c-line); border-radius: 8px; padding: 6px 14px;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+}
+.tab.active { background: var(--c-benzin); color: #0E1418; border-color: var(--c-benzin); }
+
+.chart-wrap { position: relative; }
+#chart { width: 100%; height: auto; display: block; }
+.legend { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.legend span { font-size: 12px; color: var(--c-muted); display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+
+/* Tooltip */
+.tip {
+    position: absolute; pointer-events: none; opacity: 0;
+    background: var(--c-panel); border: 1px solid var(--c-line);
+    border-radius: 8px; padding: 8px 12px; font-size: 12px;
+    transform: translate(-50%, -110%); white-space: nowrap; z-index: 5;
+    transition: opacity 0.08s ease;
+}
+.tip .t-title { color: var(--c-text); font-weight: 600; margin-bottom: 4px; }
+
+/* Regler-Karten */
+.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.ctrl-card {
+    background: var(--c-panel); border: 1px solid var(--c-line);
+    border-radius: 14px; padding: 18px 20px;
+}
+.ctrl-head {
+    font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 16px;
+}
+.slider { margin-bottom: 18px; }
+.slider-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.slider-row .s-label { font-size: 13px; color: var(--c-muted); }
+.slider-row .s-value {
+    font-family: ui-monospace, monospace; font-size: 15px; color: var(--c-text); font-weight: 600;
+}
+.slider input[type=range] { width: 100%; height: 4px; cursor: pointer; }
+.slider .s-hint { font-size: 11px; color: var(--c-faint); margin-top: 4px; }
+
+/* Zusatz-Kennzahlen */
+.extras { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
+.extra {
+    flex: 1 1 120px; background: var(--c-panel2); border: 1px solid var(--c-line);
+    border-radius: 10px; padding: 12px 14px;
+}
+.extra .e-label { color: var(--c-muted); font-size: 11px; margin-bottom: 4px; }
+.extra .e-value { font-family: ui-monospace, monospace; font-size: 16px; font-weight: 600; }
+
+/* Tabelle */
+.table-box {
+    background: var(--c-panel); border: 1px solid var(--c-line);
+    border-radius: 14px; padding: 4px 0;
+}
+.table-box summary {
+    cursor: pointer; padding: 14px 20px; font-size: 13px; color: var(--c-muted); user-select: none;
+}
+.table-scroll { overflow-x: auto; padding: 0 12px 12px; }
+table.months { width: 100%; border-collapse: collapse; font-size: 12px; font-family: ui-monospace, monospace; }
+table.months th {
+    padding: 8px 10px; border-bottom: 1px solid var(--c-line);
+    font-weight: 500; color: var(--c-muted); text-align: right;
+}
+table.months th:first-child { text-align: left; }
+table.months td { padding: 6px 10px; text-align: right; color: var(--c-text); }
+table.months td:first-child { text-align: left; color: var(--c-muted); }
+
+.footnote { font-size: 11px; color: var(--c-faint); margin-top: 16px; line-height: 1.6; }
+
+/* Auf Mobil Platz für den Hamburger-Schalter schaffen */
+@media (max-width: 900px) { .cost-page .kv { padding-top: 72px; } }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ NAVIGATION (identisch zur Startseite) ═══════════════ -->
+<button class="nav-toggle" aria-label="Menü öffnen" aria-expanded="false">&#9776;</button>
+<div class="nav-backdrop"></div>
+
+<nav class="sidebar" id="sidebar" aria-label="Hauptnavigation">
+    <div class="sidebar-inner">
+        <a class="brand" href="index.html">
+            <span class="brand-title">Technik &middot; Ideen &middot; L&ouml;sungen</span>
+            <span class="brand-sub">Bastian</span>
+        </a>
+        <ul class="nav-list">
+            <li><a href="index.html#start">Start</a></li>
+
+            <li class="nav-group">Elektromobilit&auml;t</li>
+            <li><a href="index.html#elektrofahrzeuge">Elektrofahrzeuge</a></li>
+            <li><a href="index.html#laden">Laden &amp; Ladeinfrastruktur</a></li>
+            <li><a href="index.html#batterie">Batteriediagnose</a></li>
+            <li><a class="nav-sub-link active" href="elektroauto-kostenvergleich.html">&#8627; Kostenvergleich E-Auto</a></li>
+
+            <li class="nav-group">Energie &amp; W&auml;rme</li>
+            <li><a href="index.html#waermepumpen">W&auml;rmepumpen</a></li>
+            <li><a href="index.html#photovoltaik">Photovoltaik &amp; Speicher</a></li>
+            <li><a href="index.html#thermografie">Thermografie</a></li>
+
+            <li class="nav-group">Weitere Themen</li>
+            <li><a href="index.html#drohnen">Modellflug &amp; Drohnen</a></li>
+            <li><a href="index.html#elektronik">Elektronik &amp; Embedded</a></li>
+            <li><a href="index.html#erfindungen">Erfindungen &amp; Patente</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<div class="page cost-page">
+    <div class="kv subpage-head">
+
+        <a class="backlink" href="index.html#laden">&#8592; Zur&uuml;ck zur &Uuml;bersicht</a>
+
+        <!-- Kopf -->
+        <div class="kv-kicker">Kostenanalyse &middot; Verbrenner vs. Elektro</div>
+        <h1 class="kv-title">Was hat mich das Benzin gekostet?</h1>
+        <div class="kv-sub" id="subtitle"></div>
+
+        <!-- Kennzahlen -->
+        <div class="readouts">
+            <div class="readout">
+                <div class="r-label">Benzin gesamt</div>
+                <div class="r-value" id="ro-benzin-v" style="color:var(--c-benzin)"></div>
+                <div class="r-sub" id="ro-benzin-s"></div>
+            </div>
+            <div class="readout">
+                <div class="r-label">E-Auto gesamt</div>
+                <div class="r-value" id="ro-eauto-v" style="color:var(--c-strom)"></div>
+                <div class="r-sub" id="ro-eauto-s"></div>
+            </div>
+            <div class="readout">
+                <div class="r-label">Ersparnis E-Auto</div>
+                <div class="r-value" id="ro-spar-v"></div>
+                <div class="r-sub" id="ro-spar-s"></div>
+            </div>
+        </div>
+
+        <!-- Diagramm -->
+        <div class="panel">
+            <div class="tabs" id="tabs">
+                <button class="tab active" data-view="monat">Monatskosten</button>
+                <button class="tab" data-view="kum">Kumuliert</button>
+                <button class="tab" data-view="preis">Spritpreis</button>
+            </div>
+            <div class="chart-wrap">
+                <svg id="chart" viewBox="0 0 760 280" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Kostendiagramm"></svg>
+                <div class="tip" id="tip"></div>
+            </div>
+            <div class="legend" id="legend"></div>
+        </div>
+
+        <!-- Regler -->
+        <div class="controls">
+            <div class="ctrl-card">
+                <div class="ctrl-head" style="color:var(--c-benzin)">Verbrenner</div>
+                <div class="slider">
+                    <div class="slider-row"><span class="s-label">Fahrleistung gesamt</span><span class="s-value" id="km-v"></span></div>
+                    <input type="range" id="km" min="20000" max="200000" step="5000" value="100000" style="accent-color:var(--c-benzin)">
+                    <div class="s-hint" id="km-h"></div>
+                </div>
+                <div class="slider">
+                    <div class="slider-row"><span class="s-label">Verbrauch</span><span class="s-value" id="l100-v"></span></div>
+                    <input type="range" id="l100" min="4" max="16" step="0.1" value="8.5" style="accent-color:var(--c-benzin)">
+                </div>
+            </div>
+
+            <div class="ctrl-card">
+                <div class="ctrl-head" style="color:var(--c-strom)">Elektro (Vergleich)</div>
+                <div class="slider">
+                    <div class="slider-row"><span class="s-label">Verbrauch</span><span class="s-value" id="kwh100-v"></span></div>
+                    <input type="range" id="kwh100" min="12" max="28" step="0.5" value="18" style="accent-color:var(--c-strom)">
+                </div>
+                <div class="slider">
+                    <div class="slider-row"><span class="s-label">Anteil zuhause geladen</span><span class="s-value" id="homeShare-v"></span></div>
+                    <input type="range" id="homeShare" min="0" max="100" step="5" value="80" style="accent-color:var(--c-strom)">
+                    <div class="s-hint" id="homeShare-h"></div>
+                </div>
+                <div class="slider">
+                    <div class="slider-row"><span class="s-label">Preis Heimladen</span><span class="s-value" id="homePrice-v"></span></div>
+                    <input type="range" id="homePrice" min="0.15" max="0.60" step="0.01" value="0.33" style="accent-color:var(--c-strom)">
+                </div>
+                <div class="slider">
+                    <div class="slider-row"><span class="s-label">Preis unterwegs</span><span class="s-value" id="pubPrice-v"></span></div>
+                    <input type="range" id="pubPrice" min="0.30" max="1.00" step="0.01" value="0.60" style="accent-color:var(--c-strom)">
+                </div>
+            </div>
+        </div>
+
+        <!-- Zusatz-Kennzahlen -->
+        <div class="extras" id="extras"></div>
+
+        <!-- Tabelle -->
+        <details class="table-box">
+            <summary id="tbl-summary">Monatstabelle anzeigen</summary>
+            <div class="table-scroll">
+                <table class="months">
+                    <thead>
+                        <tr>
+                            <th>Monat</th><th>E10 &euro;/L</th><th>km</th><th>Liter</th>
+                            <th>Benzin</th><th>E-Auto</th><th>&Delta;</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody"></tbody>
+                </table>
+            </div>
+        </details>
+
+        <div class="footnote">
+            Benzin: monatliche Super-E10-Durchschnittspreise, rekonstruiert aus ADAC-/Statista-/en2x-Daten
+            (Jahresmittel decken sich mit den ADAC-Werten). Strom als konstanter, einstellbarer Mittelwert &ndash;
+            die reale Strompreis-Entwicklung ist hier nicht historisch abgebildet, sondern als &bdquo;was h&auml;tte
+            ein E-Auto im Schnitt gekostet&ldquo;. Alle Werte sind N&auml;herungen f&uuml;r eine Gr&ouml;&szlig;enordnung,
+            keine Abrechnung.
+        </div>
+    </div>
+</div>
+
+
+<script>
+/* ============================================================
+   Kostenvergleich – Logik (dependency-frei, Vanilla-JS + SVG)
+   Portiert aus dem ursprünglichen React/Recharts-Entwurf.
+   ============================================================ */
+
+// Farbtokens (aus dem CSS gespiegelt)
+const C = {
+    panel:"#161E24", line:"#24303A", text:"#E6EDF2", muted:"#8A9AA6", faint:"#5C6B76",
+    benzin:"#E8A13A", strom:"#35C9C0", spar:"#6FCF73", warn:"#E86A5C",
+};
+
+// Monatliche Super-E10-Durchschnittspreise (€/L)
+const PRICES = [
+    ["Sep 22",1.94],["Okt 22",1.91],["Nov 22",1.86],["Dez 22",1.69],
+    ["Jan 23",1.75],["Feb 23",1.79],["Mrz 23",1.76],["Apr 23",1.80],
+    ["Mai 23",1.78],["Jun 23",1.80],["Jul 23",1.82],["Aug 23",1.86],
+    ["Sep 23",1.88],["Okt 23",1.85],["Nov 23",1.80],["Dez 23",1.72],
+    ["Jan 24",1.70],["Feb 24",1.74],["Mrz 24",1.78],["Apr 24",1.81],
+    ["Mai 24",1.80],["Jun 24",1.78],["Jul 24",1.79],["Aug 24",1.74],
+    ["Sep 24",1.66],["Okt 24",1.68],["Nov 24",1.67],["Dez 24",1.67],
+    ["Jan 25",1.73],["Feb 25",1.75],["Mrz 25",1.69],["Apr 25",1.69],
+    ["Mai 25",1.68],["Jun 25",1.68],["Jul 25",1.66],["Aug 25",1.66],
+    ["Sep 25",1.65],["Okt 25",1.66],["Nov 25",1.67],["Dez 25",1.68],
+    ["Jan 26",1.71],["Feb 26",1.74],["Mrz 26",2.06],["Apr 26",2.12],
+    ["Mai 26",1.88],["Jun 26",1.82],["Jul 26",1.80],["Aug 26",1.80],
+];
+
+// Formatierung
+const eur = (n, d=0) => n.toLocaleString("de-DE",
+    { style:"currency", currency:"EUR", minimumFractionDigits:d, maximumFractionDigits:d });
+const num = (n, d=0) => n.toLocaleString("de-DE",
+    { minimumFractionDigits:d, maximumFractionDigits:d });
+
+// Zustand
+const S = {
+    kmTotal:100000, lPer100:8.5, kwhPer100:18,
+    homePrice:0.33, pubPrice:0.60, homeShare:80, view:"monat",
+};
+
+// Berechnung (entspricht dem useMemo im Original)
+function calc() {
+    const n = PRICES.length;
+    const kmM = S.kmTotal / n;
+    const blend = (S.homeShare/100)*S.homePrice + (1 - S.homeShare/100)*S.pubPrice;
+    const evM = (kmM/100) * S.kwhPer100 * blend;
+    let cumB = 0, cumE = 0;
+    const rows = PRICES.map(([label, price]) => {
+        const liter = (kmM/100) * S.lPer100;
+        const benzin = liter * price;
+        cumB += benzin; cumE += evM;
+        return { label, price, km:kmM, liter, benzin, eauto:evM, cumB, cumE };
+    });
+    const totB = cumB, totE = cumE, spar = totB - totE;
+    return { rows, kmM, blend, evM, totB, totE, spar, sparPct: totB ? (spar/totB)*100 : 0, n };
+}
+
+// „Schöne“ Achsenobergrenze
+function niceMax(v, ticks=5) {
+    if (v <= 0) return ticks;
+    const raw = v / ticks;
+    const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    const norm = raw / mag;
+    let step = norm <= 1 ? 1 : norm <= 2 ? 2 : norm <= 2.5 ? 2.5 : norm <= 5 ? 5 : 10;
+    return step * mag * ticks;
+}
+
+// ── SVG-Helfer ───────────────────────────────────────────────
+const SVGNS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, text) {
+    const e = document.createElementNS(SVGNS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (text != null) e.textContent = text;
+    return e;
+}
+
+const VB = { w:760, h:280 };
+const M = { top:14, right:14, bottom:28, left:52 };
+const plotW = VB.w - M.left - M.right;
+const plotH = VB.h - M.top - M.bottom;
+
+let chartState = null;   // für die Tooltip-Interaktion gemerkt
+
+function renderChart() {
+    const c = calc();
+    const svg = document.getElementById("chart");
+    svg.innerHTML = "";
+    const rows = c.rows, n = rows.length;
+
+    // Y-Domäne + Ticks je Ansicht
+    let yMin, yMax, ticks, yFmt;
+    if (S.view === "preis") {
+        yMin = 1.5; yMax = 2.2;
+        ticks = [1.5,1.6,1.7,1.8,1.9,2.0,2.1,2.2];
+        yFmt = v => v.toFixed(2);
+    } else if (S.view === "kum") {
+        yMin = 0; yMax = niceMax(rows[n-1].cumB);
+        ticks = tickArray(yMin, yMax, 5);
+        yFmt = v => (v/1000) + "k";
+    } else {
+        const maxV = Math.max(...rows.map(r => Math.max(r.benzin, r.eauto)));
+        yMin = 0; yMax = niceMax(maxV);
+        ticks = tickArray(yMin, yMax, 5);
+        yFmt = v => num(v);
+    }
+
+    const band = plotW / n;
+    const xC = i => M.left + band * (i + 0.5);
+    const yS = v => M.top + plotH * (1 - (v - yMin) / (yMax - yMin));
+
+    // Gitterlinien + Y-Achsenbeschriftung
+    ticks.forEach(t => {
+        const y = yS(t);
+        svg.appendChild(el("line", { x1:M.left, y1:y, x2:VB.w-M.right, y2:y, stroke:C.line, "stroke-width":1 }));
+        svg.appendChild(el("text", { x:M.left-8, y:y+4, "text-anchor":"end", fill:C.faint, "font-size":11 }, yFmt(t)));
+    });
+
+    // X-Achsenbeschriftung (jeder 6. Monat)
+    rows.forEach((r, i) => {
+        if (i % 6 !== 0) return;
+        svg.appendChild(el("text", { x:xC(i), y:VB.h-9, "text-anchor":"middle", fill:C.faint, "font-size":10 }, r.label));
+    });
+
+    // Datenreihen
+    if (S.view === "monat") {
+        const bw = band * 0.6;
+        rows.forEach((r, i) => {
+            const y = yS(r.benzin);
+            svg.appendChild(el("rect", { x:xC(i)-bw/2, y:y, width:bw, height:M.top+plotH-y, fill:C.benzin, rx:2 }));
+        });
+        svg.appendChild(linePath(rows.map((r,i)=>[xC(i), yS(r.eauto)]), C.strom, 2));
+    } else if (S.view === "kum") {
+        svg.appendChild(linePath(rows.map((r,i)=>[xC(i), yS(r.cumB)]), C.benzin, 2.5));
+        svg.appendChild(linePath(rows.map((r,i)=>[xC(i), yS(r.cumE)]), C.strom, 2.5));
+    } else {
+        // Referenzlinie Ø 2025
+        const yr = yS(1.688);
+        svg.appendChild(el("line", { x1:M.left, y1:yr, x2:VB.w-M.right, y2:yr, stroke:C.faint, "stroke-dasharray":"4 4", "stroke-width":1 }));
+        svg.appendChild(el("text", { x:VB.w-M.right-4, y:yr-5, "text-anchor":"end", fill:C.faint, "font-size":10 }, "Ø 2025"));
+        svg.appendChild(linePath(rows.map((r,i)=>[xC(i), yS(r.price)]), C.benzin, 2));
+    }
+
+    // Interaktionsschicht: Führungslinie + transparentes Rechteck
+    const guide = el("line", { x1:0, y1:M.top, x2:0, y2:M.top+plotH, stroke:C.muted, "stroke-width":1, opacity:0 });
+    svg.appendChild(guide);
+    const hit = el("rect", { x:M.left, y:M.top, width:plotW, height:plotH, fill:"transparent" });
+    svg.appendChild(hit);
+
+    // Legende
+    const legend = document.getElementById("legend");
+    if (S.view === "monat") legend.innerHTML = leg(C.benzin,"Benzin/Monat") + leg(C.strom,"E-Auto/Monat");
+    else if (S.view === "kum") legend.innerHTML = leg(C.benzin,"Benzin kumuliert") + leg(C.strom,"E-Auto kumuliert");
+    else legend.innerHTML = leg(C.benzin,"E10 €/L");
+
+    chartState = { rows, xC, guide, band, n };
+    wireTooltip();
+}
+
+function tickArray(min, max, count) {
+    const step = (max - min) / count, out = [];
+    for (let i = 0; i <= count; i++) out.push(min + step * i);
+    return out;
+}
+function linePath(pts, stroke, w) {
+    const d = pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ");
+    return el("path", { d, fill:"none", stroke, "stroke-width":w, "stroke-linejoin":"round" });
+}
+function leg(color, label) {
+    return `<span><i style="background:${color}"></i>${label}</span>`;
+}
+
+// ── Tooltip ──────────────────────────────────────────────────
+function wireTooltip() {
+    const svg = document.getElementById("chart");
+    const tip = document.getElementById("tip");
+    const wrap = svg.parentElement;
+
+    function move(clientX) {
+        const rect = svg.getBoundingClientRect();
+        const frac = (clientX - rect.left) / rect.width;      // 0..1 über die Breite
+        const px = frac * VB.w;                                // in ViewBox-Einheiten
+        let idx = Math.floor((px - M.left) / chartState.band);
+        idx = Math.max(0, Math.min(chartState.n - 1, idx));
+        const r = chartState.rows[idx];
+
+        const gx = chartState.xC(idx);
+        chartState.guide.setAttribute("x1", gx);
+        chartState.guide.setAttribute("x2", gx);
+        chartState.guide.setAttribute("opacity", 0.6);
+
+        let body;
+        if (S.view === "preis")
+            body = `<div style="color:${C.benzin}">E10 €/L: ${eur(r.price,3)}</div>`;
+        else if (S.view === "kum")
+            body = `<div style="color:${C.benzin}">Benzin kumuliert: ${eur(r.cumB)}</div>`
+                 + `<div style="color:${C.strom}">E-Auto kumuliert: ${eur(r.cumE)}</div>`;
+        else
+            body = `<div style="color:${C.benzin}">Benzin/Monat: ${eur(r.benzin)}</div>`
+                 + `<div style="color:${C.strom}">E-Auto/Monat: ${eur(r.eauto)}</div>`;
+
+        tip.innerHTML = `<div class="t-title">${r.label}</div>${body}`;
+        // Tooltip-Position relativ zum Wrapper (px in CSS-Pixeln)
+        const cssX = (gx / VB.w) * rect.width;
+        tip.style.left = cssX + "px";
+        tip.style.top  = (M.top / VB.h) * rect.height + 8 + "px";
+        tip.style.opacity = 1;
+    }
+    function hide() {
+        tip.style.opacity = 0;
+        if (chartState) chartState.guide.setAttribute("opacity", 0);
+    }
+    svg.addEventListener("mousemove", e => move(e.clientX));
+    svg.addEventListener("mouseleave", hide);
+    svg.addEventListener("touchmove", e => { if (e.touches[0]) move(e.touches[0].clientX); }, { passive:true });
+    svg.addEventListener("touchend", hide);
+}
+
+// ── Kennzahlen / Regler / Tabelle ────────────────────────────
+function renderReadouts() {
+    const c = calc(), years = c.n / 12;
+    document.getElementById("subtitle").innerHTML =
+        `${num(S.kmTotal/1000)}.000 km über ${c.n} Monate (Sep 2022 – Aug 2026), gleichmäßig verteilt auf `
+      + `${num(c.kmM)} km/Monat. Benzin: tatsächliche Super-E10-Monatsmittel. Strom: einstellbarer Durchschnitt.`;
+
+    set("ro-benzin-v", eur(c.totB));
+    set("ro-benzin-s", `${eur(c.totB/years)} / Jahr`);
+    set("ro-eauto-v", eur(c.totE));
+    set("ro-eauto-s", `Ø ${eur(c.blend,2)}/kWh geblendet`);
+    set("ro-spar-v", eur(c.spar));
+    document.getElementById("ro-spar-v").style.color = c.spar >= 0 ? C.spar : C.warn;
+    set("ro-spar-s", `${num(c.sparPct,0)} % · ${eur(c.spar/years)}/Jahr`);
+
+    // Zusatz-Kennzahlen
+    const ex = [
+        ["Benzin pro km", eur(c.totB/S.kmTotal,2), C.benzin],
+        ["E-Auto pro km", eur(c.totE/S.kmTotal,2), C.strom],
+        ["Getankte Menge", num((S.kmTotal/100)*S.lPer100) + " L", C.text],
+        ["Geladene Energie", num((S.kmTotal/100)*S.kwhPer100) + " kWh", C.text],
+    ];
+    document.getElementById("extras").innerHTML = ex.map(([l,v,col]) =>
+        `<div class="extra"><div class="e-label">${l}</div><div class="e-value" style="color:${col}">${v}</div></div>`
+    ).join("");
+
+    // Tabelle
+    document.getElementById("tbl-summary").textContent = `Monatstabelle anzeigen (${c.n} Monate)`;
+    document.getElementById("tbody").innerHTML = c.rows.map(r =>
+        `<tr>
+            <td>${r.label}</td>
+            <td>${num(r.price,3)}</td>
+            <td>${num(r.km)}</td>
+            <td>${num(r.liter)}</td>
+            <td style="color:${C.benzin}">${eur(r.benzin)}</td>
+            <td style="color:${C.strom}">${eur(r.eauto)}</td>
+            <td style="color:${C.spar}">${eur(r.benzin - r.eauto)}</td>
+        </tr>`).join("");
+}
+
+function renderSliders() {
+    const years = PRICES.length / 12;
+    set("km-v", num(S.kmTotal) + " km");
+    set("km-h", num(S.kmTotal/years) + " km / Jahr");
+    set("l100-v", num(S.lPer100,1) + " L/100 km");
+    set("kwh100-v", num(S.kwhPer100,1) + " kWh/100 km");
+    set("homeShare-v", num(S.homeShare) + " %");
+    set("homeShare-h", num(100 - S.homeShare) + " % unterwegs");
+    set("homePrice-v", eur(S.homePrice,2) + "/kWh");
+    set("pubPrice-v", eur(S.pubPrice,2) + "/kWh");
+}
+
+function set(id, txt) { document.getElementById(id).textContent = txt; }
+
+function renderAll() { renderReadouts(); renderSliders(); renderChart(); }
+
+// ── Verdrahtung ──────────────────────────────────────────────
+const bind = [
+    ["km","kmTotal"],["l100","lPer100"],["kwh100","kwhPer100"],
+    ["homeShare","homeShare"],["homePrice","homePrice"],["pubPrice","pubPrice"],
+];
+bind.forEach(([id, key]) => {
+    document.getElementById(id).addEventListener("input", e => {
+        S[key] = parseFloat(e.target.value);
+        renderAll();
+    });
+});
+document.querySelectorAll(".tab").forEach(btn => {
+    btn.addEventListener("click", () => {
+        S.view = btn.dataset.view;
+        document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b === btn));
+        renderChart();
+    });
+});
+
+// Mobiles Navigationsmenü
+const toggle = document.querySelector(".nav-toggle");
+const backdrop = document.querySelector(".nav-backdrop");
+function closeNav() { document.body.classList.remove("nav-open"); toggle.setAttribute("aria-expanded","false"); }
+toggle.addEventListener("click", () => {
+    const open = document.body.classList.toggle("nav-open");
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+});
+backdrop.addEventListener("click", closeNav);
+document.querySelectorAll(".sidebar a").forEach(a => a.addEventListener("click", closeNav));
+
+// Beim Skalieren neu zeichnen (Tooltip-Maße hängen an der Breite)
+window.addEventListener("resize", () => renderChart());
+
+renderAll();
+</script>
+
+</body>
+</html>

@@ -26,6 +26,52 @@
 }
 .hero.visible { opacity: 1; transform: translateY(0); }
 
+/* Weicher Lichtschein hinter dem Titel */
+.hero-glow {
+    position: absolute;
+    top: 42%;
+    left: 50%;
+    width: min(720px, 90vw);
+    height: 420px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse at center, rgba(74,158,255,0.16), transparent 70%);
+    filter: blur(10px);
+    pointer-events: none;
+    z-index: 0;
+}
+.hero > *:not(.hero-glow) { position: relative; z-index: 1; }
+.hero-kicker {
+    font-size: 12px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+.hero-chips {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 38px;
+}
+.hero-chips a {
+    padding: 10px 18px;
+    border: 1px solid #24303a;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.02);
+    color: #b7c2cc;
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+.hero-chips a:hover {
+    border-color: var(--accent);
+    color: #fff;
+    background: rgba(74,158,255,0.10);
+}
+
 /* Themen-Sektionen */
 section {
     min-height: 70vh;
@@ -299,8 +345,11 @@ footer {
 <nav class="sidebar" id="sidebar" aria-label="Hauptnavigation">
     <div class="sidebar-inner">
         <a class="brand" href="index.html">
-            <span class="brand-title">Technik &middot; Ideen &middot; L&ouml;sungen</span>
-            <span class="brand-sub">Bastian</span>
+            <span class="brand-mark" aria-hidden="true">B</span>
+            <span class="brand-text">
+                <span class="brand-name">Bastian</span>
+                <span class="brand-role">Erfinder &middot; Ingenieur</span>
+            </span>
         </a>
         <ul class="nav-list">
             <li><a href="#start" data-nav>Start</a></li>
@@ -330,9 +379,16 @@ footer {
 
     <!-- ── HERO ── -->
     <div class="hero" id="start">
+        <div class="hero-glow"></div>
+        <div class="hero-kicker">Meine Themenwelt</div>
         <h1>Technik. Ideen. L&ouml;sungen.</h1>
-        <h2>Bastian</h2>
         <div class="statement">Erfinder &middot; Bastler &middot; Ingenieur</div>
+
+        <div class="hero-chips">
+            <a href="#elektrofahrzeuge">Elektromobilit&auml;t</a>
+            <a href="#waermepumpen">Energie &amp; W&auml;rme</a>
+            <a href="elektroauto-kostenvergleich.html">Kostenrechner E-Auto</a>
+        </div>
 
         <div class="formula tl">E = mc&sup2;</div>
         <div class="formula br">P = U &middot; I</div>
@@ -349,8 +405,8 @@ footer {
         <div class="topic-title">Elektrofahrzeuge</div>
         <div class="topic-tagline">Hochvolt &middot; Leistungselektronik &middot; Rekuperation</div>
         <figure class="media">
-            <img src="img/bev_01.jpg" alt="Kombiinstrument eines Elektroautos mit Momentanverbrauch 19,1 kWh/100 km" loading="lazy">
-            <figcaption>Bordcomputer im Alltag &ndash; 19,1 kWh/100 km, Reichweite &amp; Ladezustand im Blick</figcaption>
+            <img src="img/bev_01.jpg" alt="Kombiinstrument eines Volkswagen ID.3 Pro mit Momentanverbrauch 19,1 kWh/100 km" loading="lazy">
+            <figcaption>Volkswagen ID.3 Pro (58&nbsp;kWh) auf Langstreckenfahrt &ndash; Bordcomputer mit 19,1&nbsp;kWh/100&nbsp;km</figcaption>
         </figure>
         <p class="topic-desc">
             Der reale Verbrauch entscheidet &uuml;ber Reichweite und Kosten. Hier geht es um
@@ -365,8 +421,8 @@ footer {
         <div class="topic-title">Laden &amp; Ladeinfrastruktur</div>
         <div class="topic-tagline">CCS &middot; HPC &middot; Ladekurve</div>
         <figure class="media">
-            <img src="img/PXL_20240322_222939640~2.jpg" alt="Display einer CCS-Schnellladesäule mit 125,9 kW Ladeleistung" loading="lazy">
-            <figcaption>CCS-HPC-Schnellladen &ndash; 125,9 kW Ladeleistung bei 13 % Ladestand</figcaption>
+            <img src="img/PXL_20240322_222939640~2.jpg" alt="Volkswagen ID.3 an einer CCS-Schnellladesäule mit 125,9 kW Ladeleistung" loading="lazy">
+            <figcaption>Volkswagen ID.3 am CCS-Schnelllader &ndash; 125,9&nbsp;kW Ladeleistung bei 13&nbsp;% Ladestand</figcaption>
         </figure>
         <p class="topic-desc">
             Von der heimischen Wallbox bis zur High-Power-Charging-S&auml;ule: Ladeleistung,
@@ -431,20 +487,14 @@ footer {
     <section id="thermografie" class="topic-section">
         <div class="topic-title">Thermografie</div>
         <div class="topic-tagline">W&auml;rmebild &middot; Emissionsgrad &middot; Diagnose</div>
-        <div class="media-row">
-            <figure class="media">
-                <img src="img/FLIR_20241201_032158_669.jpg" alt="Wärmebild einer Pfanne auf dem Herd bei 200,3 °C" loading="lazy">
-                <figcaption>Kochfeld &ndash; Spotmessung 200,3 &deg;C</figcaption>
-            </figure>
-            <figure class="media">
-                <img src="img/FLIR_20230604_055916_117.jpg" alt="Wärmebild von Heizungspumpen bei 35,4 °C" loading="lazy">
-                <figcaption>Heiztechnik &ndash; Vorlauf 35,4 &deg;C</figcaption>
-            </figure>
-        </div>
+        <figure class="media">
+            <img src="img/FLIR_20241201_032158_669.jpg" alt="Wärmebild einer Pfanne auf dem Kochfeld mit Spotmessung 200,3 °C" loading="lazy">
+            <figcaption>W&auml;rmebild eines Kochfelds &ndash; Spotmessung 200,3 &deg;C</figcaption>
+        </figure>
         <p class="topic-desc">
-            Ob Heiztechnik, Elektronik oder Alltag &ndash; die W&auml;rmebildkamera zeigt, wo
-            Energie flie&szlig;t und verloren geht. Ein Werkzeug, das quer durch alle Themen
-            hier hilft.
+            Die W&auml;rmebildkamera macht sichtbar, was das Auge nicht sieht: Temperaturen,
+            W&auml;rmebr&uuml;cken und Betriebszust&auml;nde. Ein Werkzeug, das mir quer durch viele
+            Themen hilft &ndash; vom Kochfeld bis zur Anlagendiagnose.
         </p>
         <div class="formula tr">P = &epsilon;&sigma;AT&#8308;</div>
     </section>
@@ -508,14 +558,8 @@ footer {
     </section>
 
 
-    <!-- ── IMPRESSUM ── -->
-    <!-- HINWEIS: Anschrift bitte ergänzen – Pflichtangabe nach § 5 DDG -->
-    <div class="impressum">
-        Impressum: Bastian Goericke &middot; [Stra&szlig;e, PLZ Ort] &middot;
-        <a href="mailto:etechniker@quantentunnel.de">etechniker@quantentunnel.de</a>
-    </div>
-
     <!-- ── FOOTER ── -->
+    <!-- HINWEIS: Impressum nach § 5 DDG (Name, Anschrift, Kontakt) noch ergänzen. -->
     <footer>
         &copy; 2026 Bastian
     </footer>

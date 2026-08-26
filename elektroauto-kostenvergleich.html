@@ -112,6 +112,10 @@
 }
 .slider input[type=range] { width: 100%; height: 4px; cursor: pointer; }
 .slider .s-hint { font-size: 11px; color: var(--c-faint); margin-top: 4px; }
+.sub-divider {
+    margin: 6px 0 16px; padding-top: 14px; border-top: 1px solid var(--c-line);
+    font-size: 11px; letter-spacing: 0.5px; color: var(--c-muted);
+}
 
 /* Zusatz-Kennzahlen */
 .extras { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 22px; }
@@ -155,8 +159,11 @@ table.months td:first-child { text-align: left; color: var(--c-muted); }
 <nav class="sidebar" id="sidebar" aria-label="Hauptnavigation">
     <div class="sidebar-inner">
         <a class="brand" href="index.html">
-            <span class="brand-title">Technik &middot; Ideen &middot; L&ouml;sungen</span>
-            <span class="brand-sub">Bastian</span>
+            <span class="brand-mark" aria-hidden="true">B</span>
+            <span class="brand-text">
+                <span class="brand-name">Bastian</span>
+                <span class="brand-role">Erfinder &middot; Ingenieur</span>
+            </span>
         </a>
         <ul class="nav-list">
             <li><a href="index.html#start">Start</a></li>
@@ -235,12 +242,12 @@ table.months td:first-child { text-align: left; color: var(--c-muted); }
                 </div>
                 <div class="slider">
                     <div class="slider-row"><span class="s-label">Verbrauch</span><span class="s-value" id="l100-v"></span></div>
-                    <input type="range" id="l100" min="4" max="16" step="0.1" value="8.5" style="accent-color:var(--c-benzin)">
+                    <input type="range" id="l100" min="4" max="16" step="0.1" value="6.5" style="accent-color:var(--c-benzin)">
                 </div>
             </div>
 
             <div class="ctrl-card">
-                <div class="ctrl-head" style="color:var(--c-strom)">Elektro (Vergleich)</div>
+                <div class="ctrl-head" style="color:var(--c-strom)">Elektro</div>
                 <div class="slider">
                     <div class="slider-row"><span class="s-label">Verbrauch</span><span class="s-value" id="kwh100-v"></span></div>
                     <input type="range" id="kwh100" min="12" max="28" step="0.5" value="18" style="accent-color:var(--c-strom)">
@@ -251,12 +258,23 @@ table.months td:first-child { text-align: left; color: var(--c-muted); }
                     <div class="s-hint" id="homeShare-h"></div>
                 </div>
                 <div class="slider">
-                    <div class="slider-row"><span class="s-label">Preis Heimladen</span><span class="s-value" id="homePrice-v"></span></div>
-                    <input type="range" id="homePrice" min="0.15" max="0.60" step="0.01" value="0.33" style="accent-color:var(--c-strom)">
-                </div>
-                <div class="slider">
                     <div class="slider-row"><span class="s-label">Preis unterwegs</span><span class="s-value" id="pubPrice-v"></span></div>
                     <input type="range" id="pubPrice" min="0.30" max="1.00" step="0.01" value="0.60" style="accent-color:var(--c-strom)">
+                </div>
+
+                <div class="sub-divider">Heimladen &ndash; Mix aus Photovoltaik &amp; Netz</div>
+                <div class="slider">
+                    <div class="slider-row"><span class="s-label">Anteil Photovoltaik</span><span class="s-value" id="pvShare-v"></span></div>
+                    <input type="range" id="pvShare" min="0" max="100" step="5" value="50" style="accent-color:var(--c-strom)">
+                    <div class="s-hint" id="pvShare-h"></div>
+                </div>
+                <div class="slider">
+                    <div class="slider-row"><span class="s-label">Preis Photovoltaik</span><span class="s-value" id="pvPrice-v"></span></div>
+                    <input type="range" id="pvPrice" min="0" max="0.20" step="0.005" value="0.075" style="accent-color:var(--c-strom)">
+                </div>
+                <div class="slider">
+                    <div class="slider-row"><span class="s-label">Preis Netzstrom</span><span class="s-value" id="gridPrice-v"></span></div>
+                    <input type="range" id="gridPrice" min="0.15" max="0.60" step="0.01" value="0.29" style="accent-color:var(--c-strom)">
                 </div>
             </div>
         </div>
@@ -324,18 +342,59 @@ const eur = (n, d=0) => n.toLocaleString("de-DE",
     { style:"currency", currency:"EUR", minimumFractionDigits:d, maximumFractionDigits:d });
 const num = (n, d=0) => n.toLocaleString("de-DE",
     { minimumFractionDigits:d, maximumFractionDigits:d });
+// Ladepreise in Cent/kWh anzeigen (Nutzer denkt in ct); intern in €/kWh gespeichert
+const fmtCt = v => { const c = Math.round(v*1000)/10; return num(c, Number.isInteger(c)?0:1) + " ct/kWh"; };
 
-// Zustand
-const S = {
-    kmTotal:100000, lPer100:8.5, kwhPer100:18,
-    homePrice:0.33, pubPrice:0.60, homeShare:80, view:"monat",
+// ── Zustand & lokale Speicherung ─────────────────────────────
+const STORAGE_KEY = "kv-einstellungen-v1";
+// Aktuelle Standardwerte
+const DEFAULTS = {
+    kmTotal:100000, lPer100:6.5, kwhPer100:18, homeShare:80,
+    pubPrice:0.60, pvShare:50, pvPrice:0.075, gridPrice:0.29,
 };
+// Gültige Reglergrenzen – gespeicherte Werte werden hierauf begrenzt
+const RANGES = {
+    kmTotal:[20000,200000], lPer100:[4,16], kwhPer100:[12,28], homeShare:[0,100],
+    pubPrice:[0.30,1.00], pvShare:[0,100], pvPrice:[0,0.20], gridPrice:[0.15,0.60],
+};
+const clamp = (v, [lo,hi]) => Math.min(hi, Math.max(lo, v));
+
+// Laden: Per-Key-Merge über die AKTUELLEN Defaults. So werden nach einem
+// Update des Rechners neue Felder auf Default gesetzt, entfernte Felder
+// ignoriert und schon gespeicherte Werte übernommen (auf gültigen Bereich
+// begrenzt). Damit wird nie mit unvollständigen Werten gerechnet.
+function loadState() {
+    const s = Object.assign({ view:"monat" }, DEFAULTS);
+    try {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+        if (saved && typeof saved === "object") {
+            for (const k in DEFAULTS) {
+                if (typeof saved[k] === "number" && isFinite(saved[k]))
+                    s[k] = clamp(saved[k], RANGES[k]);
+            }
+            if (["monat","kum","preis"].includes(saved.view)) s.view = saved.view;
+        }
+    } catch (e) { /* localStorage nicht verfügbar → Standardwerte */ }
+    return s;
+}
+function saveState() {
+    try {
+        const o = { view:S.view };
+        for (const k in DEFAULTS) o[k] = S[k];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(o));
+    } catch (e) { /* Speichern nicht möglich – ignorieren */ }
+}
+
+let S = loadState();
 
 // Berechnung (entspricht dem useMemo im Original)
 function calc() {
     const n = PRICES.length;
     const kmM = S.kmTotal / n;
-    const blend = (S.homeShare/100)*S.homePrice + (1 - S.homeShare/100)*S.pubPrice;
+    // Heimladen = Mischpreis aus Photovoltaik und Netzstrom
+    const homeBlend = (S.pvShare/100)*S.pvPrice + (1 - S.pvShare/100)*S.gridPrice;
+    // Gesamter Ø-Ladepreis = Heimladen-Anteil + unterwegs
+    const blend = (S.homeShare/100)*homeBlend + (1 - S.homeShare/100)*S.pubPrice;
     const evM = (kmM/100) * S.kwhPer100 * blend;
     let cumB = 0, cumE = 0;
     const rows = PRICES.map(([label, price]) => {
@@ -518,7 +577,7 @@ function renderReadouts() {
     set("ro-benzin-v", eur(c.totB));
     set("ro-benzin-s", `${eur(c.totB/years)} / Jahr`);
     set("ro-eauto-v", eur(c.totE));
-    set("ro-eauto-s", `Ø ${eur(c.blend,2)}/kWh geblendet`);
+    set("ro-eauto-s", `Ø-Ladepreis ${eur(c.blend,2)}/kWh`);
     set("ro-spar-v", eur(c.spar));
     document.getElementById("ro-spar-v").style.color = c.spar >= 0 ? C.spar : C.warn;
     set("ro-spar-s", `${num(c.sparPct,0)} % · ${eur(c.spar/years)}/Jahr`);
@@ -556,8 +615,11 @@ function renderSliders() {
     set("kwh100-v", num(S.kwhPer100,1) + " kWh/100 km");
     set("homeShare-v", num(S.homeShare) + " %");
     set("homeShare-h", num(100 - S.homeShare) + " % unterwegs");
-    set("homePrice-v", eur(S.homePrice,2) + "/kWh");
-    set("pubPrice-v", eur(S.pubPrice,2) + "/kWh");
+    set("pubPrice-v", fmtCt(S.pubPrice));
+    set("pvShare-v", num(S.pvShare) + " %");
+    set("pvShare-h", num(100 - S.pvShare) + " % aus dem Netz");
+    set("pvPrice-v", fmtCt(S.pvPrice));
+    set("gridPrice-v", fmtCt(S.gridPrice));
 }
 
 function set(id, txt) { document.getElementById(id).textContent = txt; }
@@ -567,11 +629,24 @@ function renderAll() { renderReadouts(); renderSliders(); renderChart(); }
 // ── Verdrahtung ──────────────────────────────────────────────
 const bind = [
     ["km","kmTotal"],["l100","lPer100"],["kwh100","kwhPer100"],
-    ["homeShare","homeShare"],["homePrice","homePrice"],["pubPrice","pubPrice"],
+    ["homeShare","homeShare"],["pubPrice","pubPrice"],
+    ["pvShare","pvShare"],["pvPrice","pvPrice"],["gridPrice","gridPrice"],
 ];
+
+// Gespeicherten/Default-Zustand auf die Regler und den aktiven Tab anwenden
+function applyStateToInputs() {
+    bind.forEach(([id, key]) => {
+        const el = document.getElementById(id);
+        if (el) el.value = S[key];
+    });
+    document.querySelectorAll(".tab").forEach(b =>
+        b.classList.toggle("active", b.dataset.view === S.view));
+}
+
 bind.forEach(([id, key]) => {
     document.getElementById(id).addEventListener("input", e => {
         S[key] = parseFloat(e.target.value);
+        saveState();
         renderAll();
     });
 });
@@ -579,6 +654,7 @@ document.querySelectorAll(".tab").forEach(btn => {
     btn.addEventListener("click", () => {
         S.view = btn.dataset.view;
         document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b === btn));
+        saveState();
         renderChart();
     });
 });
@@ -597,6 +673,7 @@ document.querySelectorAll(".sidebar a").forEach(a => a.addEventListener("click",
 // Beim Skalieren neu zeichnen (Tooltip-Maße hängen an der Breite)
 window.addEventListener("resize", () => renderChart());
 
+applyStateToInputs();   // gespeicherte Werte auf die Regler übertragen
 renderAll();
 </script>
 

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="220" viewBox="0 0 220 220">
+  <!-- Leiterbahnen; durchgehende Bahnen (y=34, x=58) sorgen für nahtloses Kacheln -->
+  <g fill="none" stroke="#7fc0ff" stroke-opacity="0.55" stroke-width="1.3"
+     stroke-linecap="round" stroke-linejoin="round">
+    <path d="M0 34 H220"/>
+    <path d="M58 0 V220"/>
+    <path d="M58 120 H150 V78"/>
+    <path d="M0 168 H96 V220"/>
+    <path d="M150 0 V52 H220"/>
+    <path d="M120 34 V70"/>
+    <!-- Widerstand (Zickzack) -->
+    <path d="M150 120 H168 l4 -8 8 16 8 -16 8 16 4 -8 H200"/>
+    <!-- Kondensator (zwei Platten auf der Bahn y=168) -->
+    <path d="M34 158 V178 M46 158 V178"/>
+    <!-- IC mit Pins -->
+    <rect x="150" y="150" width="46" height="30" rx="3"/>
+    <path d="M150 158 h-8 M150 172 h-8 M196 158 h8 M196 172 h8"/>
+  </g>
+  <!-- Lötpunkte -->
+  <g fill="#7fc0ff" fill-opacity="0.6">
+    <circle cx="58" cy="34" r="3"/>
+    <circle cx="58" cy="120" r="3"/>
+    <circle cx="150" cy="120" r="3"/>
+    <circle cx="150" cy="52" r="3"/>
+    <circle cx="120" cy="34" r="3"/>
+    <circle cx="96" cy="168" r="3"/>
+  </g>
+</svg>

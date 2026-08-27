@@ -61,10 +61,26 @@ body {
 }
 :target { scroll-margin-top: 24px; }
 
+/* ── Technischer Hintergrund (diffuse Leiterplatte) ────────── */
+.tech-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("../img/circuit.svg");
+    background-size: 300px 300px;
+    opacity: 0.07;
+    /* zur Mitte hin ruhiger, an den Rändern etwas präsenter */
+    -webkit-mask-image: radial-gradient(ellipse at 62% 32%, #000 0%, rgba(0,0,0,0.45) 55%, #000 100%);
+            mask-image: radial-gradient(ellipse at 62% 32%, #000 0%, rgba(0,0,0,0.45) 55%, #000 100%);
+}
+
 /* ── Layout: Inhalt neben der Sidebar ──────────────────────── */
 .page {
     margin-left: var(--sidebar-w);
     min-height: 100vh;
+    position: relative;
+    z-index: 1;
 }
 
 /* ── Navigations-Sidebar ───────────────────────────────────── */

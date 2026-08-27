@@ -43,37 +43,7 @@
     pointer-events: none;
     z-index: 0;
 }
-.hero > *:not(.hero-glow):not(.hero-circuit) { position: relative; z-index: 1; }
-
-/* Animierter Schaltplan im Hero (Signalpulse auf Leiterbahnen) */
-.hero-circuit {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    overflow: visible;
-}
-.hero-circuit .trace { fill: none; stroke: #1c2732; stroke-width: 1.6; }
-.hero-circuit .node  { fill: #24313d; }
-.hero-circuit .pulse {
-    fill: none;
-    stroke: var(--accent);
-    stroke-width: 2.4;
-    stroke-linecap: round;
-    stroke-dasharray: 46 3000;
-    filter: drop-shadow(0 0 6px rgba(74, 158, 255, 0.85));
-    animation: flow 5s linear infinite;
-}
-.hero-circuit .p2 { animation-duration: 6.5s; animation-delay: -2s; }
-.hero-circuit .p3 { animation-duration: 5.8s; animation-delay: -3.5s; }
-.hero-circuit .p4 { animation-duration: 7s;   animation-delay: -1s; }
-@keyframes flow { to { stroke-dashoffset: -3046; } }
-
-@media (prefers-reduced-motion: reduce) {
-    .hero-circuit .pulse { animation: none; opacity: 0; }
-}
+.hero > *:not(.hero-glow) { position: relative; z-index: 1; }
 .hero-kicker {
     font-size: 12px;
     letter-spacing: 4px;
@@ -434,26 +404,6 @@ footer {
     <div class="hero" id="start">
         <div class="hero-glow"></div>
 
-        <!-- Animierter Schaltplan: Signalpulse wandern über die Leiterbahnen -->
-        <svg class="hero-circuit" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-            <path class="trace" d="M-40 150 H320 V330 H560"/>
-            <path class="trace" d="M1240 210 H900 V440 H640"/>
-            <path class="trace" d="M180 740 V520 H470 V360"/>
-            <path class="trace" d="M1040 740 V500 H770 V300 H600"/>
-            <g class="node">
-                <circle cx="320" cy="150" r="4.5"/><circle cx="320" cy="330" r="4.5"/>
-                <circle cx="900" cy="210" r="4.5"/><circle cx="900" cy="440" r="4.5"/>
-                <circle cx="180" cy="520" r="4.5"/><circle cx="470" cy="520" r="4.5"/>
-                <circle cx="470" cy="360" r="4.5"/><circle cx="770" cy="500" r="4.5"/>
-                <circle cx="770" cy="300" r="4.5"/>
-            </g>
-            <path class="pulse p1" d="M-40 150 H320 V330 H560"/>
-            <path class="pulse p2" d="M1240 210 H900 V440 H640"/>
-            <path class="pulse p3" d="M180 740 V520 H470 V360"/>
-            <path class="pulse p4" d="M1040 740 V500 H770 V300 H600"/>
-        </svg>
-
-        <div class="hero-kicker">Meine Themenwelt</div>
         <h1>Technik. Ideen. L&ouml;sungen.</h1>
         <div class="statement">Erfinder &middot; Bastler &middot; Ingenieur</div>
 

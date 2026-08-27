@@ -75,6 +75,37 @@ body {
             mask-image: radial-gradient(ellipse at 62% 32%, #000 0%, rgba(0,0,0,0.45) 55%, #000 100%);
 }
 
+/* ── Animierte Signalpulse (global, über die ganze Seite) ──── */
+/* Die SVG-Ebene wird von js/app.js eingefügt und liegt – wie .tech-bg –
+   fixiert hinter dem Inhalt, sodass die Pulse auf jeder Seite und in jeder
+   Scroll-Position dezent sichtbar sind. */
+.tech-pulses {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+}
+.tech-pulses .trace { fill: none; stroke: #131b23; stroke-width: 1.2; }
+.tech-pulses .pulse {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    opacity: 0.45;
+    stroke-dasharray: 30 3000;
+    filter: drop-shadow(0 0 4px rgba(74, 158, 255, 0.45));
+    animation: flow 13s linear infinite;
+}
+.tech-pulses .p2 { animation-duration: 17s; animation-delay: -6s; }
+.tech-pulses .p3 { animation-duration: 15s; animation-delay: -10s; }
+.tech-pulses .p4 { animation-duration: 19s; animation-delay: -3s; }
+@keyframes flow { to { stroke-dashoffset: -3030; } }
+@media (prefers-reduced-motion: reduce) {
+    .tech-pulses .pulse { animation: none; opacity: 0; }
+}
+
 /* ── Layout: Inhalt neben der Sidebar ──────────────────────── */
 .page {
     margin-left: var(--sidebar-w);

@@ -9,6 +9,47 @@
     var APP_VERSION = "2026.08.26";
     var $ = function (id) { return document.getElementById(id); };
 
+    /* ── Immer oben starten (keine Wiederherstellung alter Scrollposition) ──
+       Ausnahme: ein echter Anker (#abschnitt) in der URL wird respektiert. */
+    if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+    if (!location.hash) {
+        window.scrollTo(0, 0);
+    } else {
+        // Anker nach dem Laden der (lazy) Bilder erneut anspringen, damit
+        // durch nachträgliche Layout-Verschiebungen die Position stimmt.
+        window.addEventListener("load", function () {
+            try {
+                var el = document.querySelector(location.hash);
+                if (el) el.scrollIntoView();
+            } catch (e) { /* ungültiger Selektor – ignorieren */ }
+        });
+    }
+
+    /* ── Globale Signalpulse hinter dem Inhalt einfügen ────── */
+    (function injectPulses() {
+        var NS = "http://www.w3.org/2000/svg";
+        var traces = [
+            "M-60 180 H360 V520 H760 V960",
+            "M1260 120 H820 V380 H520",
+            "M120 960 V620 H430 V300 H780",
+            "M1260 680 H980 V430"
+        ];
+        var svg = document.createElementNS(NS, "svg");
+        svg.setAttribute("class", "tech-pulses");
+        svg.setAttribute("viewBox", "0 0 1200 900");
+        svg.setAttribute("preserveAspectRatio", "xMidYMid slice");
+        svg.setAttribute("aria-hidden", "true");
+        function path(cls, d) {
+            var p = document.createElementNS(NS, "path");
+            p.setAttribute("class", cls);
+            p.setAttribute("d", d);
+            svg.appendChild(p);
+        }
+        traces.forEach(function (d) { path("trace", d); });
+        traces.forEach(function (d, i) { path("pulse p" + (i + 1), d); });
+        document.body.insertBefore(svg, document.body.firstChild);
+    })();
+
     /* ── Mobiles Navigationsmenü ───────────────────────────── */
     var toggle   = document.querySelector(".nav-toggle");
     var backdrop = document.querySelector(".nav-backdrop");

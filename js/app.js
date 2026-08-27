@@ -80,7 +80,7 @@
                     l.classList.toggle("active", l.getAttribute("href") === "#" + id);
                 });
             });
-        }, { rootMargin: "-45% 0px -50% 0px" });
+        }, { rootMargin: "-40% 0px -40% 0px" });
         document.querySelectorAll(".page [id]").forEach(function (el) { spy.observe(el); });
     }
 

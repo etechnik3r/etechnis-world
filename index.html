@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Technik. Ideen. Lösungen.</title>
+<title>etechnik3rs Welt</title>
 <meta name="description" content="etechnik3rs Welt – Themenwelt rund um Elektromobilität, Energie & Wärme, Modellflug, Elektronik und eigene Patente.">
 <meta name="theme-color" content="#0a0e13">
 <link rel="manifest" href="manifest.webmanifest">
@@ -267,6 +267,59 @@ figure.media figcaption {
 }
 .patent-card:hover .patent-label { color: var(--accent); }
 
+/* Themen-Überblick (Kachelraster) */
+.overview {
+    min-height: auto;
+    padding: 90px 30px 70px;
+}
+.overview-head { margin-bottom: 34px; }
+.topic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 920px;
+}
+.topic-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    text-align: left;
+    padding: 22px 20px;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.015);
+    text-decoration: none;
+    transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+.topic-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    background: rgba(74, 158, 255, 0.06);
+    box-shadow: 0 12px 30px rgba(74, 158, 255, 0.12);
+}
+.topic-card .ic {
+    width: 30px; height: 30px;
+    color: var(--accent);
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+.topic-card .tc-name { color: #f0f0f0; font-weight: 600; font-size: 16px; }
+.topic-card .tc-tag { color: var(--muted); font-size: 13px; line-height: 1.45; }
+
+/* Kontakt-Sektion */
+button.topic-link { background: transparent; font-family: inherit; cursor: pointer; }
+.contact-note {
+    margin-top: 18px;
+    font-size: 13px;
+    color: var(--faint);
+    min-height: 1.2em;
+}
+
 /* Formeln im Hintergrund */
 .formula {
     position: absolute;
@@ -357,6 +410,7 @@ footer {
         </a>
         <ul class="nav-list">
             <li><a href="#start" data-nav>Start</a></li>
+            <li><a href="#themen" data-nav>Themen im &Uuml;berblick</a></li>
 
             <li class="nav-group">Elektromobilit&auml;t</li>
             <li><a href="#elektrofahrzeuge" data-nav>Elektrofahrzeuge</a></li>
@@ -369,10 +423,20 @@ footer {
             <li><a href="#photovoltaik" data-nav>Photovoltaik &amp; Speicher</a></li>
             <li><a href="#thermografie" data-nav>Thermografie</a></li>
 
-            <li class="nav-group">Weitere Themen</li>
+            <li class="nav-group">Smart Home &amp; Automation</li>
+            <li><a href="#homeassistant" data-nav>Home Assistant</a></li>
+            <li><a href="#homematic" data-nav>Homematic</a></li>
+
+            <li class="nav-group">Werkstatt &amp; Making</li>
+            <li><a href="#3ddruck" data-nav>3D-Druck</a></li>
             <li><a href="#drohnen" data-nav>Modellflug &amp; Drohnen</a></li>
             <li><a href="#elektronik" data-nav>Elektronik &amp; Embedded</a></li>
+
+            <li class="nav-group">Erfindungen</li>
             <li><a href="#erfindungen" data-nav>Erfindungen &amp; Patente</a></li>
+
+            <li class="nav-group">Kontakt</li>
+            <li><a href="#kontakt" data-nav>Kontakt</a></li>
         </ul>
 
         <!-- Fußbereich: Einstellungen / App installieren -->
@@ -404,7 +468,7 @@ footer {
     <div class="hero" id="start">
         <div class="hero-glow"></div>
 
-        <h1>Technik. Ideen. L&ouml;sungen.</h1>
+        <h1>E-Technik-Welt</h1>
         <div class="statement">Erfinder &middot; Bastler &middot; Ingenieur</div>
 
         <div class="hero-chips">
@@ -421,6 +485,48 @@ footer {
             <span class="arrow">&#8595;</span>
         </div>
     </div>
+
+
+    <!-- ── ICON-SPRITE (einmalig, versteckt) ── -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+        <symbol id="i-car" viewBox="0 0 24 24"><path d="M5 11l1.5-4.5A2 2 0 0 1 8.4 5h7.2a2 2 0 0 1 1.9 1.5L19 11"/><path d="M3 11h18v6H3z"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="16.5" cy="17.5" r="1.5"/></symbol>
+        <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2 5 13h6l-1 9 9-12h-6z"/></symbol>
+        <symbol id="i-battery" viewBox="0 0 24 24"><rect x="3" y="8" width="15" height="9" rx="1.5"/><path d="M21 11v3"/><path d="M7 12.5h5"/></symbol>
+        <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20v-6"/><path d="M12 20V8"/><path d="M17 20v-9"/></symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/></symbol>
+        <symbol id="i-heat" viewBox="0 0 24 24"><path d="M14 14.5V5a2 2 0 0 0-4 0v9.5a4 4 0 1 0 4 0z"/><path d="M12 13.5V9"/></symbol>
+        <symbol id="i-waves" viewBox="0 0 24 24"><path d="M3 8c3 0 3 2.5 6 2.5S12 8 15 8s3 2.5 6 2.5"/><path d="M3 14c3 0 3 2.5 6 2.5S12 14 15 14s3 2.5 6 2.5"/></symbol>
+        <symbol id="i-house" viewBox="0 0 24 24"><path d="M4 11 12 5l8 6"/><path d="M6 10v9h12v-9"/></symbol>
+        <symbol id="i-house-signal" viewBox="0 0 24 24"><path d="M4 12 12 6l8 6"/><path d="M6.5 11v8h11v-8"/><circle cx="12" cy="15.5" r="1.1" fill="currentColor" stroke="none"/><path d="M9.7 14a3.2 3.2 0 0 1 4.6 0"/></symbol>
+        <symbol id="i-cube" viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21 4 16.5v-9z"/><path d="M4 7.5 12 12l8-4.5"/><path d="M12 12v9"/></symbol>
+        <symbol id="i-drone" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2.4"/><circle cx="18" cy="6" r="2.4"/><circle cx="6" cy="18" r="2.4"/><circle cx="18" cy="18" r="2.4"/><rect x="9.5" y="9.5" width="5" height="5" rx="1"/><path d="M8 8l2 2M16 8l-2 2M8 16l2-2M16 16l-2-2"/></symbol>
+        <symbol id="i-chip" viewBox="0 0 24 24"><rect x="7" y="7" width="10" height="10" rx="1.5"/><path d="M10 4v3M14 4v3M10 17v3M14 17v3M4 10h3M4 14h3M17 10h3M17 14h3"/></symbol>
+        <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 21h4"/><path d="M12 3a6 6 0 0 0-3.8 10.7c.8.7 1.3 1.6 1.3 2.3h5c0-.7.5-1.6 1.3-2.3A6 6 0 0 0 12 3z"/></symbol>
+    </svg>
+
+
+    <!-- ── THEMEN IM ÜBERBLICK ── -->
+    <section id="themen" class="overview">
+        <div class="overview-head">
+            <div class="topic-title">Themen im &Uuml;berblick</div>
+            <div class="topic-tagline">Ein Streifzug durch meine Welt</div>
+        </div>
+        <div class="topic-grid">
+            <a class="topic-card" href="#elektrofahrzeuge"><svg class="ic"><use href="#i-car"/></svg><span class="tc-name">Elektrofahrzeuge</span><span class="tc-tag">Hochvolt, Verbrauch &amp; Rekuperation</span></a>
+            <a class="topic-card" href="#laden"><svg class="ic"><use href="#i-bolt"/></svg><span class="tc-name">Laden &amp; Ladeinfrastruktur</span><span class="tc-tag">CCS, HPC &amp; Ladekurven</span></a>
+            <a class="topic-card" href="#batterie"><svg class="ic"><use href="#i-battery"/></svg><span class="tc-name">Batteriediagnose</span><span class="tc-tag">SoC, Zelltemperatur &amp; BMS</span></a>
+            <a class="topic-card" href="elektroauto-kostenvergleich.html"><svg class="ic"><use href="#i-chart"/></svg><span class="tc-name">Kostenvergleich E-Auto</span><span class="tc-tag">Interaktiver Rechner</span></a>
+            <a class="topic-card" href="#waermepumpen"><svg class="ic"><use href="#i-heat"/></svg><span class="tc-name">W&auml;rmepumpen</span><span class="tc-tag">Arbeitszahl &amp; Effizienz</span></a>
+            <a class="topic-card" href="#photovoltaik"><svg class="ic"><use href="#i-sun"/></svg><span class="tc-name">Photovoltaik &amp; Speicher</span><span class="tc-tag">Ertrag, Eigenverbrauch, Autarkie</span></a>
+            <a class="topic-card" href="#thermografie"><svg class="ic"><use href="#i-waves"/></svg><span class="tc-name">Thermografie</span><span class="tc-tag">W&auml;rmebild &amp; Diagnose</span></a>
+            <a class="topic-card" href="#homeassistant"><svg class="ic"><use href="#i-house"/></svg><span class="tc-name">Home Assistant</span><span class="tc-tag">Smart Home &amp; Automation</span></a>
+            <a class="topic-card" href="#homematic"><svg class="ic"><use href="#i-house-signal"/></svg><span class="tc-name">Homematic</span><span class="tc-tag">Sensorik &amp; Aktorik</span></a>
+            <a class="topic-card" href="#3ddruck"><svg class="ic"><use href="#i-cube"/></svg><span class="tc-name">3D-Druck</span><span class="tc-tag">Konstruktion &amp; Fertigung</span></a>
+            <a class="topic-card" href="#drohnen"><svg class="ic"><use href="#i-drone"/></svg><span class="tc-name">Modellflug &amp; Drohnen</span><span class="tc-tag">Aerodynamik &amp; Eigenbau</span></a>
+            <a class="topic-card" href="#elektronik"><svg class="ic"><use href="#i-chip"/></svg><span class="tc-name">Elektronik &amp; Embedded</span><span class="tc-tag">Mikrocontroller &amp; Steuerger&auml;te</span></a>
+            <a class="topic-card" href="#erfindungen"><svg class="ic"><use href="#i-bulb"/></svg><span class="tc-name">Erfindungen &amp; Patente</span><span class="tc-tag">Aus Ideen werden Schutzrechte</span></a>
+        </div>
+    </section>
 
 
     <!-- ── ELEKTROFAHRZEUGE ── -->
@@ -537,6 +643,56 @@ footer {
     </section>
 
 
+    <!-- ── HOME ASSISTANT ── -->
+    <section id="homeassistant" class="topic-section">
+        <div class="topic-title">Home Assistant</div>
+        <div class="topic-tagline">Smart Home &middot; Automationen &middot; Dashboards</div>
+        <div class="img-placeholder">
+            <span class="icon">&#127968;</span>
+            <span>Bild folgt</span>
+        </div>
+        <p class="topic-desc">
+            Die Schaltzentrale im Haus: Home Assistant f&uuml;hrt Photovoltaik, Wallbox,
+            W&auml;rmepumpe und Sensorik zusammen &ndash; mit eigenen Automationen und
+            Energie-Dashboards. Hier wird sichtbar, wie die Themen ineinandergreifen.
+        </p>
+        <div class="formula br">wenn &rarr; dann</div>
+    </section>
+
+
+    <!-- ── HOMEMATIC ── -->
+    <section id="homematic" class="topic-section">
+        <div class="topic-title">Homematic</div>
+        <div class="topic-tagline">Sensorik &middot; Aktorik &middot; Funk</div>
+        <div class="img-placeholder">
+            <span class="icon">&#128225;</span>
+            <span>Bild folgt</span>
+        </div>
+        <p class="topic-desc">
+            Temperatur, T&uuml;r- und Fensterkontakte, Heizungssteuerung: Homematic liefert
+            die Sensoren und Aktoren im Hintergrund &ndash; eingebunden und ausgewertet in
+            Home Assistant.
+        </p>
+        <div class="formula tl">RSSI &middot; 868 MHz</div>
+    </section>
+
+
+    <!-- ── 3D-DRUCK ── -->
+    <section id="3ddruck" class="topic-section">
+        <div class="topic-title">3D-Druck</div>
+        <div class="topic-tagline">Konstruktion &middot; Slicing &middot; Fertigung</div>
+        <div class="img-placeholder">
+            <span class="icon">&#128736;</span>
+            <span>Bild folgt</span>
+        </div>
+        <p class="topic-desc">
+            Vom CAD-Modell zum fertigen Teil: Halterungen, Geh&auml;use und Prototypen f&uuml;r
+            die eigenen Projekte &ndash; passgenau konstruiert, gesliced und gedruckt.
+        </p>
+        <div class="formula br">&Delta;z = 0,2 mm</div>
+    </section>
+
+
     <!-- ── MODELLFLUG & DROHNEN ── -->
     <section id="drohnen" class="topic-section">
         <div class="topic-title">Modellflug &amp; Drohnen</div>
@@ -595,6 +751,22 @@ footer {
     </section>
 
 
+    <!-- ── KONTAKT ── -->
+    <section id="kontakt" class="topic-section">
+        <div class="topic-title">Kontakt</div>
+        <div class="topic-tagline">Fragen &middot; Austausch &middot; Ideen</div>
+        <p class="topic-desc">
+            Interesse an einem Thema, eine Frage oder einfach Lust auf Austausch?
+            Eine direkte Kontaktm&ouml;glichkeit folgt hier in K&uuml;rze.
+        </p>
+        <button class="topic-link" id="contactBtn" type="button" aria-describedby="contactNote">
+            Kontakt aufnehmen
+        </button>
+        <div class="contact-note" id="contactNote" role="status"></div>
+        <div class="formula br">&int; Idee d&tau;</div>
+    </section>
+
+
     <!-- ── FOOTER ── -->
     <!-- HINWEIS: Impressum nach § 5 DDG (Name, Anschrift, Kontakt) noch ergänzen. -->
     <footer>
@@ -615,6 +787,15 @@ const observer = new IntersectionObserver((entries) => {
     });
 }, { threshold: 0.12 });
 document.querySelectorAll('section, .hero').forEach(el => observer.observe(el));
+
+// Kontakt-Button: Mail-Adresse folgt noch – vorerst nur ein Hinweis
+const contactBtn = document.getElementById('contactBtn');
+const contactNote = document.getElementById('contactNote');
+if (contactBtn) {
+    contactBtn.addEventListener('click', () => {
+        contactNote.textContent = 'Die direkte Kontaktmöglichkeit wird gerade eingerichtet – bitte bald wiederkommen.';
+    });
+}
 </script>
 
 </body>

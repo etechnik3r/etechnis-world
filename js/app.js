@@ -15,13 +15,34 @@
     if (!location.hash) {
         window.scrollTo(0, 0);
     } else {
-        // Anker nach dem Laden der (lazy) Bilder erneut anspringen, damit
-        // durch nachträgliche Layout-Verschiebungen die Position stimmt.
+        // Anker sofort (ohne lange Smooth-Animation) anspringen und nach
+        // spätem Layout (Bilder) noch einmal exakt nachjustieren.
         window.addEventListener("load", function () {
-            try {
-                var el = document.querySelector(location.hash);
-                if (el) el.scrollIntoView();
-            } catch (e) { /* ungültiger Selektor – ignorieren */ }
+            var el;
+            try { el = document.querySelector(location.hash); }
+            catch (e) { return; }
+            if (!el) return;
+            var html = document.documentElement;
+            var stop = false;
+            function jump() {
+                if (stop) return;
+                var prev = html.style.scrollBehavior;
+                html.style.scrollBehavior = "auto";
+                el.scrollIntoView();
+                html.style.scrollBehavior = prev;
+            }
+            jump();
+            // Nachladende Bilder verschieben das Layout – kurz nachjustieren,
+            // aber sofort aufhören, sobald der Nutzer selbst scrollt.
+            function halt() { stop = true; }
+            window.addEventListener("wheel", halt, { once: true, passive: true });
+            window.addEventListener("touchstart", halt, { once: true, passive: true });
+            window.addEventListener("keydown", halt, { once: true });
+            var imgs = document.images;
+            for (var i = 0; i < imgs.length; i++) {
+                if (!imgs[i].complete) imgs[i].addEventListener("load", jump, { once: true });
+            }
+            setTimeout(function () { stop = true; }, 2500);
         });
     }
 

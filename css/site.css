@@ -123,35 +123,40 @@ body {
     background: linear-gradient(180deg, var(--nav-bg) 0%, var(--nav-bg2) 100%);
     border-right: 1px solid var(--line);
     z-index: 100;
+    overflow-y: auto;                 /* schlank halten, notfalls scrollen */
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
     transition: transform 0.3s ease;
 }
+.sidebar::-webkit-scrollbar { width: 8px; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--line); border-radius: 8px; }
 .sidebar-inner {
     display: flex;
     flex-direction: column;
     min-height: 100%;
-    padding: 26px 16px 16px;
+    padding: 18px 14px 12px;
 }
 
 /* Marke / Kopf – reine Wortmarke, ohne Kästchen */
 .brand {
     display: block;
     text-decoration: none;
-    padding: 2px 8px 20px;
-    margin-bottom: 12px;
+    padding: 0 8px 14px;
+    margin-bottom: 8px;
     border-bottom: 1px solid var(--line);
 }
 .brand-name {
     display: block;
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 800;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
     color: #f4f8fc;
 }
 .brand-role {
     display: block;
-    margin-top: 3px;
-    font-size: 11px;
-    letter-spacing: 2px;
+    margin-top: 2px;
+    font-size: 10px;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
     color: var(--muted);
 }
@@ -161,28 +166,29 @@ body {
 .nav-group {
     display: flex;
     align-items: center;
-    gap: 9px;
-    margin: 22px 10px 8px;
-    font-size: 12px;
+    gap: 8px;
+    margin: 13px 10px 3px;
+    font-size: 10.5px;
     font-weight: 700;
-    letter-spacing: 1.3px;
+    letter-spacing: 1.2px;
     text-transform: uppercase;
     color: #cfdae2;
 }
+.nav-group:first-of-type { margin-top: 6px; }
 .nav-group::before {
     content: "";
-    width: 16px; height: 2px;
+    width: 14px; height: 2px;
     border-radius: 2px;
     background: var(--accent);
     flex: 0 0 auto;
 }
 .nav-list a {
     display: block;
-    padding: 9px 12px;
+    padding: 5px 12px;
     border-radius: var(--r-sm);
     color: var(--muted);
     text-decoration: none;
-    font-size: 15px;
+    font-size: 13.5px;
     border-left: 2px solid transparent;
     transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
@@ -196,7 +202,7 @@ body {
 /* ── Sidebar-Fußbereich: Zahnrad / Einstellungen ───────────── */
 .sidebar-foot {
     margin-top: auto;
-    padding-top: 14px;
+    padding-top: 10px;
     border-top: 1px solid var(--line);
     position: relative;
 }
@@ -205,7 +211,7 @@ body {
     align-items: center;
     gap: 8px;
     width: 100%;
-    padding: 9px 12px;
+    padding: 7px 12px;
     border: 1px solid transparent;
     border-radius: var(--r-sm);
     background: transparent;

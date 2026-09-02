@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kostenvergleich E-Auto vs. Verbrenner</title>
-<meta name="description" content="Interaktiver Kostenvergleich: Was hätte das Benzin gekostet – und was ein E-Auto? Mit echten Super-E10-Monatspreisen und einstellbaren Ladekosten.">
+<title>Kostenvergleich: Verbrenner vs. Elektroauto</title>
+<meta name="description" content="Interaktiver Kostenvergleich Verbrenner vs. Elektroauto: einstellbarer Betrachtungszeitraum, echte Super-E10-Monatspreise und frei wählbare Ladekosten.">
 <meta name="theme-color" content="#0a0e13">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -35,7 +35,7 @@
             <li><a href="index.html#elektrofahrzeuge">Elektrofahrzeuge</a></li>
             <li><a href="index.html#laden">Laden &amp; Ladeinfrastruktur</a></li>
             <li><a href="index.html#batterie">Batteriediagnose</a></li>
-            <li><a class="active" href="index.html#kostenrechner">Kostenvergleich E-Auto</a></li>
+            <li><a class="active" href="index.html#kostenrechner">Kostenvergleich Elektroauto</a></li>
 
             <li class="nav-group">Energie &amp; W&auml;rme</li>
             <li><a href="index.html#waermepumpen">W&auml;rmepumpen</a></li>
@@ -86,9 +86,9 @@
         <a class="backlink" href="index.html#kostenrechner">&#8592; Zur&uuml;ck zur &Uuml;bersicht</a>
 
         <!-- Kopf -->
-        <div class="tool-kicker">Kostenanalyse &middot; Verbrenner vs. Elektro</div>
-        <h1 class="tool-title">Was hat mich das Benzin gekostet?</h1>
-        <div class="tool-sub" id="subtitle"></div>
+        <div class="tool-kicker">Kostenanalyse &middot; Elektromobilit&auml;t</div>
+        <h1 class="tool-title">Kostenvergleich: Verbrenner vs. Elektroauto</h1>
+        <div class="tool-sub" id="subtitle">Alle Parameter &ndash; Zeitraum, Fahrleistung, Verbrauch und Strompreise &ndash; stellst du weiter unten selbst ein.</div>
 
         <!-- Kennzahlen -->
         <div class="readouts">
@@ -98,12 +98,12 @@
                 <div class="r-sub" id="ro-benzin-s"></div>
             </div>
             <div class="readout">
-                <div class="r-label">E-Auto gesamt</div>
+                <div class="r-label">Elektroauto gesamt</div>
                 <div class="r-value" id="ro-eauto-v" style="color:var(--series-a)"></div>
                 <div class="r-sub" id="ro-eauto-s"></div>
             </div>
             <div class="readout">
-                <div class="r-label">Ersparnis E-Auto</div>
+                <div class="r-label">Ersparnis Elektroauto</div>
                 <div class="r-value" id="ro-spar-v"></div>
                 <div class="r-sub" id="ro-spar-s"></div>
             </div>
@@ -125,6 +125,21 @@
 
         <!-- Regler -->
         <div class="controls">
+            <div class="ctrl-card period-card">
+                <div class="ctrl-head">Betrachtungszeitraum</div>
+                <div class="period-grid">
+                    <label class="period-field">
+                        <span class="s-label">Von</span>
+                        <select id="fromSel" class="period-sel" aria-label="Zeitraum von"></select>
+                    </label>
+                    <label class="period-field">
+                        <span class="s-label">Bis</span>
+                        <select id="toSel" class="period-sel" aria-label="Zeitraum bis"></select>
+                    </label>
+                </div>
+                <div class="s-hint" id="period-h"></div>
+            </div>
+
             <div class="ctrl-card">
                 <div class="ctrl-head" style="color:var(--series-b)">Verbrenner</div>
                 <div class="slider">
@@ -182,7 +197,7 @@
                     <thead>
                         <tr>
                             <th>Monat</th><th>E10 &euro;/L</th><th>km</th><th>Liter</th>
-                            <th>Benzin</th><th>E-Auto</th><th>&Delta;</th>
+                            <th>Benzin</th><th>Elektroauto</th><th>&Delta;</th>
                         </tr>
                     </thead>
                     <tbody id="tbody"></tbody>
@@ -194,7 +209,7 @@
             Benzin: monatliche Super-E10-Durchschnittspreise, rekonstruiert aus ADAC-/Statista-/en2x-Daten
             (Jahresmittel decken sich mit den ADAC-Werten). Strom als konstanter, einstellbarer Mittelwert &ndash;
             die reale Strompreis-Entwicklung ist hier nicht historisch abgebildet, sondern als &bdquo;was h&auml;tte
-            ein E-Auto im Schnitt gekostet&ldquo;. Alle Werte sind N&auml;herungen f&uuml;r eine Gr&ouml;&szlig;enordnung,
+            ein Elektroauto im Schnitt gekostet&ldquo;. Alle Werte sind N&auml;herungen f&uuml;r eine Gr&ouml;&szlig;enordnung,
             keine Abrechnung.
         </div>
     </div>
@@ -255,12 +270,28 @@ const RANGES = {
 };
 const clamp = (v, [lo,hi]) => Math.min(hi, Math.max(lo, v));
 
+// Betrachtungszeitraum wird über Monatslabels (z. B. "Sep 22") gespeichert,
+// nicht über Indizes. So bleibt eine gespeicherte Auswahl auch dann gültig,
+// wenn die Preisreihe später um weitere Monate ergänzt wird.
+const FIRST_KEY = PRICES[0][0];
+const LAST_KEY  = PRICES[PRICES.length - 1][0];
+const keyIdx = key => PRICES.findIndex(p => p[0] === key);
+
+// Liefert die auf gültige Grenzen geprüften Indizes [von, bis] des Zeitraums.
+function rangeIdx() {
+    let fi = keyIdx(S.fromKey), ti = keyIdx(S.toKey);
+    if (fi < 0) fi = 0;
+    if (ti < 0) ti = PRICES.length - 1;
+    if (fi > ti) { const t = fi; fi = ti; ti = t; }
+    return [fi, ti];
+}
+
 // Laden: Per-Key-Merge über die AKTUELLEN Defaults. So werden nach einem
 // Update des Rechners neue Felder auf Default gesetzt, entfernte Felder
 // ignoriert und schon gespeicherte Werte übernommen (auf gültigen Bereich
 // begrenzt). Damit wird nie mit unvollständigen Werten gerechnet.
 function loadState() {
-    const s = Object.assign({ view:"monat" }, DEFAULTS);
+    const s = Object.assign({ view:"monat", fromKey:FIRST_KEY, toKey:LAST_KEY }, DEFAULTS);
     try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
         if (saved && typeof saved === "object") {
@@ -269,13 +300,15 @@ function loadState() {
                     s[k] = clamp(saved[k], RANGES[k]);
             }
             if (["monat","kum","preis"].includes(saved.view)) s.view = saved.view;
+            if (keyIdx(saved.fromKey) >= 0) s.fromKey = saved.fromKey;
+            if (keyIdx(saved.toKey)   >= 0) s.toKey   = saved.toKey;
         }
     } catch (e) { /* localStorage nicht verfügbar → Standardwerte */ }
     return s;
 }
 function saveState() {
     try {
-        const o = { view:S.view };
+        const o = { view:S.view, fromKey:S.fromKey, toKey:S.toKey };
         for (const k in DEFAULTS) o[k] = S[k];
         localStorage.setItem(STORAGE_KEY, JSON.stringify(o));
     } catch (e) { /* Speichern nicht möglich – ignorieren */ }
@@ -283,9 +316,12 @@ function saveState() {
 
 let S = loadState();
 
-// Berechnung
+// Berechnung – nur über den gewählten Betrachtungszeitraum
 function calc() {
-    const n = PRICES.length;
+    const [fi, ti] = rangeIdx();
+    const data = PRICES.slice(fi, ti + 1);
+    const n = data.length;
+    // Gesamte Fahrleistung gleichmäßig auf die Monate des Zeitraums verteilen
     const kmM = S.kmTotal / n;
     // Heimladen = Mischpreis aus Photovoltaik und Netzstrom
     const homeBlend = (S.pvShare/100)*S.pvPrice + (1 - S.pvShare/100)*S.gridPrice;
@@ -293,14 +329,15 @@ function calc() {
     const blend = (S.homeShare/100)*homeBlend + (1 - S.homeShare/100)*S.pubPrice;
     const evM = (kmM/100) * S.kwhPer100 * blend;
     let cumB = 0, cumE = 0;
-    const rows = PRICES.map(([label, price]) => {
+    const rows = data.map(([label, price]) => {
         const liter = (kmM/100) * S.lPer100;
         const benzin = liter * price;
         cumB += benzin; cumE += evM;
         return { label, price, km:kmM, liter, benzin, eauto:evM, cumB, cumE };
     });
     const totB = cumB, totE = cumE, spar = totB - totE;
-    return { rows, kmM, blend, evM, totB, totE, spar, sparPct: totB ? (spar/totB)*100 : 0, n };
+    return { rows, kmM, blend, evM, totB, totE, spar, sparPct: totB ? (spar/totB)*100 : 0, n,
+             fromLabel:data[0][0], toLabel:data[n-1][0] };
 }
 
 // „Schöne“ Achsenobergrenze
@@ -358,8 +395,9 @@ function renderChart() {
         svg.appendChild(el("line", { x1:M.left, y1:y, x2:VB.w-M.right, y2:y, stroke:C.line, "stroke-width":1 }));
         svg.appendChild(el("text", { x:M.left-8, y:y+4, "text-anchor":"end", fill:C.faint, "font-size":11 }, yFmt(t)));
     });
+    const lblStep = Math.max(1, Math.ceil(n / 8));
     rows.forEach((r, i) => {
-        if (i % 6 !== 0) return;
+        if (i % lblStep !== 0) return;
         svg.appendChild(el("text", { x:xC(i), y:VB.h-9, "text-anchor":"middle", fill:C.faint, "font-size":10 }, r.label));
     });
 
@@ -385,8 +423,8 @@ function renderChart() {
     svg.appendChild(el("rect", { x:M.left, y:M.top, width:plotW, height:plotH, fill:"transparent" }));
 
     const legend = document.getElementById("legend");
-    if (S.view === "monat") legend.innerHTML = leg(C.benzin,"Benzin/Monat") + leg(C.strom,"E-Auto/Monat");
-    else if (S.view === "kum") legend.innerHTML = leg(C.benzin,"Benzin kumuliert") + leg(C.strom,"E-Auto kumuliert");
+    if (S.view === "monat") legend.innerHTML = leg(C.benzin,"Benzin/Monat") + leg(C.strom,"Elektroauto/Monat");
+    else if (S.view === "kum") legend.innerHTML = leg(C.benzin,"Benzin kumuliert") + leg(C.strom,"Elektroauto kumuliert");
     else legend.innerHTML = leg(C.benzin,"E10 €/L");
 
     chartState = { rows, xC, guide, band, n };
@@ -429,10 +467,10 @@ function wireTooltip() {
             body = `<div style="color:${C.benzin}">E10 €/L: ${eur(r.price,3)}</div>`;
         else if (S.view === "kum")
             body = `<div style="color:${C.benzin}">Benzin kumuliert: ${eur(r.cumB)}</div>`
-                 + `<div style="color:${C.strom}">E-Auto kumuliert: ${eur(r.cumE)}</div>`;
+                 + `<div style="color:${C.strom}">Elektroauto kumuliert: ${eur(r.cumE)}</div>`;
         else
             body = `<div style="color:${C.benzin}">Benzin/Monat: ${eur(r.benzin)}</div>`
-                 + `<div style="color:${C.strom}">E-Auto/Monat: ${eur(r.eauto)}</div>`;
+                 + `<div style="color:${C.strom}">Elektroauto/Monat: ${eur(r.eauto)}</div>`;
 
         tip.innerHTML = `<div class="t-title">${r.label}</div>${body}`;
         const cssX = (gx / VB.w) * rect.width;
@@ -453,9 +491,6 @@ function wireTooltip() {
 // ── Kennzahlen / Regler / Tabelle ────────────────────────────
 function renderReadouts() {
     const c = calc(), years = c.n / 12;
-    document.getElementById("subtitle").innerHTML =
-        `${num(S.kmTotal/1000)}.000 km über ${c.n} Monate (Sep 2022 – Aug 2026), gleichmäßig verteilt auf `
-      + `${num(c.kmM)} km/Monat. Benzin: tatsächliche Super-E10-Monatsmittel. Strom: einstellbarer Durchschnitt.`;
 
     set("ro-benzin-v", eur(c.totB));
     set("ro-benzin-s", `${eur(c.totB/years)} / Jahr`);
@@ -467,7 +502,7 @@ function renderReadouts() {
 
     const ex = [
         ["Benzin pro km", eur(c.totB/S.kmTotal,2), C.benzin],
-        ["E-Auto pro km", eur(c.totE/S.kmTotal,2), C.strom],
+        ["Elektroauto pro km", eur(c.totE/S.kmTotal,2), C.strom],
         ["Getankte Menge", num((S.kmTotal/100)*S.lPer100) + " L", C.text],
         ["Geladene Energie", num((S.kmTotal/100)*S.kwhPer100) + " kWh", C.text],
     ];
@@ -489,7 +524,10 @@ function renderReadouts() {
 }
 
 function renderSliders() {
-    const years = PRICES.length / 12;
+    const [fi, ti] = rangeIdx();
+    const months = ti - fi + 1;
+    const years = months / 12;
+    set("period-h", `${num(months)} Monate · ${num(years,1)} Jahre · ${num(S.kmTotal/months)} km/Monat`);
     set("km-v", num(S.kmTotal) + " km");
     set("km-h", num(S.kmTotal/years) + " km / Jahr");
     set("l100-v", num(S.lPer100,1) + " L/100 km");
@@ -513,11 +551,20 @@ const bind = [
     ["pvShare","pvShare"],["pvPrice","pvPrice"],["gridPrice","gridPrice"],
 ];
 
+// Zeitraum-Dropdowns aus der Preisreihe aufbauen (Preise sind Datenquelle)
+function populatePeriod() {
+    const opts = PRICES.map(([label]) => `<option value="${label}">${label}</option>`).join("");
+    document.getElementById("fromSel").innerHTML = opts;
+    document.getElementById("toSel").innerHTML   = opts;
+}
+
 function applyStateToInputs() {
     bind.forEach(([id, key]) => {
         const el = document.getElementById(id);
         if (el) el.value = S[key];
     });
+    document.getElementById("fromSel").value = S.fromKey;
+    document.getElementById("toSel").value   = S.toKey;
     document.querySelectorAll(".tab").forEach(b =>
         b.classList.toggle("active", b.dataset.view === S.view));
 }
@@ -537,8 +584,28 @@ document.querySelectorAll(".tab").forEach(btn => {
         renderChart();
     });
 });
+// Zeitraum-Auswahl: sicherstellen, dass „von“ nie hinter „bis“ liegt
+document.getElementById("fromSel").addEventListener("change", e => {
+    S.fromKey = e.target.value;
+    if (keyIdx(S.fromKey) > keyIdx(S.toKey)) {
+        S.toKey = S.fromKey;
+        document.getElementById("toSel").value = S.toKey;
+    }
+    saveState();
+    renderAll();
+});
+document.getElementById("toSel").addEventListener("change", e => {
+    S.toKey = e.target.value;
+    if (keyIdx(S.toKey) < keyIdx(S.fromKey)) {
+        S.fromKey = S.toKey;
+        document.getElementById("fromSel").value = S.fromKey;
+    }
+    saveState();
+    renderAll();
+});
 window.addEventListener("resize", () => renderChart());
 
+populatePeriod();       // Dropdown-Optionen aus der Preisreihe erzeugen
 applyStateToInputs();   // gespeicherte Werte auf die Regler übertragen
 renderAll();
 </script>

@@ -10,7 +10,7 @@ erweitert wird. Als **Progressive Web App** installierbar.
 ```
 /
 ├── index.html                         Startseite mit Navigation und allen Themen
-├── elektroauto-kostenvergleich.html   Rechner: Kostenvergleich E-Auto vs. Verbrenner
+├── elektroauto-kostenvergleich.html   Rechner: Kostenvergleich Verbrenner vs. Elektroauto
 ├── css/
 │   ├── site.css                       Design-System (Tokens) + Basis + Navigation
 │   └── tools.css                      Wiederverwendbare Bausteine für Rechner/Tools
@@ -42,7 +42,7 @@ Look & Feel passt ohne zusätzliches Styling.
 ## Navigation & Themen
 
 Links liegt eine feste Navigationsleiste (mobil als ausklappbares Menü),
-die die Themen gruppiert: **Elektromobilität** (inkl. Kostenvergleich E-Auto),
+die die Themen gruppiert: **Elektromobilität** (inkl. Kostenvergleich Elektroauto),
 **Energie & Wärme**, **Weitere Themen**. Ganz unten ein Zahnrad-Menü mit
 „App installieren" und „Nach Updates suchen".
 
@@ -54,13 +54,25 @@ die die Themen gruppiert: **Elektromobilität** (inkl. Kostenvergleich E-Auto),
   in `sw.js` erhöhen** – Besucher sehen dann automatisch das Banner
   „Neue Version verfügbar – Neu laden".
 
-## Rechner: Kostenvergleich E-Auto vs. Verbrenner
+## Rechner: Kostenvergleich Verbrenner vs. Elektroauto
 
 Interaktiv, dependency-frei (Diagramme als Inline-SVG). Vergleicht reale
 Super-E10-Monatspreise (Sep 2022 – Aug 2026) mit den einstellbaren Ladekosten
-eines E-Autos (Mix aus Photovoltaik, Netz und unterwegs). Reglerwerte werden
-lokal gespeichert (localStorage) und bleiben beim nächsten Besuch erhalten;
-neue Felder nach einem Update fallen sauber auf ihre Standardwerte zurück.
+eines Elektroautos (Mix aus Photovoltaik, Netz und unterwegs). Über einen
+einstellbaren **Betrachtungszeitraum** (von Monat/Jahr bis Monat/Jahr) lässt
+sich die Rechnung auf einen beliebigen Ausschnitt der Preisreihe einschränken;
+die Gesamtfahrleistung wird dabei gleichmäßig auf die Monate des Zeitraums
+verteilt. Reglerwerte und Zeitraum werden lokal gespeichert (localStorage) und
+bleiben beim nächsten Besuch erhalten; neue Felder nach einem Update fallen
+sauber auf ihre Standardwerte zurück.
+
+Die Monatspreise sind bewusst **fest hinterlegt** (historische
+Durchschnittswerte, rekonstruiert aus ADAC-/Statista-/en2x-Daten) und werden
+nicht live geladen: Die Seite ist statisch/offlinefähig (PWA), historische
+Monatsmittel ändern sich rückwirkend nicht, und es gibt keine frei nutzbare
+API dafür. Neue Monate werden beim Deploy einfach am Ende der `PRICES`-Liste
+ergänzt – der Rechner bleibt dadurch dauerhaft korrekt und funktioniert auch
+in Zukunft ohne externe Abhängigkeit.
 
 ## Hinweise
 

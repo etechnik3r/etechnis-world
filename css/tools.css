@@ -103,8 +103,13 @@
 }
 .tip .t-title { color: var(--text); font-weight: 600; margin-bottom: 4px; }
 
-/* Regler-Karten */
-.controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 20px; }
+.readout .r-car { font-size: var(--fs-xs); color: var(--faint); margin: -4px 0 8px; font-family: var(--mono); }
+
+/* Regler-Karten – auf dem Desktop zwei gleich breite Spalten (keine leere
+   dritte Spalte mehr); volle Breite über .span-2 */
+.controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 20px; align-items: start; }
+.span-2 { grid-column: 1 / -1; }
+@media (max-width: 620px) { .controls { grid-template-columns: 1fr; } }
 .ctrl-card {
     background: var(--panel);
     border: 1px solid var(--line);
@@ -125,25 +130,100 @@
 .slider input[type=range] { width: 100%; height: 4px; cursor: pointer; accent-color: var(--accent); }
 .slider .s-hint { font-size: var(--fs-xs); color: var(--faint); margin-top: 4px; }
 
-/* Betrachtungszeitraum */
-.period-card { grid-column: 1 / -1; }
-.period-grid { display: flex; flex-wrap: wrap; gap: 14px; }
-.period-field { flex: 1 1 160px; display: flex; flex-direction: column; gap: 6px; }
-.period-field .s-label { font-size: var(--fs-sm); color: var(--muted); }
-.period-sel {
+/* Eingabefelder (Auswahl & Zahlen) – einheitliches Aussehen */
+.tool-input {
     width: 100%;
     padding: 9px 12px;
-    background: var(--bg, #0f151b);
+    background: var(--bg);
     color: var(--text);
     border: 1px solid var(--line);
-    border-radius: var(--r-sm, 8px);
+    border-radius: var(--r-sm);
     font-family: var(--mono);
     font-size: var(--fs-base);
     font-weight: 600;
-    cursor: pointer;
 }
-.period-sel:focus-visible { outline: 2px solid var(--series-a); outline-offset: 2px; }
+select.tool-input { cursor: pointer; }
+.tool-input:focus-visible { outline: 2px solid var(--series-a); outline-offset: 2px; }
+
+/* Betrachtungszeitraum */
+.period-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+.period-field { flex: 1 1 160px; display: flex; flex-direction: column; gap: 6px; }
+.period-field .s-label { font-size: var(--fs-sm); color: var(--muted); }
 .period-card .s-hint { font-size: var(--fs-xs); color: var(--faint); margin-top: 12px; }
+
+/* Kfz-Steuer-Feld in den Fahrzeugkarten */
+.field-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.field-row .s-label { font-size: var(--fs-sm); color: var(--muted); }
+.field-row .s-hint { font-size: var(--fs-xs); color: var(--faint); }
+
+/* THG-Prämie – Jahresfelder */
+.thg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-top: 4px; }
+.thg-field { display: flex; flex-direction: column; gap: 5px; }
+.thg-field .s-label { font-size: var(--fs-sm); color: var(--muted); }
+.thg-field .thg-suffix { position: relative; }
+.thg-field input { text-align: right; }
+
+/* Gegenüberstellung (Aufschlüsselung der Kosten) */
+.breakdown {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    padding: 6px 4px;
+    margin-bottom: 22px;
+    overflow-x: auto;
+}
+.bd-row {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 10px;
+    align-items: baseline;
+    padding: 11px 18px;
+    min-width: 340px;
+}
+.bd-row + .bd-row { border-top: 1px solid var(--line); }
+.bd-head { color: var(--muted); font-size: var(--fs-xs); letter-spacing: 1px; text-transform: uppercase; }
+.bd-head .bd-v, .bd-head .bd-e { font-weight: 700; }
+.bd-label { color: var(--muted); font-size: var(--fs-sm); }
+.bd-v, .bd-e { text-align: right; font-family: var(--mono); font-weight: 600; }
+.bd-sum { background: var(--panel-2); }
+.bd-sum .bd-label { color: var(--text); font-weight: 700; }
+.bd-sum .bd-v, .bd-sum .bd-e { font-size: var(--fs-md); }
+
+/* Diagramm-Erläuterung */
+.chart-note { font-size: var(--fs-xs); color: var(--faint); margin-top: 10px; text-align: center; line-height: 1.5; }
+
+/* Faktenblatt (Statusbild) */
+.factsheet {
+    position: relative;
+    margin: 30px 0 8px;
+    padding: 2px;
+    border-radius: var(--r-lg);
+    background: linear-gradient(135deg, var(--series-b), var(--series-a) 55%, var(--pos));
+}
+.fs-inner { background: var(--panel); border-radius: calc(var(--r-lg) - 2px); padding: 22px 22px 18px; }
+.fs-badge {
+    display: inline-block; font-size: var(--fs-xs); letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--accent); font-weight: 700; margin-bottom: 8px;
+}
+.fs-title { font-size: var(--fs-lg); font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.fs-assume { font-size: var(--fs-sm); color: var(--muted); margin: 8px 0 18px; line-height: 1.55; }
+.fs-assume b { color: var(--text); }
+.fs-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: stretch; }
+@media (max-width: 620px) { .fs-grid { grid-template-columns: 1fr; } }
+.fs-col { background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px 16px; }
+.fs-col.fs-v { border-left: 3px solid var(--series-b); }
+.fs-col.fs-e { border-left: 3px solid var(--series-a); }
+.fs-col.fs-result { border-left: 3px solid var(--pos); display: flex; flex-direction: column; justify-content: center; min-width: 180px; }
+.fs-cname { font-size: var(--fs-sm); font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.fs-line { display: flex; justify-content: space-between; gap: 12px; font-size: var(--fs-sm); margin: 5px 0; }
+.fs-line .fs-k { color: var(--muted); }
+.fs-line .fs-val { font-family: var(--mono); color: var(--text); }
+.fs-total { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-weight: 700; }
+.fs-total .fs-val { font-family: var(--mono); font-size: var(--fs-md); }
+.fs-result .fs-r-label { font-size: var(--fs-xs); letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.fs-result .fs-r-value { font-family: var(--mono); font-size: 30px; font-weight: 800; line-height: 1.05; margin: 6px 0; color: var(--pos); }
+.fs-result .fs-r-sub { font-size: var(--fs-sm); color: var(--faint); }
+.fs-foot { font-size: var(--fs-xs); color: var(--faint); margin-top: 16px; line-height: 1.6; }
 
 .sub-divider {
     margin: 6px 0 16px;

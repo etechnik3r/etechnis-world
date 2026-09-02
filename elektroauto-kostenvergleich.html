@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kostenvergleich: Verbrenner vs. Elektroauto</title>
-<meta name="description" content="Interaktiver Kostenvergleich Verbrenner vs. Elektroauto: einstellbarer Betrachtungszeitraum, echte Super-E10-Monatspreise und frei wählbare Ladekosten.">
+<meta name="description" content="Interaktiver Kostenvergleich VW Golf 1.5 TSI vs. VW ID.3 Pro: Betrachtungszeitraum, echte Super-E10-Monatspreise, Ladekosten, Kfz-Steuer und THG-Prämie.">
 <meta name="theme-color" content="#0a0e13">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
@@ -88,22 +88,25 @@
         <!-- Kopf -->
         <div class="tool-kicker">Kostenanalyse &middot; Elektromobilit&auml;t</div>
         <h1 class="tool-title">Kostenvergleich: Verbrenner vs. Elektroauto</h1>
-        <div class="tool-sub" id="subtitle">Alle Parameter &ndash; Zeitraum, Fahrleistung, Verbrauch und Strompreise &ndash; stellst du weiter unten selbst ein.</div>
+        <div class="tool-sub" id="subtitle">VW Golf 1.5 TSI gegen VW ID.3 Pro &ndash; alle Parameter (Zeitraum, Fahrleistung, Verbrauch, Strompreise, Kfz-Steuer und THG-Pr&auml;mie) stellst du weiter unten selbst ein.</div>
 
         <!-- Kennzahlen -->
         <div class="readouts">
             <div class="readout">
-                <div class="r-label">Benzin gesamt</div>
-                <div class="r-value" id="ro-benzin-v" style="color:var(--series-b)"></div>
-                <div class="r-sub" id="ro-benzin-s"></div>
+                <div class="r-label">Verbrenner gesamt</div>
+                <div class="r-car" id="ro-v-car"></div>
+                <div class="r-value" id="ro-v-v" style="color:var(--series-b)"></div>
+                <div class="r-sub" id="ro-v-s"></div>
             </div>
             <div class="readout">
                 <div class="r-label">Elektroauto gesamt</div>
-                <div class="r-value" id="ro-eauto-v" style="color:var(--series-a)"></div>
-                <div class="r-sub" id="ro-eauto-s"></div>
+                <div class="r-car" id="ro-e-car"></div>
+                <div class="r-value" id="ro-e-v" style="color:var(--series-a)"></div>
+                <div class="r-sub" id="ro-e-s"></div>
             </div>
             <div class="readout">
                 <div class="r-label">Ersparnis Elektroauto</div>
+                <div class="r-car">unterm Strich</div>
                 <div class="r-value" id="ro-spar-v"></div>
                 <div class="r-sub" id="ro-spar-s"></div>
             </div>
@@ -112,36 +115,40 @@
         <!-- Diagramm -->
         <div class="panel">
             <div class="tabs" id="tabs">
-                <button class="tab active" data-view="monat">Monatskosten</button>
-                <button class="tab" data-view="kum">Kumuliert</button>
-                <button class="tab" data-view="preis">Spritpreis</button>
+                <button class="tab active" data-view="kum">Gesamtkosten &uuml;ber Zeit</button>
+                <button class="tab" data-view="monat">Kosten pro Monat</button>
+                <button class="tab" data-view="preis">Benzinpreis</button>
             </div>
             <div class="chart-wrap">
                 <svg id="chart" viewBox="0 0 760 280" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Kostendiagramm"></svg>
                 <div class="tip" id="tip"></div>
             </div>
             <div class="legend" id="legend"></div>
+            <div class="chart-note" id="chartNote"></div>
         </div>
+
+        <!-- Gegenüberstellung / Aufschlüsselung -->
+        <div class="breakdown" id="breakdown"></div>
 
         <!-- Regler -->
         <div class="controls">
-            <div class="ctrl-card period-card">
+            <div class="ctrl-card span-2">
                 <div class="ctrl-head">Betrachtungszeitraum</div>
                 <div class="period-grid">
                     <label class="period-field">
                         <span class="s-label">Von</span>
-                        <select id="fromSel" class="period-sel" aria-label="Zeitraum von"></select>
+                        <select id="fromSel" class="tool-input" aria-label="Zeitraum von"></select>
                     </label>
                     <label class="period-field">
                         <span class="s-label">Bis</span>
-                        <select id="toSel" class="period-sel" aria-label="Zeitraum bis"></select>
+                        <select id="toSel" class="tool-input" aria-label="Zeitraum bis"></select>
                     </label>
                 </div>
                 <div class="s-hint" id="period-h"></div>
             </div>
 
             <div class="ctrl-card">
-                <div class="ctrl-head" style="color:var(--series-b)">Verbrenner</div>
+                <div class="ctrl-head" style="color:var(--series-b)">Verbrenner &middot; VW&nbsp;Golf&nbsp;1.5&nbsp;TSI</div>
                 <div class="slider">
                     <div class="slider-row"><span class="s-label">Fahrleistung gesamt</span><span class="s-value" id="km-v"></span></div>
                     <input type="range" id="km" min="20000" max="200000" step="5000" value="100000" style="accent-color:var(--series-b)">
@@ -149,15 +156,22 @@
                 </div>
                 <div class="slider">
                     <div class="slider-row"><span class="s-label">Verbrauch</span><span class="s-value" id="l100-v"></span></div>
-                    <input type="range" id="l100" min="4" max="16" step="0.1" value="6.5" style="accent-color:var(--series-b)">
+                    <input type="range" id="l100" min="4" max="16" step="0.1" value="5.6" style="accent-color:var(--series-b)">
+                    <div class="s-hint">Durchschnittlicher Realverbrauch (Super&nbsp;E10) laut Bordcomputer.</div>
+                </div>
+                <div class="field-row">
+                    <span class="s-label">Kfz-Steuer je Jahr</span>
+                    <input type="number" id="taxV" class="tool-input" min="0" max="1000" step="1" value="96" inputmode="numeric">
+                    <span class="s-hint">Fixkosten pro Jahr, anteilig auf die Monate des Zeitraums verteilt.</span>
                 </div>
             </div>
 
             <div class="ctrl-card">
-                <div class="ctrl-head" style="color:var(--series-a)">Elektro</div>
+                <div class="ctrl-head" style="color:var(--series-a)">Elektroauto &middot; VW&nbsp;ID.3&nbsp;Pro</div>
                 <div class="slider">
                     <div class="slider-row"><span class="s-label">Verbrauch</span><span class="s-value" id="kwh100-v"></span></div>
                     <input type="range" id="kwh100" min="12" max="28" step="0.5" value="18">
+                    <div class="s-hint">Stromverbrauch ab Steckdose &ndash; inkl. Ladeverlusten.</div>
                 </div>
                 <div class="slider">
                     <div class="slider-row"><span class="s-label">Anteil zuhause geladen</span><span class="s-value" id="homeShare-v"></span></div>
@@ -167,6 +181,7 @@
                 <div class="slider">
                     <div class="slider-row"><span class="s-label">Preis unterwegs</span><span class="s-value" id="pubPrice-v"></span></div>
                     <input type="range" id="pubPrice" min="0.30" max="1.00" step="0.01" value="0.50">
+                    <div class="s-hint">Durchschnittspreis an &ouml;ffentlichen Lades&auml;ulen.</div>
                 </div>
 
                 <div class="sub-divider">Heimladen &ndash; Mix aus Photovoltaik &amp; Netz</div>
@@ -178,18 +193,32 @@
                 <div class="slider">
                     <div class="slider-row"><span class="s-label">Preis Photovoltaik</span><span class="s-value" id="pvPrice-v"></span></div>
                     <input type="range" id="pvPrice" min="0" max="0.20" step="0.005" value="0.075">
+                    <div class="s-hint">Gestehungskosten deines eigenen Solarstroms.</div>
                 </div>
                 <div class="slider">
                     <div class="slider-row"><span class="s-label">Preis Netzstrom</span><span class="s-value" id="gridPrice-v"></span></div>
                     <input type="range" id="gridPrice" min="0.15" max="0.60" step="0.01" value="0.29">
+                    <div class="s-hint">Dein Haushaltsstrom-Arbeitspreis.</div>
                 </div>
+                <div class="field-row">
+                    <span class="s-label">Kfz-Steuer je Jahr</span>
+                    <input type="number" id="taxE" class="tool-input" min="0" max="1000" step="1" value="0" inputmode="numeric">
+                    <span class="s-hint">Elektroautos sind in Deutschland bis Ende 2030 von der Kfz-Steuer befreit.</span>
+                </div>
+            </div>
+
+            <div class="ctrl-card span-2">
+                <div class="ctrl-head" style="color:var(--pos)">THG-Pr&auml;mie &middot; nur Elektroauto</div>
+                <div class="s-hint" style="margin-bottom:12px">
+                    Die Treibhausgas-Quote wird j&auml;hrlich <b>ausgezahlt</b> und geht daher als
+                    Gutschrift (negative Kosten) in die Elektro-Bilanz ein. Werte pro Kalenderjahr &ndash;
+                    zur&uuml;ckliegende Jahre sind vorbelegt, k&uuml;nftige Jahre kannst du selbst eintragen.
+                </div>
+                <div class="thg-grid" id="thg-grid"></div>
             </div>
         </div>
 
-        <!-- Zusatz-Kennzahlen -->
-        <div class="extras" id="extras"></div>
-
-        <!-- Tabelle -->
+        <!-- Detailtabelle -->
         <details class="table-box">
             <summary id="tbl-summary">Monatstabelle anzeigen</summary>
             <div class="table-scroll">
@@ -197,7 +226,7 @@
                     <thead>
                         <tr>
                             <th>Monat</th><th>E10 &euro;/L</th><th>km</th><th>Liter</th>
-                            <th>Benzin</th><th>Elektroauto</th><th>&Delta;</th>
+                            <th>Verbrenner</th><th>Elektroauto</th><th>&Delta;</th>
                         </tr>
                     </thead>
                     <tbody id="tbody"></tbody>
@@ -205,12 +234,46 @@
             </div>
         </details>
 
+        <!-- Faktenblatt (Statusbild) -->
+        <section class="factsheet" aria-label="Zusammenfassung">
+            <div class="fs-inner">
+                <div class="fs-badge">Kostenvergleich auf einen Blick</div>
+                <div class="fs-title">Verbrenner vs. Elektroauto</div>
+                <div class="fs-assume" id="fs-assume"></div>
+                <div class="fs-grid">
+                    <div class="fs-col fs-v">
+                        <div class="fs-cname">VW Golf 1.5 TSI</div>
+                        <div class="fs-line"><span class="fs-k">Energie (Benzin)</span><span class="fs-val" id="fs-v-energy"></span></div>
+                        <div class="fs-line"><span class="fs-k">Kfz-Steuer</span><span class="fs-val" id="fs-v-tax"></span></div>
+                        <div class="fs-total"><span class="fs-k">Summe</span><span class="fs-val" id="fs-v-total" style="color:var(--series-b)"></span></div>
+                    </div>
+                    <div class="fs-col fs-e">
+                        <div class="fs-cname">VW ID.3 Pro</div>
+                        <div class="fs-line"><span class="fs-k">Energie (Strom)</span><span class="fs-val" id="fs-e-energy"></span></div>
+                        <div class="fs-line"><span class="fs-k">Kfz-Steuer</span><span class="fs-val" id="fs-e-tax"></span></div>
+                        <div class="fs-line"><span class="fs-k">THG-Pr&auml;mie</span><span class="fs-val" id="fs-e-thg" style="color:var(--pos)"></span></div>
+                        <div class="fs-total"><span class="fs-k">Summe</span><span class="fs-val" id="fs-e-total" style="color:var(--series-a)"></span></div>
+                    </div>
+                    <div class="fs-col fs-result">
+                        <div class="fs-r-label">Vorteil Elektroauto</div>
+                        <div class="fs-r-value" id="fs-r-value"></div>
+                        <div class="fs-r-sub" id="fs-r-sub"></div>
+                    </div>
+                </div>
+                <div class="fs-foot" id="fs-foot"></div>
+            </div>
+        </section>
+
         <div class="footnote">
-            Benzin: monatliche Super-E10-Durchschnittspreise, rekonstruiert aus ADAC-/Statista-/en2x-Daten
-            (Jahresmittel decken sich mit den ADAC-Werten). Strom als konstanter, einstellbarer Mittelwert &ndash;
-            die reale Strompreis-Entwicklung ist hier nicht historisch abgebildet, sondern als &bdquo;was h&auml;tte
-            ein Elektroauto im Schnitt gekostet&ldquo;. Alle Werte sind N&auml;herungen f&uuml;r eine Gr&ouml;&szlig;enordnung,
-            keine Abrechnung.
+            <b>Fahrzeuge:</b> VW&nbsp;Golf&nbsp;1.5&nbsp;TSI (110&nbsp;kW, 6-Gang) und VW&nbsp;ID.3&nbsp;Pro (58&nbsp;kWh) sind in
+            Fahrzeugklasse und Ausstattung vergleichbar. Nach Abzug des damaligen Umweltbonus von 9.200&nbsp;&euro; f&uuml;r das
+            Elektroauto lagen beide preislich praktisch gleichauf (das Elektroauto war rund 400&nbsp;&euro; g&uuml;nstiger) &ndash;
+            der Vergleich stellt also zwei etwa gleich teure Autos gegen&uuml;ber.<br><br>
+            <b>Datenbasis:</b> Benzin &uuml;ber monatliche Super-E10-Durchschnittspreise, rekonstruiert aus
+            ADAC-/Statista-/en2x-Daten (Jahresmittel decken sich mit den ADAC-Werten). Strom als konstanter, einstellbarer
+            Mittelwert (Mix aus Photovoltaik, Netz und &ouml;ffentlichem Laden). Die Gesamtfahrleistung wird gleichm&auml;&szlig;ig
+            auf die Monate des gew&auml;hlten Zeitraums verteilt; Kfz-Steuer und THG-Pr&auml;mie flie&szlig;en anteilig je Monat ein.
+            Alle Werte sind N&auml;herungen f&uuml;r eine Gr&ouml;&szlig;enordnung, keine Abrechnung.
         </div>
     </div>
 </div>
@@ -232,6 +295,9 @@ const C = {
     benzin:"#e8a13a", strom:"#4a9eff", spar:"#6fcf73", warn:"#e86a5c",
 };
 
+// Verglichene Fahrzeuge
+const CARS = { v:"VW Golf 1.5 TSI (110 kW)", e:"VW ID.3 Pro (58 kWh)" };
+
 // Monatliche Super-E10-Durchschnittspreise (€/L)
 const PRICES = [
     ["Sep 22",1.94],["Okt 22",1.91],["Nov 22",1.86],["Dez 22",1.69],
@@ -248,36 +314,42 @@ const PRICES = [
     ["Mai 26",1.88],["Jun 26",1.82],["Jul 26",1.80],["Aug 26",1.80],
 ];
 
-// Formatierung
+// THG-Prämie je Kalenderjahr (€, wird ausgezahlt → geht negativ in die Bilanz).
+// Zurückliegende Jahre vorbelegt; künftige Jahre kann der Nutzer selbst eintragen.
+const THG_DEFAULTS = { 2022:0, 2023:300, 2024:100, 2025:100, 2026:0 };
+
+// Formatierung (deutsches Zahlenformat: Komma als Dezimaltrenner)
 const eur = (n, d=0) => n.toLocaleString("de-DE",
     { style:"currency", currency:"EUR", minimumFractionDigits:d, maximumFractionDigits:d });
 const num = (n, d=0) => n.toLocaleString("de-DE",
     { minimumFractionDigits:d, maximumFractionDigits:d });
 // Ladepreise in Cent/kWh anzeigen (Nutzer denkt in ct); intern in €/kWh gespeichert
 const fmtCt = v => { const c = Math.round(v*1000)/10; return num(c, Number.isInteger(c)?0:1) + " ct/kWh"; };
+// Kalenderjahr aus einem Monatslabel wie "Sep 22"
+const labelYear = lbl => 2000 + parseInt(lbl.slice(-2), 10);
 
 // ── Zustand & lokale Speicherung ─────────────────────────────
-const STORAGE_KEY = "kv-einstellungen-v1";
-// Aktuelle Standardwerte
+const STORAGE_KEY = "kv-einstellungen-v2";
+// Aktuelle Standardwerte (Golf 1.5 TSI vs. ID.3 Pro)
 const DEFAULTS = {
-    kmTotal:100000, lPer100:6.5, kwhPer100:18, homeShare:85,
+    kmTotal:100000, lPer100:5.6, kwhPer100:18, homeShare:85,
     pubPrice:0.50, pvShare:40, pvPrice:0.075, gridPrice:0.29,
+    taxV:96, taxE:0,
 };
-// Gültige Reglergrenzen – gespeicherte Werte werden hierauf begrenzt
+// Gültige Grenzen – gespeicherte Werte werden hierauf begrenzt
 const RANGES = {
     kmTotal:[20000,200000], lPer100:[4,16], kwhPer100:[12,28], homeShare:[0,100],
     pubPrice:[0.30,1.00], pvShare:[0,100], pvPrice:[0,0.20], gridPrice:[0.15,0.60],
+    taxV:[0,1000], taxE:[0,1000],
 };
 const clamp = (v, [lo,hi]) => Math.min(hi, Math.max(lo, v));
 
-// Betrachtungszeitraum wird über Monatslabels (z. B. "Sep 22") gespeichert,
-// nicht über Indizes. So bleibt eine gespeicherte Auswahl auch dann gültig,
-// wenn die Preisreihe später um weitere Monate ergänzt wird.
+// Betrachtungszeitraum wird über Monatslabels gespeichert (überlebt spätere
+// Ergänzung der Preisreihe).
 const FIRST_KEY = PRICES[0][0];
 const LAST_KEY  = PRICES[PRICES.length - 1][0];
 const keyIdx = key => PRICES.findIndex(p => p[0] === key);
 
-// Liefert die auf gültige Grenzen geprüften Indizes [von, bis] des Zeitraums.
 function rangeIdx() {
     let fi = keyIdx(S.fromKey), ti = keyIdx(S.toKey);
     if (fi < 0) fi = 0;
@@ -285,13 +357,16 @@ function rangeIdx() {
     if (fi > ti) { const t = fi; fi = ti; ti = t; }
     return [fi, ti];
 }
+// THG-Prämie eines Kalenderjahres (aus Zustand, sonst Default, sonst 0)
+function thgFor(year) {
+    const v = S.thg[year];
+    if (typeof v === "number" && isFinite(v)) return v;
+    return THG_DEFAULTS[year] || 0;
+}
 
-// Laden: Per-Key-Merge über die AKTUELLEN Defaults. So werden nach einem
-// Update des Rechners neue Felder auf Default gesetzt, entfernte Felder
-// ignoriert und schon gespeicherte Werte übernommen (auf gültigen Bereich
-// begrenzt). Damit wird nie mit unvollständigen Werten gerechnet.
 function loadState() {
-    const s = Object.assign({ view:"monat", fromKey:FIRST_KEY, toKey:LAST_KEY }, DEFAULTS);
+    const s = Object.assign({ view:"kum", fromKey:FIRST_KEY, toKey:LAST_KEY }, DEFAULTS);
+    s.thg = Object.assign({}, THG_DEFAULTS);
     try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
         if (saved && typeof saved === "object") {
@@ -299,16 +374,22 @@ function loadState() {
                 if (typeof saved[k] === "number" && isFinite(saved[k]))
                     s[k] = clamp(saved[k], RANGES[k]);
             }
-            if (["monat","kum","preis"].includes(saved.view)) s.view = saved.view;
+            if (["kum","monat","preis"].includes(saved.view)) s.view = saved.view;
             if (keyIdx(saved.fromKey) >= 0) s.fromKey = saved.fromKey;
             if (keyIdx(saved.toKey)   >= 0) s.toKey   = saved.toKey;
+            if (saved.thg && typeof saved.thg === "object") {
+                for (const y in saved.thg) {
+                    const v = saved.thg[y];
+                    if (typeof v === "number" && isFinite(v)) s.thg[y] = clamp(v, [0, 5000]);
+                }
+            }
         }
     } catch (e) { /* localStorage nicht verfügbar → Standardwerte */ }
     return s;
 }
 function saveState() {
     try {
-        const o = { view:S.view, fromKey:S.fromKey, toKey:S.toKey };
+        const o = { view:S.view, fromKey:S.fromKey, toKey:S.toKey, thg:S.thg };
         for (const k in DEFAULTS) o[k] = S[k];
         localStorage.setItem(STORAGE_KEY, JSON.stringify(o));
     } catch (e) { /* Speichern nicht möglich – ignorieren */ }
@@ -316,28 +397,39 @@ function saveState() {
 
 let S = loadState();
 
-// Berechnung – nur über den gewählten Betrachtungszeitraum
+// Berechnung – über den gewählten Zeitraum, inkl. Fixkosten & THG-Prämie
 function calc() {
     const [fi, ti] = rangeIdx();
     const data = PRICES.slice(fi, ti + 1);
     const n = data.length;
-    // Gesamte Fahrleistung gleichmäßig auf die Monate des Zeitraums verteilen
-    const kmM = S.kmTotal / n;
+    const kmM = S.kmTotal / n;                  // km/Monat (gleichmäßig verteilt)
+    const literM = (kmM/100) * S.lPer100;       // Liter/Monat
     // Heimladen = Mischpreis aus Photovoltaik und Netzstrom
     const homeBlend = (S.pvShare/100)*S.pvPrice + (1 - S.pvShare/100)*S.gridPrice;
     // Gesamter Ø-Ladepreis = Heimladen-Anteil + unterwegs
     const blend = (S.homeShare/100)*homeBlend + (1 - S.homeShare/100)*S.pubPrice;
-    const evM = (kmM/100) * S.kwhPer100 * blend;
-    let cumB = 0, cumE = 0;
+    const evM = (kmM/100) * S.kwhPer100 * blend; // Strom-Energiekosten/Monat
+    const taxVm = S.taxV/12, taxEm = S.taxE/12;  // Kfz-Steuer je Monat
+
+    let cumBenzin=0, cumStrom=0, cumTaxV=0, cumTaxE=0, cumThg=0, cumV=0, cumE=0;
     const rows = data.map(([label, price]) => {
-        const liter = (kmM/100) * S.lPer100;
-        const benzin = liter * price;
-        cumB += benzin; cumE += evM;
-        return { label, price, km:kmM, liter, benzin, eauto:evM, cumB, cumE };
+        const thgM   = thgFor(labelYear(label)) / 12; // Prämie je Monat (Gutschrift)
+        const benzin = literM * price;                // Energie Verbrenner
+        const strom  = evM;                           // Energie Elektro
+        const vMonth = benzin + taxVm;                // Gesamt Verbrenner/Monat
+        const eMonth = strom + taxEm - thgM;          // Gesamt Elektro/Monat
+        cumBenzin+=benzin; cumStrom+=strom;
+        cumTaxV+=taxVm; cumTaxE+=taxEm; cumThg+=thgM;
+        cumV+=vMonth; cumE+=eMonth;
+        return { label, price, km:kmM, liter:literM, benzin, strom, thg:thgM, vMonth, eMonth, cumV, cumE };
     });
-    const totB = cumB, totE = cumE, spar = totB - totE;
-    return { rows, kmM, blend, evM, totB, totE, spar, sparPct: totB ? (spar/totB)*100 : 0, n,
-             fromLabel:data[0][0], toLabel:data[n-1][0] };
+    const totV = cumV, totE = cumE, spar = totV - totE;
+    return {
+        rows, n, kmM, blend, evM, literM,
+        energyV:cumBenzin, energyE:cumStrom, taxVtot:cumTaxV, taxEtot:cumTaxE, thgTot:cumThg,
+        totV, totE, spar, sparPct: totV ? (spar/totV)*100 : 0,
+        fromLabel:data[0][0], toLabel:data[n-1][0], years:n/12,
+    };
 }
 
 // „Schöne“ Achsenobergrenze
@@ -359,7 +451,7 @@ function el(tag, attrs, text) {
     return e;
 }
 const VB = { w:760, h:280 };
-const M = { top:14, right:14, bottom:28, left:52 };
+const M = { top:16, right:16, bottom:30, left:64 };
 const plotW = VB.w - M.left - M.right;
 const plotH = VB.h - M.top - M.bottom;
 let chartState = null;
@@ -370,20 +462,28 @@ function renderChart() {
     svg.innerHTML = "";
     const rows = c.rows, n = rows.length;
 
-    let yMin, yMax, ticks, yFmt;
+    let yMin, yMax, ticks, yFmt, yUnit;
     if (S.view === "preis") {
-        yMin = 1.5; yMax = 2.2;
-        ticks = [1.5,1.6,1.7,1.8,1.9,2.0,2.1,2.2];
-        yFmt = v => v.toFixed(2);
+        const ps = rows.map(r => r.price);
+        const lo = Math.min(...ps), hi = Math.max(...ps);
+        yMin = Math.max(0, Math.floor(lo*10)/10 - 0.1);
+        yMax = Math.ceil(hi*10)/10 + 0.1;
+        ticks = tickArray(yMin, yMax, 5);
+        yFmt = v => num(v, 2);
+        yUnit = "€/L";
     } else if (S.view === "kum") {
-        yMin = 0; yMax = niceMax(rows[n-1].cumB);
+        yMin = 0; yMax = niceMax(Math.max(rows[n-1].cumV, rows[n-1].cumE));
         ticks = tickArray(yMin, yMax, 5);
-        yFmt = v => (v/1000) + "k";
+        yFmt = v => num(v, 0);
+        yUnit = "€";
     } else {
-        const maxV = Math.max(...rows.map(r => Math.max(r.benzin, r.eauto)));
-        yMin = 0; yMax = niceMax(maxV);
+        const vals = rows.flatMap(r => [r.vMonth, r.eMonth]);
+        const mn = Math.min(...vals), mx = Math.max(...vals);
+        yMin = mn < 0 ? -niceMax(-mn) : 0;
+        yMax = niceMax(mx);
         ticks = tickArray(yMin, yMax, 5);
-        yFmt = v => num(v);
+        yFmt = v => num(v, 0);
+        yUnit = "€";
     }
 
     const band = plotW / n;
@@ -395,6 +495,9 @@ function renderChart() {
         svg.appendChild(el("line", { x1:M.left, y1:y, x2:VB.w-M.right, y2:y, stroke:C.line, "stroke-width":1 }));
         svg.appendChild(el("text", { x:M.left-8, y:y+4, "text-anchor":"end", fill:C.faint, "font-size":11 }, yFmt(t)));
     });
+    // Achsentitel (Einheit) oben links
+    svg.appendChild(el("text", { x:M.left-8, y:M.top-4, "text-anchor":"end", fill:C.muted, "font-size":11, "font-weight":600 }, yUnit));
+
     const lblStep = Math.max(1, Math.ceil(n / 8));
     rows.forEach((r, i) => {
         if (i % lblStep !== 0) return;
@@ -402,19 +505,20 @@ function renderChart() {
     });
 
     if (S.view === "monat") {
-        const bw = band * 0.6;
+        const bw = band * 0.6, y0 = yS(0);
         rows.forEach((r, i) => {
-            const y = yS(r.benzin);
-            svg.appendChild(el("rect", { x:xC(i)-bw/2, y:y, width:bw, height:M.top+plotH-y, fill:C.benzin, rx:2 }));
+            const y = yS(r.vMonth);
+            svg.appendChild(el("rect", { x:xC(i)-bw/2, y:Math.min(y,y0), width:bw, height:Math.abs(y0-y), fill:C.benzin, rx:2 }));
         });
-        svg.appendChild(linePath(rows.map((r,i)=>[xC(i), yS(r.eauto)]), C.strom, 2));
+        svg.appendChild(linePath(rows.map((r,i)=>[xC(i), yS(r.eMonth)]), C.strom, 2));
     } else if (S.view === "kum") {
-        svg.appendChild(linePath(rows.map((r,i)=>[xC(i), yS(r.cumB)]), C.benzin, 2.5));
+        svg.appendChild(linePath(rows.map((r,i)=>[xC(i), yS(r.cumV)]), C.benzin, 2.5));
         svg.appendChild(linePath(rows.map((r,i)=>[xC(i), yS(r.cumE)]), C.strom, 2.5));
     } else {
-        const yr = yS(1.688);
+        const avg = rows.reduce((a,r)=>a+r.price,0) / n;
+        const yr = yS(avg);
         svg.appendChild(el("line", { x1:M.left, y1:yr, x2:VB.w-M.right, y2:yr, stroke:C.faint, "stroke-dasharray":"4 4", "stroke-width":1 }));
-        svg.appendChild(el("text", { x:VB.w-M.right-4, y:yr-5, "text-anchor":"end", fill:C.faint, "font-size":10 }, "Ø 2025"));
+        svg.appendChild(el("text", { x:VB.w-M.right-4, y:yr-5, "text-anchor":"end", fill:C.faint, "font-size":10 }, `Ø ${num(avg,2)} €/L`));
         svg.appendChild(linePath(rows.map((r,i)=>[xC(i), yS(r.price)]), C.benzin, 2));
     }
 
@@ -423,9 +527,19 @@ function renderChart() {
     svg.appendChild(el("rect", { x:M.left, y:M.top, width:plotW, height:plotH, fill:"transparent" }));
 
     const legend = document.getElementById("legend");
-    if (S.view === "monat") legend.innerHTML = leg(C.benzin,"Benzin/Monat") + leg(C.strom,"Elektroauto/Monat");
-    else if (S.view === "kum") legend.innerHTML = leg(C.benzin,"Benzin kumuliert") + leg(C.strom,"Elektroauto kumuliert");
-    else legend.innerHTML = leg(C.benzin,"E10 €/L");
+    const note = document.getElementById("chartNote");
+    if (S.view === "kum") {
+        legend.innerHTML = leg(C.benzin,"Verbrenner (Golf)") + leg(C.strom,"Elektroauto (ID.3)");
+        note.textContent = "Aufsummierte Gesamtkosten inkl. Kfz-Steuer und THG-Prämie über die Zeit. "
+                         + "Je weiter die Linien auseinanderlaufen, desto größer der Kostenvorteil des Elektroautos.";
+    } else if (S.view === "monat") {
+        legend.innerHTML = leg(C.benzin,"Verbrenner / Monat") + leg(C.strom,"Elektroauto / Monat");
+        note.textContent = "Gesamtkosten pro Monat: Energie plus anteilige Kfz-Steuer, beim Elektroauto abzüglich "
+                         + "anteiliger THG-Prämie.";
+    } else {
+        legend.innerHTML = leg(C.benzin,"Benzinpreis (Super E10)");
+        note.textContent = "Tatsächlicher monatlicher Super-E10-Durchschnittspreis. Gestrichelt: Mittelwert im gewählten Zeitraum.";
+    }
 
     chartState = { rows, xC, guide, band, n };
     wireTooltip();
@@ -464,13 +578,13 @@ function wireTooltip() {
 
         let body;
         if (S.view === "preis")
-            body = `<div style="color:${C.benzin}">E10 €/L: ${eur(r.price,3)}</div>`;
+            body = `<div style="color:${C.benzin}">Benzinpreis: ${eur(r.price,3)}/L</div>`;
         else if (S.view === "kum")
-            body = `<div style="color:${C.benzin}">Benzin kumuliert: ${eur(r.cumB)}</div>`
-                 + `<div style="color:${C.strom}">Elektroauto kumuliert: ${eur(r.cumE)}</div>`;
+            body = `<div style="color:${C.benzin}">Verbrenner gesamt: ${eur(r.cumV)}</div>`
+                 + `<div style="color:${C.strom}">Elektroauto gesamt: ${eur(r.cumE)}</div>`;
         else
-            body = `<div style="color:${C.benzin}">Benzin/Monat: ${eur(r.benzin)}</div>`
-                 + `<div style="color:${C.strom}">Elektroauto/Monat: ${eur(r.eauto)}</div>`;
+            body = `<div style="color:${C.benzin}">Verbrenner/Monat: ${eur(r.vMonth)}</div>`
+                 + `<div style="color:${C.strom}">Elektroauto/Monat: ${eur(r.eMonth)}</div>`;
 
         tip.innerHTML = `<div class="t-title">${r.label}</div>${body}`;
         const cssX = (gx / VB.w) * rect.width;
@@ -488,28 +602,73 @@ function wireTooltip() {
     svg.addEventListener("touchend", hide);
 }
 
-// ── Kennzahlen / Regler / Tabelle ────────────────────────────
+// ── Kennzahlen / Gegenüberstellung / Faktenblatt / Tabelle ───
 function renderReadouts() {
-    const c = calc(), years = c.n / 12;
+    const c = calc(), years = c.years;
 
-    set("ro-benzin-v", eur(c.totB));
-    set("ro-benzin-s", `${eur(c.totB/years)} / Jahr`);
-    set("ro-eauto-v", eur(c.totE));
-    set("ro-eauto-s", `Ø-Ladepreis ${eur(c.blend,2)}/kWh`);
+    set("ro-v-car", CARS.v);
+    set("ro-v-v", eur(c.totV));
+    set("ro-v-s", `${eur(c.energyV)} Sprit + ${eur(c.taxVtot)} Steuer`);
+
+    set("ro-e-car", CARS.e);
+    set("ro-e-v", eur(c.totE));
+    set("ro-e-s", `${eur(c.energyE)} Strom + ${eur(c.taxEtot)} Steuer − ${eur(c.thgTot)} THG`);
+
     set("ro-spar-v", eur(c.spar));
     document.getElementById("ro-spar-v").style.color = c.spar >= 0 ? C.spar : C.warn;
     set("ro-spar-s", `${num(c.sparPct,0)} % · ${eur(c.spar/years)}/Jahr`);
 
-    const ex = [
-        ["Benzin pro km", eur(c.totB/S.kmTotal,2), C.benzin],
-        ["Elektroauto pro km", eur(c.totE/S.kmTotal,2), C.strom],
-        ["Getankte Menge", num((S.kmTotal/100)*S.lPer100) + " L", C.text],
-        ["Geladene Energie", num((S.kmTotal/100)*S.kwhPer100) + " kWh", C.text],
-    ];
-    document.getElementById("extras").innerHTML = ex.map(([l,v,col]) =>
-        `<div class="extra"><div class="e-label">${l}</div><div class="e-value" style="color:${col}">${v}</div></div>`
-    ).join("");
+    renderBreakdown(c);
+    renderFactsheet(c);
+    renderTable(c);
+}
 
+// Gegenüberstellung: Kostenpositionen von Verbrenner und Elektroauto nebeneinander
+function renderBreakdown(c) {
+    const perKmV = c.totV / S.kmTotal, perKmE = c.totE / S.kmTotal;
+    const rows = [
+        ["", `Verbrenner`, `Elektroauto`, "head"],
+        ["Energiekosten", eur(c.energyV), eur(c.energyE), ""],
+        ["Kfz-Steuer (Zeitraum)", eur(c.taxVtot), eur(c.taxEtot), ""],
+        ["THG-Prämie (Gutschrift)", "—", c.thgTot > 0 ? "− " + eur(c.thgTot) : eur(0), "thg"],
+        ["Gesamtkosten", eur(c.totV), eur(c.totE), "sum"],
+        ["Kosten pro km", eur(perKmV,2), eur(perKmE,2), ""],
+    ];
+    document.getElementById("breakdown").innerHTML = rows.map(([label, v, e, kind]) => {
+        if (kind === "head")
+            return `<div class="bd-row bd-head"><span></span><span class="bd-v">${v}</span><span class="bd-e">${e}</span></div>`;
+        const eStyle = kind === "thg" ? ` style="color:${C.spar}"` : ` style="color:${C.strom}"`;
+        const vStyle = kind === "sum" || kind === "" ? ` style="color:${C.benzin}"` : "";
+        const rowCls = kind === "sum" ? "bd-row bd-sum" : "bd-row";
+        return `<div class="${rowCls}"><span class="bd-label">${label}</span>`
+             + `<span class="bd-v"${vStyle}>${v}</span><span class="bd-e"${eStyle}>${e}</span></div>`;
+    }).join("");
+}
+
+function renderFactsheet(c) {
+    set("fs-assume", `Annahme: zwei preislich vergleichbare Autos · Zeitraum ${c.fromLabel} – ${c.toLabel} `
+                   + `(${c.n} Monate) · ${num(S.kmTotal)} km Laufleistung.`);
+    set("fs-v-energy", eur(c.energyV));
+    set("fs-v-tax", eur(c.taxVtot));
+    set("fs-v-total", eur(c.totV));
+    set("fs-e-energy", eur(c.energyE));
+    set("fs-e-tax", eur(c.taxEtot));
+    set("fs-e-thg", c.thgTot > 0 ? "− " + eur(c.thgTot) : eur(0));
+    set("fs-e-total", eur(c.totE));
+
+    const spar = c.spar, cheaper = spar >= 0 ? "Elektroauto" : "Verbrenner";
+    document.querySelector(".fs-result .fs-r-label").textContent = spar >= 0 ? "Vorteil Elektroauto" : "Vorteil Verbrenner";
+    const rv = document.getElementById("fs-r-value");
+    rv.textContent = eur(Math.abs(spar));
+    rv.style.color = spar >= 0 ? C.spar : C.warn;
+    set("fs-r-sub", `${num(Math.abs(c.sparPct),0)} % günstiger · ${eur(Math.abs(spar)/c.years)}/Jahr`);
+
+    set("fs-foot", `Basis: ${num(S.lPer100,1)} L/100 km bzw. ${num(S.kwhPer100,1)} kWh/100 km, Ø-Ladepreis `
+                 + `${eur(c.blend,2)}/kWh, Kfz-Steuer ${eur(S.taxV)}/Jahr (Verbrenner) bzw. ${eur(S.taxE)}/Jahr (Elektro), `
+                 + `THG-Prämie gesamt ${eur(c.thgTot)}. Das ${cheaper} ist im gewählten Zeitraum günstiger.`);
+}
+
+function renderTable(c) {
     document.getElementById("tbl-summary").textContent = `Monatstabelle anzeigen (${c.n} Monate)`;
     document.getElementById("tbody").innerHTML = c.rows.map(r =>
         `<tr>
@@ -517,23 +676,22 @@ function renderReadouts() {
             <td>${num(r.price,3)}</td>
             <td>${num(r.km)}</td>
             <td>${num(r.liter)}</td>
-            <td style="color:${C.benzin}">${eur(r.benzin)}</td>
-            <td style="color:${C.strom}">${eur(r.eauto)}</td>
-            <td style="color:${C.spar}">${eur(r.benzin - r.eauto)}</td>
+            <td style="color:${C.benzin}">${eur(r.vMonth)}</td>
+            <td style="color:${C.strom}">${eur(r.eMonth)}</td>
+            <td style="color:${C.spar}">${eur(r.vMonth - r.eMonth)}</td>
         </tr>`).join("");
 }
 
 function renderSliders() {
     const [fi, ti] = rangeIdx();
-    const months = ti - fi + 1;
-    const years = months / 12;
+    const months = ti - fi + 1, years = months / 12;
     set("period-h", `${num(months)} Monate · ${num(years,1)} Jahre · ${num(S.kmTotal/months)} km/Monat`);
     set("km-v", num(S.kmTotal) + " km");
-    set("km-h", num(S.kmTotal/years) + " km / Jahr");
+    set("km-h", num(S.kmTotal/years) + " km / Jahr · gleichmäßig auf alle Monate verteilt");
     set("l100-v", num(S.lPer100,1) + " L/100 km");
     set("kwh100-v", num(S.kwhPer100,1) + " kWh/100 km");
     set("homeShare-v", num(S.homeShare) + " %");
-    set("homeShare-h", num(100 - S.homeShare) + " % unterwegs");
+    set("homeShare-h", num(100 - S.homeShare) + " % unterwegs (öffentlich) geladen");
     set("pubPrice-v", fmtCt(S.pubPrice));
     set("pvShare-v", num(S.pvShare) + " %");
     set("pvShare-h", num(100 - S.pvShare) + " % aus dem Netz");
@@ -541,14 +699,42 @@ function renderSliders() {
     set("gridPrice-v", fmtCt(S.gridPrice));
 }
 
-function set(id, txt) { document.getElementById(id).textContent = txt; }
+function set(id, txt) { const e = document.getElementById(id); if (e) e.textContent = txt; }
 function renderAll() { renderReadouts(); renderSliders(); renderChart(); }
+
+// ── THG-Jahresfelder (passen sich dem Zeitraum an) ───────────
+function buildThgFields() {
+    const [fi, ti] = rangeIdx();
+    const y0 = labelYear(PRICES[fi][0]), y1 = labelYear(PRICES[ti][0]);
+    const grid = document.getElementById("thg-grid");
+    let html = "";
+    for (let y = y0; y <= y1; y++) {
+        if (!(y in S.thg)) S.thg[y] = THG_DEFAULTS[y] || 0;   // Default sicherstellen
+        html += `<div class="thg-field">
+            <span class="s-label">${y}</span>
+            <input type="number" class="tool-input thg-input" data-year="${y}"
+                   min="0" max="5000" step="10" value="${S.thg[y]}" inputmode="numeric">
+        </div>`;
+    }
+    grid.innerHTML = html;
+    grid.querySelectorAll(".thg-input").forEach(inp => {
+        inp.addEventListener("input", e => {
+            const y = e.target.dataset.year;
+            const v = parseFloat(e.target.value);
+            S.thg[y] = (isFinite(v) && v >= 0) ? v : 0;
+            saveState();
+            renderReadouts();
+            renderChart();
+        });
+    });
+}
 
 // ── Verdrahtung ──────────────────────────────────────────────
 const bind = [
     ["km","kmTotal"],["l100","lPer100"],["kwh100","kwhPer100"],
     ["homeShare","homeShare"],["pubPrice","pubPrice"],
     ["pvShare","pvShare"],["pvPrice","pvPrice"],["gridPrice","gridPrice"],
+    ["taxV","taxV"],["taxE","taxE"],
 ];
 
 // Zeitraum-Dropdowns aus der Preisreihe aufbauen (Preise sind Datenquelle)
@@ -571,7 +757,9 @@ function applyStateToInputs() {
 
 bind.forEach(([id, key]) => {
     document.getElementById(id).addEventListener("input", e => {
-        S[key] = parseFloat(e.target.value);
+        let v = parseFloat(e.target.value);
+        if (!isFinite(v)) v = DEFAULTS[key];
+        S[key] = clamp(v, RANGES[key]);
         saveState();
         renderAll();
     });
@@ -584,6 +772,7 @@ document.querySelectorAll(".tab").forEach(btn => {
         renderChart();
     });
 });
+
 // Zeitraum-Auswahl: sicherstellen, dass „von“ nie hinter „bis“ liegt
 document.getElementById("fromSel").addEventListener("change", e => {
     S.fromKey = e.target.value;
@@ -592,6 +781,7 @@ document.getElementById("fromSel").addEventListener("change", e => {
         document.getElementById("toSel").value = S.toKey;
     }
     saveState();
+    buildThgFields();   // ggf. neue Jahre im Zeitraum
     renderAll();
 });
 document.getElementById("toSel").addEventListener("change", e => {
@@ -601,12 +791,14 @@ document.getElementById("toSel").addEventListener("change", e => {
         document.getElementById("fromSel").value = S.fromKey;
     }
     saveState();
+    buildThgFields();
     renderAll();
 });
 window.addEventListener("resize", () => renderChart());
 
 populatePeriod();       // Dropdown-Optionen aus der Preisreihe erzeugen
 applyStateToInputs();   // gespeicherte Werte auf die Regler übertragen
+buildThgFields();       // THG-Jahresfelder für den aktuellen Zeitraum
 renderAll();
 </script>
 

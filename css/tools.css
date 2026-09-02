@@ -124,6 +124,27 @@
 .slider-row .s-value { font-family: var(--mono); font-size: var(--fs-base); color: var(--text); font-weight: 600; }
 .slider input[type=range] { width: 100%; height: 4px; cursor: pointer; accent-color: var(--accent); }
 .slider .s-hint { font-size: var(--fs-xs); color: var(--faint); margin-top: 4px; }
+
+/* Betrachtungszeitraum */
+.period-card { grid-column: 1 / -1; }
+.period-grid { display: flex; flex-wrap: wrap; gap: 14px; }
+.period-field { flex: 1 1 160px; display: flex; flex-direction: column; gap: 6px; }
+.period-field .s-label { font-size: var(--fs-sm); color: var(--muted); }
+.period-sel {
+    width: 100%;
+    padding: 9px 12px;
+    background: var(--bg, #0f151b);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: var(--r-sm, 8px);
+    font-family: var(--mono);
+    font-size: var(--fs-base);
+    font-weight: 600;
+    cursor: pointer;
+}
+.period-sel:focus-visible { outline: 2px solid var(--series-a); outline-offset: 2px; }
+.period-card .s-hint { font-size: var(--fs-xs); color: var(--faint); margin-top: 12px; }
+
 .sub-divider {
     margin: 6px 0 16px;
     padding-top: 14px;

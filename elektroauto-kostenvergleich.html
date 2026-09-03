@@ -172,6 +172,14 @@
                     <input type="number" id="taxV" class="tool-input" min="0" max="1000" step="1" value="96" inputmode="numeric">
                     <span class="s-hint">Fixkosten pro Jahr, anteilig auf die Monate des Zeitraums verteilt.</span>
                 </div>
+                <details class="ins-details">
+                    <summary id="insV-summary">Inspektionskosten (alle 30.000 km)</summary>
+                    <div class="s-hint" style="margin:-4px 0 10px">
+                        Angenommene Mittelwerte je Inspektion. Sie f&auml;llt bei der jeweiligen
+                        km-Marke an; Marken jenseits der Fahrleistung sind gekennzeichnet.
+                    </div>
+                    <div class="thg-grid" id="insV-grid"></div>
+                </details>
             </div>
 
             <div class="ctrl-card">
@@ -213,6 +221,14 @@
                     <input type="number" id="taxE" class="tool-input" min="0" max="1000" step="1" value="0" inputmode="numeric">
                     <span class="s-hint">Elektroautos sind in Deutschland bis Ende 2030 von der Kfz-Steuer befreit.</span>
                 </div>
+                <details class="ins-details">
+                    <summary id="insE-summary">Inspektionskosten (alle 2 Jahre)</summary>
+                    <div class="s-hint" style="margin:-4px 0 10px">
+                        Angenommene Mittelwerte je Inspektion. Sie f&auml;llt nach dem jeweiligen
+                        Fahrzeugalter an; Jahre jenseits des Zeitraums sind gekennzeichnet.
+                    </div>
+                    <div class="thg-grid" id="insE-grid"></div>
+                </details>
             </div>
 
             <div class="ctrl-card span-2">
@@ -262,6 +278,7 @@
                         <div class="fs-cname">VW Golf 1.5 TSI</div>
                         <div class="fs-line"><span class="fs-k">Energie (Benzin)</span><span class="fs-val" id="fs-v-energy"></span></div>
                         <div class="fs-line"><span class="fs-k">Kfz-Steuer</span><span class="fs-val" id="fs-v-tax"></span></div>
+                        <div class="fs-line"><span class="fs-k">Inspektion</span><span class="fs-val" id="fs-v-ins"></span></div>
                         <div class="fs-line"><span class="fs-k">THG-Pr&auml;mie</span><span class="fs-val" id="fs-v-thg"></span></div>
                         <div class="fs-total"><span class="fs-k">Summe</span><span class="fs-val" id="fs-v-total" style="color:var(--series-b)"></span></div>
                     </div>
@@ -269,6 +286,7 @@
                         <div class="fs-cname">VW ID.3 Pro</div>
                         <div class="fs-line"><span class="fs-k">Energie (Strom)</span><span class="fs-val" id="fs-e-energy"></span></div>
                         <div class="fs-line"><span class="fs-k">Kfz-Steuer</span><span class="fs-val" id="fs-e-tax"></span></div>
+                        <div class="fs-line"><span class="fs-k">Inspektion</span><span class="fs-val" id="fs-e-ins"></span></div>
                         <div class="fs-line"><span class="fs-k">THG-Pr&auml;mie</span><span class="fs-val" id="fs-e-thg" style="color:var(--pos)"></span></div>
                         <div class="fs-total"><span class="fs-k">Summe</span><span class="fs-val" id="fs-e-total" style="color:var(--series-a)"></span></div>
                     </div>
@@ -291,7 +309,9 @@
             ADAC-/Statista-/en2x-Daten (Jahresmittel decken sich mit den ADAC-Werten). Strom als konstanter, einstellbarer
             Mittelwert (Mix aus Photovoltaik, Netz und &ouml;ffentlichem Laden). Die Gesamtfahrleistung wird gleichm&auml;&szlig;ig
             auf die Monate des gew&auml;hlten Zeitraums verteilt; Kfz-Steuer und THG-Pr&auml;mie flie&szlig;en anteilig je Monat ein.
-            Alle Werte sind N&auml;herungen f&uuml;r eine Gr&ouml;&szlig;enordnung, keine Abrechnung.
+            <b>Inspektion/Wartung:</b> angenommene Mittelwerte &ndash; beim Verbrenner laufleistungsabh&auml;ngig (alle 30.000&nbsp;km),
+            beim Elektroauto zeitabh&auml;ngig (alle 2&nbsp;Jahre); jede Inspektion wird dem Monat zugeordnet, in dem die km- bzw.
+            Zeit-Marke erreicht wird. Alle Werte sind N&auml;herungen f&uuml;r eine Gr&ouml;&szlig;enordnung, keine Abrechnung.
         </div>
     </div>
 </div>
@@ -336,6 +356,14 @@ const PRICES = [
 // Zurückliegende Jahre vorbelegt; künftige Jahre kann der Nutzer selbst eintragen.
 const THG_DEFAULTS = { 2022:0, 2023:300, 2024:100, 2025:100, 2026:0 };
 
+// Inspektion/Wartung – angenommene Mittelwerte je Inspektion (€).
+// Verbrenner: laufleistungsabhängig, alle 30.000 km. Elektroauto: zeitabhängig,
+// alle 2 Jahre. Weitere Marken sind vorbereitet und frei eintragbar.
+const INS_V_KM     = [30000, 60000, 90000, 120000, 150000, 180000];
+const INS_E_YEARS  = [2, 4, 6, 8, 10];
+const INS_V_DEFAULTS = { 30000:340, 60000:490, 90000:380, 120000:0, 150000:0, 180000:0 };
+const INS_E_DEFAULTS = { 2:230, 4:230, 6:0, 8:0, 10:0 };
+
 // Formatierung (deutsches Zahlenformat: Komma als Dezimaltrenner)
 const eur = (n, d=0) => n.toLocaleString("de-DE",
     { style:"currency", currency:"EUR", minimumFractionDigits:d, maximumFractionDigits:d });
@@ -375,16 +403,31 @@ function rangeIdx() {
     if (fi > ti) { const t = fi; fi = ti; ti = t; }
     return [fi, ti];
 }
-// THG-Prämie eines Kalenderjahres (aus Zustand, sonst Default, sonst 0)
-function thgFor(year) {
-    const v = S.thg[year];
+// Wert aus einem €-Objekt (Zustand → Default → 0)
+function mapVal(obj, key, defaults) {
+    const v = obj[key];
     if (typeof v === "number" && isFinite(v)) return v;
-    return THG_DEFAULTS[year] || 0;
+    return defaults[key] || 0;
+}
+const thgFor  = year => mapVal(S.thg,  year, THG_DEFAULTS);
+const insVfor = km   => mapVal(S.insV, km,   INS_V_DEFAULTS);
+const insEfor = yr   => mapVal(S.insE, yr,   INS_E_DEFAULTS);
+
+// Übernimmt gespeicherte numerische Werte eines Objekts in den Zustand
+function mergeMap(target, saved, max) {
+    if (saved && typeof saved === "object") {
+        for (const k in saved) {
+            const v = saved[k];
+            if (typeof v === "number" && isFinite(v)) target[k] = clamp(v, [0, max]);
+        }
+    }
 }
 
 function loadState() {
     const s = Object.assign({ view:"kum", fromKey:FIRST_KEY, toKey:LAST_KEY }, DEFAULTS);
-    s.thg = Object.assign({}, THG_DEFAULTS);
+    s.thg  = Object.assign({}, THG_DEFAULTS);
+    s.insV = Object.assign({}, INS_V_DEFAULTS);
+    s.insE = Object.assign({}, INS_E_DEFAULTS);
     try {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
         if (saved && typeof saved === "object") {
@@ -395,19 +438,16 @@ function loadState() {
             if (["kum","monat","preis"].includes(saved.view)) s.view = saved.view;
             if (keyIdx(saved.fromKey) >= 0) s.fromKey = saved.fromKey;
             if (keyIdx(saved.toKey)   >= 0) s.toKey   = saved.toKey;
-            if (saved.thg && typeof saved.thg === "object") {
-                for (const y in saved.thg) {
-                    const v = saved.thg[y];
-                    if (typeof v === "number" && isFinite(v)) s.thg[y] = clamp(v, [0, 5000]);
-                }
-            }
+            mergeMap(s.thg,  saved.thg,  5000);
+            mergeMap(s.insV, saved.insV, 5000);
+            mergeMap(s.insE, saved.insE, 5000);
         }
     } catch (e) { /* localStorage nicht verfügbar → Standardwerte */ }
     return s;
 }
 function saveState() {
     try {
-        const o = { view:S.view, fromKey:S.fromKey, toKey:S.toKey, thg:S.thg };
+        const o = { view:S.view, fromKey:S.fromKey, toKey:S.toKey, thg:S.thg, insV:S.insV, insE:S.insE };
         for (const k in DEFAULTS) o[k] = S[k];
         localStorage.setItem(STORAGE_KEY, JSON.stringify(o));
     } catch (e) { /* Speichern nicht möglich – ignorieren */ }
@@ -429,22 +469,41 @@ function calc() {
     const evM = (kmM/100) * S.kwhPer100 * blend; // Strom-Energiekosten/Monat
     const taxVm = S.taxV/12, taxEm = S.taxE/12;  // Kfz-Steuer je Monat
 
-    let cumBenzin=0, cumStrom=0, cumTaxV=0, cumTaxE=0, cumThg=0, cumV=0, cumE=0;
-    const rows = data.map(([label, price]) => {
+    // Inspektionen den Monaten zuordnen, in denen die jeweilige Marke erreicht wird.
+    // Verbrenner: km-Marke m im Monat, in dem die kumulierte Fahrleistung m erreicht.
+    // Elektroauto: Alters-Marke (Jahre) im entsprechenden Monat ab Start.
+    const insVByMonth = new Array(n).fill(0);
+    INS_V_KM.forEach(m => {
+        if (m <= S.kmTotal && kmM > 0) {
+            const mi = Math.min(n-1, Math.max(0, Math.ceil(m / kmM) - 1));
+            insVByMonth[mi] += insVfor(m);
+        }
+    });
+    const insEByMonth = new Array(n).fill(0);
+    INS_E_YEARS.forEach(yr => {
+        const monthMark = yr * 12;
+        if (monthMark <= n) insEByMonth[monthMark - 1] += insEfor(yr);
+    });
+
+    let cumBenzin=0, cumStrom=0, cumTaxV=0, cumTaxE=0, cumThg=0, cumInsV=0, cumInsE=0, cumV=0, cumE=0;
+    const rows = data.map(([label, price], i) => {
         const thgM   = thgFor(labelYear(label)) / 12; // Prämie je Monat (Gutschrift)
         const benzin = literM * price;                // Energie Verbrenner
         const strom  = evM;                           // Energie Elektro
-        const vMonth = benzin + taxVm;                // Gesamt Verbrenner/Monat
-        const eMonth = strom + taxEm - thgM;          // Gesamt Elektro/Monat
+        const insVm  = insVByMonth[i];                // Inspektion Verbrenner in diesem Monat
+        const insEm  = insEByMonth[i];                // Inspektion Elektro in diesem Monat
+        const vMonth = benzin + taxVm + insVm;               // Gesamt Verbrenner/Monat
+        const eMonth = strom + taxEm + insEm - thgM;         // Gesamt Elektro/Monat
         cumBenzin+=benzin; cumStrom+=strom;
-        cumTaxV+=taxVm; cumTaxE+=taxEm; cumThg+=thgM;
+        cumTaxV+=taxVm; cumTaxE+=taxEm; cumThg+=thgM; cumInsV+=insVm; cumInsE+=insEm;
         cumV+=vMonth; cumE+=eMonth;
-        return { label, price, km:kmM, liter:literM, benzin, strom, thg:thgM, vMonth, eMonth, cumV, cumE };
+        return { label, price, km:kmM, liter:literM, benzin, strom, thg:thgM, insV:insVm, insE:insEm, vMonth, eMonth, cumV, cumE };
     });
     const totV = cumV, totE = cumE, spar = totV - totE;
     return {
         rows, n, kmM, blend, evM, literM,
         energyV:cumBenzin, energyE:cumStrom, taxVtot:cumTaxV, taxEtot:cumTaxE, thgTot:cumThg,
+        insVtot:cumInsV, insEtot:cumInsE,
         totV, totE, spar, sparPct: totV ? (spar/totV)*100 : 0,
         fromLabel:data[0][0], toLabel:data[n-1][0], years:n/12,
     };
@@ -548,12 +607,13 @@ function renderChart() {
     const note = document.getElementById("chartNote");
     if (S.view === "kum") {
         legend.innerHTML = leg(C.benzin,"Verbrenner (Golf)") + leg(C.strom,"Elektroauto (ID.3)");
-        note.textContent = "Aufsummierte Gesamtkosten inkl. Kfz-Steuer und THG-Prämie über die Zeit. "
-                         + "Je weiter die Linien auseinanderlaufen, desto größer der Kostenvorteil des Elektroautos.";
+        note.textContent = "Aufsummierte Gesamtkosten inkl. Kfz-Steuer, Inspektion und THG-Prämie über die Zeit. "
+                         + "Die Stufen sind fällige Inspektionen. Je weiter die Linien auseinanderlaufen, desto größer "
+                         + "der Kostenvorteil des Elektroautos.";
     } else if (S.view === "monat") {
         legend.innerHTML = leg(C.benzin,"Verbrenner / Monat") + leg(C.strom,"Elektroauto / Monat");
-        note.textContent = "Gesamtkosten pro Monat: Energie plus anteilige Kfz-Steuer, beim Elektroauto abzüglich "
-                         + "anteiliger THG-Prämie.";
+        note.textContent = "Gesamtkosten pro Monat: Energie plus anteilige Kfz-Steuer und fällige Inspektionen, "
+                         + "beim Elektroauto abzüglich anteiliger THG-Prämie.";
     } else {
         legend.innerHTML = leg(C.benzin,"Benzinpreis (Super E10)");
         note.textContent = "Tatsächlicher monatlicher Super-E10-Durchschnittspreis. Gestrichelt: Mittelwert im gewählten Zeitraum.";
@@ -631,11 +691,11 @@ function renderReadouts() {
 
     set("ro-v-car", CARS.v);
     set("ro-v-v", eur(c.totV));
-    set("ro-v-s", `${eur(c.energyV)} Sprit + ${eur(c.taxVtot)} Steuer`);
+    set("ro-v-s", `${eur(c.energyV)} Sprit + ${eur(c.taxVtot)} Steuer + ${eur(c.insVtot)} Wartung`);
 
     set("ro-e-car", CARS.e);
     set("ro-e-v", eur(c.totE));
-    set("ro-e-s", `${eur(c.energyE)} Strom + ${eur(c.taxEtot)} Steuer − ${eur(c.thgTot)} THG`);
+    set("ro-e-s", `${eur(c.energyE)} Strom + ${eur(c.insEtot)} Wartung − ${eur(c.thgTot)} THG`);
 
     set("ro-spar-v", eur(c.spar));
     document.getElementById("ro-spar-v").style.color = c.spar >= 0 ? C.spar : C.warn;
@@ -644,6 +704,7 @@ function renderReadouts() {
     renderBreakdown(c);
     renderFactsheet(c);
     renderTable(c);
+    refreshInsMarkers(c);
 }
 
 // Gegenüberstellung: Kostenpositionen von Verbrenner und Elektroauto nebeneinander
@@ -653,6 +714,7 @@ function renderBreakdown(c) {
         ["", `Verbrenner`, `Elektroauto`, "head"],
         ["Energiekosten", eur(c.energyV), eur(c.energyE), ""],
         ["Kfz-Steuer (Zeitraum)", eur(c.taxVtot), eur(c.taxEtot), ""],
+        ["Inspektion/Wartung", eur(c.insVtot), eur(c.insEtot), ""],
         ["THG-Prämie (Gutschrift)", "− " + eur(0), "− " + eur(c.thgTot), "thg"],
         ["Gesamtkosten", eur(c.totV), eur(c.totE), "sum"],
         ["Kosten pro km", eur(perKmV,2), eur(perKmE,2), ""],
@@ -678,10 +740,12 @@ function renderFactsheet(c) {
 
     set("fs-v-energy", eur(c.energyV));
     set("fs-v-tax", eur(c.taxVtot));
+    set("fs-v-ins", eur(c.insVtot));
     set("fs-v-thg", "− " + eur(0));
     set("fs-v-total", eur(c.totV));
     set("fs-e-energy", eur(c.energyE));
     set("fs-e-tax", eur(c.taxEtot));
+    set("fs-e-ins", eur(c.insEtot));
     set("fs-e-thg", "− " + eur(c.thgTot));
     set("fs-e-total", eur(c.totE));
 
@@ -773,6 +837,49 @@ function buildThgFields() {
     updateThgSummary();
 }
 
+// ── Inspektions-/Wartungsfelder ──────────────────────────────
+// Verbrenner: je km-Marke, Elektro: je Alters-Marke (Jahre). Feldsatz ist fest,
+// daher einmal aufgebaut; aktiv/inaktiv wird per refreshInsMarkers aktualisiert.
+function buildInsFields() {
+    buildOneInsGrid("insV-grid", INS_V_KM,    S.insV, m => num(m) + " km", "insV");
+    buildOneInsGrid("insE-grid", INS_E_YEARS, S.insE, y => y + " Jahre",   "insE");
+}
+function buildOneInsGrid(gridId, keys, stateObj, labelFn, kind) {
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = keys.map(k =>
+        `<div class="thg-field" data-key="${k}">
+            <span class="s-label">${labelFn(k)}</span>
+            <input type="number" class="tool-input ins-input" data-kind="${kind}" data-key="${k}"
+                   min="0" max="5000" step="10" value="${stateObj[k]}" inputmode="numeric">
+        </div>`).join("");
+    grid.querySelectorAll(".ins-input").forEach(inp => {
+        inp.addEventListener("input", e => {
+            const key = e.target.dataset.key;
+            const v = parseFloat(e.target.value);
+            const val = (isFinite(v) && v >= 0) ? v : 0;
+            if (e.target.dataset.kind === "insV") S.insV[key] = val; else S.insE[key] = val;
+            saveState();
+            renderAll();
+        });
+    });
+}
+function toggleInsField(f, active, note) {
+    f.classList.toggle("thg-inactive", !active);
+    let n = f.querySelector(".thg-note");
+    if (!active) {
+        if (!n) { n = document.createElement("span"); n.className = "thg-note"; f.appendChild(n); }
+        n.textContent = note;
+    } else if (n) { n.remove(); }
+}
+function refreshInsMarkers(c) {
+    document.querySelectorAll("#insV-grid .thg-field").forEach(f =>
+        toggleInsField(f, (+f.dataset.key) <= S.kmTotal, "über Fahrleistung"));
+    document.querySelectorAll("#insE-grid .thg-field").forEach(f =>
+        toggleInsField(f, (+f.dataset.key) * 12 <= c.n, "außerhalb Zeitraum"));
+    set("insV-summary", `Inspektionskosten (alle 30.000 km) · aktuell ${eur(c.insVtot)} im Zeitraum`);
+    set("insE-summary", `Inspektionskosten (alle 2 Jahre) · aktuell ${eur(c.insEtot)} im Zeitraum`);
+}
+
 // ── Verdrahtung ──────────────────────────────────────────────
 const bind = [
     ["km","kmTotal"],["l100","lPer100"],["kwh100","kwhPer100"],
@@ -843,6 +950,7 @@ window.addEventListener("resize", () => renderChart());
 populatePeriod();       // Dropdown-Optionen aus der Preisreihe erzeugen
 applyStateToInputs();   // gespeicherte Werte auf die Regler übertragen
 buildThgFields();       // THG-Jahresfelder für den aktuellen Zeitraum
+buildInsFields();       // Inspektions-/Wartungsfelder (Verbrenner & Elektro)
 renderAll();
 </script>
 

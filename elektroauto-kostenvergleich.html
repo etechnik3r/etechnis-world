@@ -90,6 +90,14 @@
         <h1 class="tool-title">Kostenvergleich: Verbrenner vs. Elektroauto</h1>
         <div class="tool-sub" id="subtitle">VW Golf 1.5 TSI gegen VW ID.3 Pro &ndash; alle Parameter (Zeitraum, Fahrleistung, Verbrauch, Strompreise, Kfz-Steuer und THG-Pr&auml;mie) stellst du weiter unten selbst ein.</div>
 
+        <!-- Kontext: worauf sich alle Zahlen beziehen -->
+        <div class="context-bar">
+            <div class="cx"><span class="cx-k">Zeitraum</span><span class="cx-v" id="cx-zeit"></span></div>
+            <div class="cx"><span class="cx-k">Dauer</span><span class="cx-v" id="cx-dauer"></span></div>
+            <div class="cx"><span class="cx-k">Laufleistung</span><span class="cx-v" id="cx-km"></span></div>
+            <div class="cx"><span class="cx-k">Fahrzeuge</span><span class="cx-v">Golf 1.5 TSI &middot; ID.3 Pro</span></div>
+        </div>
+
         <!-- Kennzahlen -->
         <div class="readouts">
             <div class="readout">
@@ -106,7 +114,7 @@
             </div>
             <div class="readout">
                 <div class="r-label">Ersparnis Elektroauto</div>
-                <div class="r-car">unterm Strich</div>
+                <div class="r-car">weniger als der Verbrenner</div>
                 <div class="r-value" id="ro-spar-v"></div>
                 <div class="r-sub" id="ro-spar-s"></div>
             </div>
@@ -209,12 +217,16 @@
 
             <div class="ctrl-card span-2">
                 <div class="ctrl-head" style="color:var(--pos)">THG-Pr&auml;mie &middot; nur Elektroauto</div>
-                <div class="s-hint" style="margin-bottom:12px">
+                <div class="s-hint" style="margin-bottom:6px">
                     Die Treibhausgas-Quote wird j&auml;hrlich <b>ausgezahlt</b> und geht daher als
                     Gutschrift (negative Kosten) in die Elektro-Bilanz ein. Werte pro Kalenderjahr &ndash;
-                    zur&uuml;ckliegende Jahre sind vorbelegt, k&uuml;nftige Jahre kannst du selbst eintragen.
+                    zur&uuml;ckliegende Jahre sind vorbelegt, k&uuml;nftige Jahre (bis 2030) kannst du selbst eintragen.
+                    Nur Jahre innerhalb des Zeitraums flie&szlig;en in die Rechnung ein.
                 </div>
-                <div class="thg-grid" id="thg-grid"></div>
+                <details class="thg-details">
+                    <summary id="thg-summary">THG-Pr&auml;mie je Jahr anpassen</summary>
+                    <div class="thg-grid" id="thg-grid"></div>
+                </details>
             </div>
         </div>
 
@@ -239,12 +251,18 @@
             <div class="fs-inner">
                 <div class="fs-badge">Kostenvergleich auf einen Blick</div>
                 <div class="fs-title">Verbrenner vs. Elektroauto</div>
+                <div class="fs-keys">
+                    <div class="fs-key"><div class="fs-key-v" id="fs-k-zeit"></div><div class="fs-key-l">Betrachtungszeitraum</div></div>
+                    <div class="fs-key"><div class="fs-key-v" id="fs-k-dauer"></div><div class="fs-key-l">Dauer</div></div>
+                    <div class="fs-key"><div class="fs-key-v" id="fs-k-km"></div><div class="fs-key-l">Laufleistung</div></div>
+                </div>
                 <div class="fs-assume" id="fs-assume"></div>
                 <div class="fs-grid">
                     <div class="fs-col fs-v">
                         <div class="fs-cname">VW Golf 1.5 TSI</div>
                         <div class="fs-line"><span class="fs-k">Energie (Benzin)</span><span class="fs-val" id="fs-v-energy"></span></div>
                         <div class="fs-line"><span class="fs-k">Kfz-Steuer</span><span class="fs-val" id="fs-v-tax"></span></div>
+                        <div class="fs-line"><span class="fs-k">THG-Pr&auml;mie</span><span class="fs-val" id="fs-v-thg"></span></div>
                         <div class="fs-total"><span class="fs-k">Summe</span><span class="fs-val" id="fs-v-total" style="color:var(--series-b)"></span></div>
                     </div>
                     <div class="fs-col fs-e">
@@ -606,6 +624,11 @@ function wireTooltip() {
 function renderReadouts() {
     const c = calc(), years = c.years;
 
+    // Kontext-Leiste: worauf sich alle Zahlen beziehen
+    set("cx-zeit",  `${c.fromLabel} – ${c.toLabel}`);
+    set("cx-dauer", `${num(c.n)} Monate · ${num(years,1)} Jahre`);
+    set("cx-km",    `${num(S.kmTotal)} km · ${num(S.kmTotal/years)} km/Jahr`);
+
     set("ro-v-car", CARS.v);
     set("ro-v-v", eur(c.totV));
     set("ro-v-s", `${eur(c.energyV)} Sprit + ${eur(c.taxVtot)} Steuer`);
@@ -616,7 +639,7 @@ function renderReadouts() {
 
     set("ro-spar-v", eur(c.spar));
     document.getElementById("ro-spar-v").style.color = c.spar >= 0 ? C.spar : C.warn;
-    set("ro-spar-s", `${num(c.sparPct,0)} % · ${eur(c.spar/years)}/Jahr`);
+    set("ro-spar-s", `${num(Math.abs(c.sparPct),0)} % weniger · ${eur(c.spar/years)}/Jahr`);
 
     renderBreakdown(c);
     renderFactsheet(c);
@@ -630,7 +653,7 @@ function renderBreakdown(c) {
         ["", `Verbrenner`, `Elektroauto`, "head"],
         ["Energiekosten", eur(c.energyV), eur(c.energyE), ""],
         ["Kfz-Steuer (Zeitraum)", eur(c.taxVtot), eur(c.taxEtot), ""],
-        ["THG-Prämie (Gutschrift)", "—", c.thgTot > 0 ? "− " + eur(c.thgTot) : eur(0), "thg"],
+        ["THG-Prämie (Gutschrift)", "− " + eur(0), "− " + eur(c.thgTot), "thg"],
         ["Gesamtkosten", eur(c.totV), eur(c.totE), "sum"],
         ["Kosten pro km", eur(perKmV,2), eur(perKmE,2), ""],
     ];
@@ -646,26 +669,34 @@ function renderBreakdown(c) {
 }
 
 function renderFactsheet(c) {
-    set("fs-assume", `Annahme: zwei preislich vergleichbare Autos · Zeitraum ${c.fromLabel} – ${c.toLabel} `
-                   + `(${c.n} Monate) · ${num(S.kmTotal)} km Laufleistung.`);
+    // Zeitraum & Laufleistung groß herausgestellt
+    set("fs-k-zeit",  `${c.fromLabel} – ${c.toLabel}`);
+    set("fs-k-dauer", `${num(c.years,1)} Jahre`);
+    set("fs-k-km",    `${num(S.kmTotal)} km`);
+    set("fs-assume", `Das sind ${num(c.n)} Monate und rund ${num(S.kmTotal/c.years)} km pro Jahr. `
+                   + `Verglichen werden zwei preislich vergleichbare Autos (nach 9.200 € Umweltbonus für das Elektroauto).`);
+
     set("fs-v-energy", eur(c.energyV));
     set("fs-v-tax", eur(c.taxVtot));
+    set("fs-v-thg", "− " + eur(0));
     set("fs-v-total", eur(c.totV));
     set("fs-e-energy", eur(c.energyE));
     set("fs-e-tax", eur(c.taxEtot));
-    set("fs-e-thg", c.thgTot > 0 ? "− " + eur(c.thgTot) : eur(0));
+    set("fs-e-thg", "− " + eur(c.thgTot));
     set("fs-e-total", eur(c.totE));
 
-    const spar = c.spar, cheaper = spar >= 0 ? "Elektroauto" : "Verbrenner";
+    const spar = c.spar, pct = num(Math.abs(c.sparPct),0);
+    const cheaper = spar >= 0 ? "Elektroauto" : "Verbrenner";
     document.querySelector(".fs-result .fs-r-label").textContent = spar >= 0 ? "Vorteil Elektroauto" : "Vorteil Verbrenner";
     const rv = document.getElementById("fs-r-value");
     rv.textContent = eur(Math.abs(spar));
     rv.style.color = spar >= 0 ? C.spar : C.warn;
-    set("fs-r-sub", `${num(Math.abs(c.sparPct),0)} % günstiger · ${eur(Math.abs(spar)/c.years)}/Jahr`);
+    set("fs-r-sub", `Das ${cheaper} kostet ${pct} % weniger – ${eur(Math.abs(spar)/c.years)} pro Jahr.`);
 
     set("fs-foot", `Basis: ${num(S.lPer100,1)} L/100 km bzw. ${num(S.kwhPer100,1)} kWh/100 km, Ø-Ladepreis `
                  + `${eur(c.blend,2)}/kWh, Kfz-Steuer ${eur(S.taxV)}/Jahr (Verbrenner) bzw. ${eur(S.taxE)}/Jahr (Elektro), `
-                 + `THG-Prämie gesamt ${eur(c.thgTot)}. Das ${cheaper} ist im gewählten Zeitraum günstiger.`);
+                 + `THG-Prämie gesamt ${eur(c.thgTot)}. „${pct} % weniger“ bezieht sich auf die Gesamtkosten des Verbrenners `
+                 + `(${eur(c.totV)}).`);
 }
 
 function renderTable(c) {
@@ -702,18 +733,29 @@ function renderSliders() {
 function set(id, txt) { const e = document.getElementById(id); if (e) e.textContent = txt; }
 function renderAll() { renderReadouts(); renderSliders(); renderChart(); }
 
-// ── THG-Jahresfelder (passen sich dem Zeitraum an) ───────────
+// ── THG-Jahresfelder ─────────────────────────────────────────
+// Felder von 2022 bis 2030 (auch künftige Jahre vorbereitet). Aktive Jahre
+// liegen im aktuellen Zeitraum und fließen in die Rechnung ein; Jahre außerhalb
+// sind editierbar, wirken sich aber (noch) nicht aus.
+const THG_LAST_YEAR = 2030;
+function updateThgSummary() {
+    set("thg-summary", `THG-Prämie je Jahr anpassen · aktuell ${eur(calc().thgTot)} im Zeitraum`);
+}
 function buildThgFields() {
     const [fi, ti] = rangeIdx();
-    const y0 = labelYear(PRICES[fi][0]), y1 = labelYear(PRICES[ti][0]);
+    const activeFrom = labelYear(PRICES[fi][0]), activeTo = labelYear(PRICES[ti][0]);
+    const yStart = labelYear(FIRST_KEY);
+    const yEnd = Math.max(THG_LAST_YEAR, labelYear(LAST_KEY));
     const grid = document.getElementById("thg-grid");
     let html = "";
-    for (let y = y0; y <= y1; y++) {
+    for (let y = yStart; y <= yEnd; y++) {
         if (!(y in S.thg)) S.thg[y] = THG_DEFAULTS[y] || 0;   // Default sicherstellen
-        html += `<div class="thg-field">
+        const active = y >= activeFrom && y <= activeTo;
+        html += `<div class="thg-field${active ? "" : " thg-inactive"}">
             <span class="s-label">${y}</span>
             <input type="number" class="tool-input thg-input" data-year="${y}"
                    min="0" max="5000" step="10" value="${S.thg[y]}" inputmode="numeric">
+            ${active ? "" : `<span class="thg-note">außerhalb Zeitraum</span>`}
         </div>`;
     }
     grid.innerHTML = html;
@@ -725,8 +767,10 @@ function buildThgFields() {
             saveState();
             renderReadouts();
             renderChart();
+            updateThgSummary();
         });
     });
+    updateThgSummary();
 }
 
 // ── Verdrahtung ──────────────────────────────────────────────

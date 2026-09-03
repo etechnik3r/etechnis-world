@@ -262,40 +262,47 @@
             </div>
         </details>
 
-        <!-- Faktenblatt (Statusbild) -->
+        <!-- Faktenblatt (Statusbild – auf einen Screen verdichtet) -->
         <section class="factsheet" aria-label="Zusammenfassung">
             <div class="fs-inner">
-                <div class="fs-badge">Kostenvergleich auf einen Blick</div>
-                <div class="fs-title">Verbrenner vs. Elektroauto</div>
-                <div class="fs-keys">
-                    <div class="fs-key"><div class="fs-key-v" id="fs-k-zeit"></div><div class="fs-key-l">Betrachtungszeitraum</div></div>
-                    <div class="fs-key"><div class="fs-key-v" id="fs-k-dauer"></div><div class="fs-key-l">Dauer</div></div>
-                    <div class="fs-key"><div class="fs-key-v" id="fs-k-km"></div><div class="fs-key-l">Laufleistung</div></div>
+                <div class="fs-head">
+                    <div>
+                        <div class="fs-badge">Kostenvergleich auf einen Blick</div>
+                        <div class="fs-title">Verbrenner vs. Elektroauto</div>
+                    </div>
                 </div>
-                <div class="fs-assume" id="fs-assume"></div>
-                <div class="fs-grid">
+
+                <!-- Hero: das Ergebnis groß -->
+                <div class="fs-hero">
+                    <div class="fs-hero-main">
+                        <div class="fs-hero-label" id="fs-hero-label">Das Elektroauto spart</div>
+                        <div class="fs-hero-value" id="fs-hero-value"></div>
+                        <div class="fs-hero-sub" id="fs-hero-sub"></div>
+                    </div>
+                    <div class="fs-hero-badge" id="fs-hero-badge"><span class="fs-hero-pct" id="fs-hero-pct"></span><span class="fs-hero-pct-l">g&uuml;nstiger</span></div>
+                </div>
+                <div class="fs-context" id="fs-context"></div>
+
+                <!-- Kostenaufstellung: beide Autos nebeneinander -->
+                <div class="fs-cols">
                     <div class="fs-col fs-v">
                         <div class="fs-cname">VW Golf 1.5 TSI</div>
-                        <div class="fs-line"><span class="fs-k">Energie (Benzin)</span><span class="fs-val" id="fs-v-energy"></span></div>
-                        <div class="fs-line"><span class="fs-k">Kfz-Steuer</span><span class="fs-val" id="fs-v-tax"></span></div>
+                        <div class="fs-line"><span class="fs-k">Benzin</span><span class="fs-val" id="fs-v-energy"></span></div>
+                        <div class="fs-line"><span class="fs-k">Steuer</span><span class="fs-val" id="fs-v-tax"></span></div>
                         <div class="fs-line"><span class="fs-k">Inspektion</span><span class="fs-val" id="fs-v-ins"></span></div>
-                        <div class="fs-line"><span class="fs-k">THG-Pr&auml;mie</span><span class="fs-val" id="fs-v-thg"></span></div>
+                        <div class="fs-line"><span class="fs-k">THG</span><span class="fs-val" id="fs-v-thg"></span></div>
                         <div class="fs-total"><span class="fs-k">Summe</span><span class="fs-val" id="fs-v-total" style="color:var(--series-b)"></span></div>
                     </div>
                     <div class="fs-col fs-e">
                         <div class="fs-cname">VW ID.3 Pro</div>
-                        <div class="fs-line"><span class="fs-k">Energie (Strom)</span><span class="fs-val" id="fs-e-energy"></span></div>
-                        <div class="fs-line"><span class="fs-k">Kfz-Steuer</span><span class="fs-val" id="fs-e-tax"></span></div>
+                        <div class="fs-line"><span class="fs-k">Strom</span><span class="fs-val" id="fs-e-energy"></span></div>
+                        <div class="fs-line"><span class="fs-k">Steuer</span><span class="fs-val" id="fs-e-tax"></span></div>
                         <div class="fs-line"><span class="fs-k">Inspektion</span><span class="fs-val" id="fs-e-ins"></span></div>
-                        <div class="fs-line"><span class="fs-k">THG-Pr&auml;mie</span><span class="fs-val" id="fs-e-thg" style="color:var(--pos)"></span></div>
+                        <div class="fs-line"><span class="fs-k">THG</span><span class="fs-val" id="fs-e-thg" style="color:var(--pos)"></span></div>
                         <div class="fs-total"><span class="fs-k">Summe</span><span class="fs-val" id="fs-e-total" style="color:var(--series-a)"></span></div>
                     </div>
-                    <div class="fs-col fs-result">
-                        <div class="fs-r-label">Vorteil Elektroauto</div>
-                        <div class="fs-r-value" id="fs-r-value"></div>
-                        <div class="fs-r-sub" id="fs-r-sub"></div>
-                    </div>
                 </div>
+
                 <div class="fs-foot" id="fs-foot"></div>
             </div>
         </section>
@@ -731,12 +738,22 @@ function renderBreakdown(c) {
 }
 
 function renderFactsheet(c) {
-    // Zeitraum & Laufleistung groß herausgestellt
-    set("fs-k-zeit",  `${c.fromLabel} – ${c.toLabel}`);
-    set("fs-k-dauer", `${num(c.years,1)} Jahre`);
-    set("fs-k-km",    `${num(S.kmTotal)} km`);
-    set("fs-assume", `Das sind ${num(c.n)} Monate und rund ${num(S.kmTotal/c.years)} km pro Jahr. `
-                   + `Verglichen werden zwei preislich vergleichbare Autos (nach 9.200 € Umweltbonus für das Elektroauto).`);
+    const spar = c.spar, pct = num(Math.abs(c.sparPct),0);
+    const win = spar >= 0 ? "Elektroauto" : "Verbrenner";
+
+    // Hero – das Ergebnis groß
+    set("fs-hero-label", `Das ${win} spart über ${num(c.years,1)} Jahre`);
+    const hv = document.getElementById("fs-hero-value");
+    hv.textContent = eur(Math.abs(spar));
+    hv.style.color = spar >= 0 ? C.spar : C.warn;
+    set("fs-hero-sub", `≈ ${eur(Math.abs(spar)/c.years)} pro Jahr · ${eur(Math.abs(spar)/S.kmTotal,2)} pro km`);
+    set("fs-hero-pct", `${pct} %`);
+    const badge = document.getElementById("fs-hero-badge");
+    badge.style.background = spar >= 0 ? C.spar : C.warn;
+
+    // Kontextzeile: worauf es sich bezieht
+    set("fs-context", `${c.fromLabel} – ${c.toLabel} · ${num(c.n)} Monate (${num(c.years,1)} Jahre) · `
+                    + `${num(S.kmTotal)} km · zwei preislich vergleichbare Autos (nach 9.200 € Umweltbonus).`);
 
     set("fs-v-energy", eur(c.energyV));
     set("fs-v-tax", eur(c.taxVtot));
@@ -749,18 +766,9 @@ function renderFactsheet(c) {
     set("fs-e-thg", "− " + eur(c.thgTot));
     set("fs-e-total", eur(c.totE));
 
-    const spar = c.spar, pct = num(Math.abs(c.sparPct),0);
-    const cheaper = spar >= 0 ? "Elektroauto" : "Verbrenner";
-    document.querySelector(".fs-result .fs-r-label").textContent = spar >= 0 ? "Vorteil Elektroauto" : "Vorteil Verbrenner";
-    const rv = document.getElementById("fs-r-value");
-    rv.textContent = eur(Math.abs(spar));
-    rv.style.color = spar >= 0 ? C.spar : C.warn;
-    set("fs-r-sub", `Das ${cheaper} kostet ${pct} % weniger – ${eur(Math.abs(spar)/c.years)} pro Jahr.`);
-
-    set("fs-foot", `Basis: ${num(S.lPer100,1)} L/100 km bzw. ${num(S.kwhPer100,1)} kWh/100 km, Ø-Ladepreis `
-                 + `${eur(c.blend,2)}/kWh, Kfz-Steuer ${eur(S.taxV)}/Jahr (Verbrenner) bzw. ${eur(S.taxE)}/Jahr (Elektro), `
-                 + `THG-Prämie gesamt ${eur(c.thgTot)}. „${pct} % weniger“ bezieht sich auf die Gesamtkosten des Verbrenners `
-                 + `(${eur(c.totV)}).`);
+    set("fs-foot", `„${pct} % weniger“ bezieht sich auf die Verbrenner-Gesamtkosten (${eur(c.totV)}). `
+                 + `Basis: ${num(S.lPer100,1)} L bzw. ${num(S.kwhPer100,1)} kWh /100 km, Ø-Ladepreis ${eur(c.blend,2)}/kWh, `
+                 + `inkl. Kfz-Steuer, Inspektion und THG-Prämie. Näherungswerte – Details siehe oben.`);
 }
 
 function renderTable(c) {

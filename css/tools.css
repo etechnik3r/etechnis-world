@@ -169,9 +169,10 @@ select.tool-input { cursor: pointer; }
 .field-row .s-label { font-size: var(--fs-sm); color: var(--muted); }
 .field-row .s-hint { font-size: var(--fs-xs); color: var(--faint); }
 
-/* THG-Prämie – Jahresfelder (ein-/ausklappbar) */
-.thg-details summary { cursor: pointer; font-size: var(--fs-sm); color: var(--accent); user-select: none; padding: 6px 0; }
-.thg-details[open] summary { margin-bottom: 12px; }
+/* THG-Prämie & Inspektion – Jahres-/km-Felder (ein-/ausklappbar) */
+.thg-details summary, .ins-details summary { cursor: pointer; font-size: var(--fs-sm); color: var(--accent); user-select: none; padding: 6px 0; }
+.thg-details[open] summary, .ins-details[open] summary { margin-bottom: 12px; }
+.ins-details { margin-top: 6px; padding-top: 12px; border-top: 1px solid var(--line); }
 .thg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-top: 4px; }
 .thg-field { display: flex; flex-direction: column; gap: 5px; }
 .thg-field .s-label { font-size: var(--fs-sm); color: var(--muted); }

@@ -33,6 +33,19 @@
 }
 .tool-sub { font-size: var(--fs-sm); color: var(--muted); margin-top: 8px; line-height: 1.55; }
 
+/* Kontext-Leiste: Zeitraum & Laufleistung immer sichtbar */
+.context-bar { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 2px; }
+.cx {
+    display: flex; flex-direction: column; gap: 2px;
+    background: var(--accent-weak);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent);
+    border-radius: var(--r-sm);
+    padding: 8px 14px;
+}
+.cx-k { font-size: var(--fs-xs); letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.cx-v { font-family: var(--mono); font-size: var(--fs-base); font-weight: 700; color: var(--text); }
+
 /* Kennzahlen (Readouts) */
 .readouts { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0; }
 .readout {
@@ -156,12 +169,15 @@ select.tool-input { cursor: pointer; }
 .field-row .s-label { font-size: var(--fs-sm); color: var(--muted); }
 .field-row .s-hint { font-size: var(--fs-xs); color: var(--faint); }
 
-/* THG-Prämie – Jahresfelder */
-.thg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-top: 4px; }
+/* THG-Prämie – Jahresfelder (ein-/ausklappbar) */
+.thg-details summary { cursor: pointer; font-size: var(--fs-sm); color: var(--accent); user-select: none; padding: 6px 0; }
+.thg-details[open] summary { margin-bottom: 12px; }
+.thg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-top: 4px; }
 .thg-field { display: flex; flex-direction: column; gap: 5px; }
 .thg-field .s-label { font-size: var(--fs-sm); color: var(--muted); }
-.thg-field .thg-suffix { position: relative; }
 .thg-field input { text-align: right; }
+.thg-field.thg-inactive { opacity: 0.5; }
+.thg-field .thg-note { font-size: 10px; color: var(--faint); }
 
 /* Gegenüberstellung (Aufschlüsselung der Kosten) */
 .breakdown {
@@ -206,8 +222,21 @@ select.tool-input { cursor: pointer; }
     color: var(--accent); font-weight: 700; margin-bottom: 8px;
 }
 .fs-title { font-size: var(--fs-lg); font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
-.fs-assume { font-size: var(--fs-sm); color: var(--muted); margin: 8px 0 18px; line-height: 1.55; }
+.fs-assume { font-size: var(--fs-sm); color: var(--muted); margin: 6px 0 16px; line-height: 1.55; }
 .fs-assume b { color: var(--text); }
+
+/* Faktenblatt: Zeitraum & Laufleistung groß herausgestellt */
+.fs-keys { display: flex; flex-wrap: wrap; gap: 14px; margin: 12px 0 18px; }
+.fs-key {
+    flex: 1 1 190px;
+    background: var(--panel-2);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--accent);
+    border-radius: var(--r-md);
+    padding: 12px 16px;
+}
+.fs-key-v { font-family: var(--mono); font-size: var(--fs-lg); font-weight: 800; color: var(--text); line-height: 1.15; }
+.fs-key-l { font-size: var(--fs-xs); letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
 .fs-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: stretch; }
 @media (max-width: 620px) { .fs-grid { grid-template-columns: 1fr; } }
 .fs-col { background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px 16px; }

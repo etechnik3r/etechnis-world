@@ -217,43 +217,59 @@ select.tool-input { cursor: pointer; }
     border-radius: var(--r-lg);
     background: linear-gradient(135deg, var(--series-b), var(--series-a) 55%, var(--pos));
 }
-.fs-inner { background: var(--panel); border-radius: calc(var(--r-lg) - 2px); padding: 22px 22px 18px; }
+.fs-inner { background: var(--panel); border-radius: calc(var(--r-lg) - 2px); padding: 18px 18px 15px; }
+.fs-head { margin-bottom: 13px; }
 .fs-badge {
     display: inline-block; font-size: var(--fs-xs); letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--accent); font-weight: 700; margin-bottom: 8px;
+    color: var(--accent); font-weight: 700; margin-bottom: 4px;
 }
 .fs-title { font-size: var(--fs-lg); font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
-.fs-assume { font-size: var(--fs-sm); color: var(--muted); margin: 6px 0 16px; line-height: 1.55; }
-.fs-assume b { color: var(--text); }
 
-/* Faktenblatt: Zeitraum & Laufleistung groß herausgestellt */
-.fs-keys { display: flex; flex-wrap: wrap; gap: 14px; margin: 12px 0 18px; }
-.fs-key {
-    flex: 1 1 190px;
-    background: var(--panel-2);
-    border: 1px solid var(--line);
-    border-top: 3px solid var(--accent);
+/* Hero: das Ergebnis groß herausgestellt (Wow-Effekt) */
+.fs-hero {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    background: linear-gradient(135deg, rgba(111,207,115,0.16), rgba(74,158,255,0.10));
+    border: 1px solid rgba(111,207,115,0.38);
     border-radius: var(--r-md);
-    padding: 12px 16px;
+    padding: 14px 18px;
+    box-shadow: 0 10px 26px -14px rgba(111,207,115,0.6);
 }
-.fs-key-v { font-family: var(--mono); font-size: var(--fs-lg); font-weight: 800; color: var(--text); line-height: 1.15; }
-.fs-key-l { font-size: var(--fs-xs); letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
-.fs-grid { display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: stretch; }
-@media (max-width: 620px) { .fs-grid { grid-template-columns: 1fr; } }
-.fs-col { background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 14px 16px; }
+.fs-hero-label { font-size: var(--fs-xs); letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+.fs-hero-value { font-family: var(--mono); font-size: clamp(30px, 8vw, 40px); font-weight: 800; line-height: 1.05; color: var(--pos); margin: 3px 0; }
+.fs-hero-sub { font-size: var(--fs-sm); color: var(--muted); }
+.fs-hero-badge {
+    flex: 0 0 auto; text-align: center; align-self: stretch;
+    display: flex; flex-direction: column; justify-content: center;
+    background: var(--pos); color: #06210a; border-radius: var(--r-sm);
+    padding: 8px 12px; min-width: 78px;
+}
+.fs-hero-pct { font-family: var(--mono); font-size: var(--fs-lg); font-weight: 800; line-height: 1; }
+.fs-hero-pct-l { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; margin-top: 2px; }
+
+.fs-context { font-size: var(--fs-sm); color: var(--muted); margin: 11px 2px 14px; line-height: 1.5; }
+
+/* Kostenaufstellung – immer zwei Spalten, auch auf dem Handy.
+   minmax(0,1fr) verhindert, dass die Spalten den Container sprengen. */
+.fs-cols { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 12px; }
+.fs-col { background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--r-md); padding: 12px 13px; min-width: 0; }
 .fs-col.fs-v { border-left: 3px solid var(--series-b); }
 .fs-col.fs-e { border-left: 3px solid var(--series-a); }
-.fs-col.fs-result { border-left: 3px solid var(--pos); display: flex; flex-direction: column; justify-content: center; min-width: 180px; }
-.fs-cname { font-size: var(--fs-sm); font-weight: 700; color: var(--text); margin-bottom: 10px; }
-.fs-line { display: flex; justify-content: space-between; gap: 12px; font-size: var(--fs-sm); margin: 5px 0; }
+.fs-cname { font-size: var(--fs-sm); font-weight: 700; color: var(--text); margin-bottom: 9px; }
+.fs-line { display: flex; justify-content: space-between; gap: 8px; font-size: var(--fs-sm); margin: 4px 0; }
 .fs-line .fs-k { color: var(--muted); }
-.fs-line .fs-val { font-family: var(--mono); color: var(--text); }
-.fs-total { display: flex; justify-content: space-between; gap: 12px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--line); font-weight: 700; }
-.fs-total .fs-val { font-family: var(--mono); font-size: var(--fs-md); }
-.fs-result .fs-r-label { font-size: var(--fs-xs); letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
-.fs-result .fs-r-value { font-family: var(--mono); font-size: 30px; font-weight: 800; line-height: 1.05; margin: 6px 0; color: var(--pos); }
-.fs-result .fs-r-sub { font-size: var(--fs-sm); color: var(--faint); }
-.fs-foot { font-size: var(--fs-xs); color: var(--faint); margin-top: 16px; line-height: 1.6; }
+.fs-line .fs-val { font-family: var(--mono); color: var(--text); white-space: nowrap; }
+.fs-total { display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); font-weight: 700; }
+.fs-total .fs-val { font-family: var(--mono); font-size: var(--fs-base); white-space: nowrap; }
+.fs-foot { font-size: var(--fs-xs); color: var(--faint); margin-top: 13px; line-height: 1.55; }
+
+/* sehr schmale Screens: Spaltenschrift kleiner, damit beide Spalten voll passen */
+@media (max-width: 430px) {
+    .fs-line, .fs-cname, .fs-total { font-size: var(--fs-xs); }
+    .fs-col { padding: 10px 9px; }
+    .fs-line .fs-val, .fs-total .fs-val { font-size: var(--fs-xs); }
+    .fs-hero { padding: 12px 14px; }
+    .fs-hero-badge { min-width: 66px; padding: 8px 8px; }
+}
 
 .sub-divider {
     margin: 6px 0 16px;

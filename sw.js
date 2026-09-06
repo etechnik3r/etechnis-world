@@ -4,7 +4,7 @@
    geänderten Service Worker, installiert ihn und die Seite zeigt
    das "Neue Version verfügbar"-Banner (siehe js/app.js).
    ============================================================ */
-const CACHE = "ew-cache-v13";
+const CACHE = "ew-cache-v14";
 
 // Kern-Dateien (App-Shell). Relative Pfade, damit es auch unter
 // einem Unterverzeichnis (GitHub Pages) funktioniert.
@@ -41,7 +41,25 @@ self.addEventListener("activate", (event) => {
 // Cache-first für gleiche Herkunft; erfolgreiche Antworten nachladen.
 self.addEventListener("fetch", (event) => {
     const req = event.request;
-    if (req.method !== "GET" || new URL(req.url).origin !== self.location.origin) return;
+    const url = new URL(req.url);
+    if (req.method !== "GET" || url.origin !== self.location.origin) return;
+
+    // Seiten unter /holz/ (Einladung) immer zuerst aus dem Netz: dort
+    // ändern sich Uhrzeiten und Details noch, und Gäste sollen nie eine
+    // veraltete Fassung sehen. Der Cache dient nur als Offline-Notnagel.
+    if (url.pathname.includes("/holz/")) {
+        event.respondWith(
+            fetch(req).then((res) => {
+                if (res && res.status === 200 && res.type === "basic") {
+                    const copy = res.clone();
+                    caches.open(CACHE).then((c) => c.put(req, copy));
+                }
+                return res;
+            }).catch(() => caches.match(req))
+        );
+        return;
+    }
+
     event.respondWith(
         caches.match(req).then((hit) => {
             if (hit) return hit;

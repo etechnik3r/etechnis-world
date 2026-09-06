@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Save the Date · Hölzerne Hochzeit</title>
+<meta name="description" content="Wir feiern zehn Jahre – Save the Date für unsere Hölzerne Hochzeit auf dem Bauernhof.">
+
+<!-- Nicht in Suchmaschinen: Die Seite ist nur über den direkten Link erreichbar.
+     Bewusst KEIN Eintrag in einer robots.txt – ein "Disallow" würde die Adresse
+     öffentlich verraten und gleichzeitig verhindern, dass Crawler dieses
+     noindex überhaupt lesen. -->
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+
+<!-- Vorschau beim Teilen (WhatsApp, Signal, Mail) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Save the Date · Wir feiern zehn Jahre">
+<meta property="og:description" content="Samstag, 12. Juni 2027 · Bauernhof Bauer Bues in Groß Denkte bei Wolfenbüttel. Mit Kind und Kegel.">
+<meta property="og:image" content="img/vorschau.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f3e0c4">
+
+<link rel="icon" href="img/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/holz.css">
+</head>
+
+<!-- ⚑ ANPASSEN: Datum/Uhrzeit stehen NUR hier. Countdown und Kalender-Datei
+     ziehen automatisch nach. -->
+<body data-start="2027-06-12T14:00:00+02:00"
+      data-end="2027-06-12T20:00:00+02:00"
+      data-title="Hölzerne Hochzeit – Bastian &amp; [Name]"
+      data-place="Bauer Bues, Hauptstraße 18, 38321 Groß Denkte">
+
+<div class="page">
+
+<!-- ══ Hero ══════════════════════════════════════════════════ -->
+<header class="hero">
+    <div class="hero-sky"></div>
+    <div class="hero-sun" aria-hidden="true"></div>
+    <div class="motes" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+
+    <!-- Hof im Abendlicht – handgezeichnet, mehrlagig für den Parallax -->
+    <svg class="hero-scene" viewBox="0 0 1200 620" preserveAspectRatio="xMidYMax slice"
+         aria-hidden="true" focusable="false">
+        <defs>
+            <linearGradient id="wiese" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#a6c185"/><stop offset="100%" stop-color="#7ea261"/>
+            </linearGradient>
+            <linearGradient id="wiese2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#7ba05e"/><stop offset="100%" stop-color="#5f8449"/>
+            </linearGradient>
+            <linearGradient id="dach" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#8c4f37"/><stop offset="100%" stop-color="#6d3c2b"/>
+            </linearGradient>
+            <linearGradient id="wand" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#c4763f"/><stop offset="100%" stop-color="#a75c31"/>
+            </linearGradient>
+        </defs>
+
+        <!-- ferne Hügel -->
+        <g data-par="0.02" opacity="0.85">
+            <path d="M0 430 C 150 392, 250 400, 360 424 C 470 448, 560 404, 700 414
+                     C 840 424, 950 392, 1080 406 C 1140 412, 1180 420, 1200 424 L1200 620 L0 620Z"
+                  fill="#c3d5a8"/>
+        </g>
+
+        <!-- Baumreihe am Horizont -->
+        <g data-par="0.04" fill="#9ab77c">
+            <path d="M0 452 q 26 -30 52 0 q 30 -38 60 0 q 24 -26 48 0 q 34 -42 68 0
+                     q 26 -28 52 0 q 30 -34 60 0 q 24 -24 48 0 q 32 -38 64 0 q 26 -28 52 0
+                     q 30 -32 60 0 q 26 -26 52 0 q 34 -36 68 0 q 28 -28 56 0 q 30 -30 60 0
+                     q 26 -24 52 0 q 30 -28 60 0 q 24 -22 48 0 L1200 620 L0 620Z"/>
+        </g>
+
+        <!-- Wiese -->
+        <path d="M0 470 C 200 456, 420 486, 640 472 C 860 458, 1020 484, 1200 470 L1200 620 L0 620Z"
+              fill="url(#wiese)"/>
+
+        <!-- Gehöft: Scheune, Wohnhaus, Baum -->
+        <g data-par="0.07">
+            <!-- Baum links -->
+            <g>
+                <path d="M232 470 l6 -74 h12 l6 74Z" fill="#7d5334"/>
+                <circle cx="244" cy="386" r="52" fill="#6f9457"/>
+                <circle cx="212" cy="404" r="34" fill="#7ea468"/>
+                <circle cx="276" cy="402" r="32" fill="#628a4d"/>
+            </g>
+
+            <!-- Wohnhaus rechts -->
+            <g>
+                <rect x="742" y="404" width="132" height="68" fill="#f2e5cf"/>
+                <path d="M732 406 L808 356 L884 406Z" fill="#a5583c"/>
+                <rect x="762" y="426" width="24" height="24" fill="#e9c887"/>
+                <rect x="830" y="426" width="24" height="24" fill="#e9c887"/>
+                <rect x="796" y="440" width="26" height="32" fill="#8c5c3a"/>
+                <rect x="852" y="352" width="14" height="30" fill="#b08160"/>
+            </g>
+
+            <!-- Scheune / Heuboden -->
+            <g>
+                <path d="M356 388 L520 296 L684 388Z" fill="url(#dach)"/>
+                <rect x="374" y="386" width="292" height="86" fill="url(#wand)"/>
+                <!-- Holzbalken -->
+                <g stroke="#8a4a26" stroke-width="3" opacity="0.55">
+                    <path d="M374 412 H666 M374 440 H666 M436 386 V472 M520 386 V472 M604 386 V472"/>
+                </g>
+                <!-- Heuboden-Luke -->
+                <rect x="496" y="330" width="48" height="42" rx="3" fill="#5c3221"/>
+                <path d="M496 330 h48 v6 h-48Z" fill="#7c4a2c"/>
+                <!-- großes Tor -->
+                <path d="M470 472 v-58 a50 50 0 0 1 100 0 v58Z" fill="#7c4a2c"/>
+                <path d="M520 414 v58" stroke="#5c3221" stroke-width="3"/>
+                <!-- Wetterhahn -->
+                <path d="M520 296 v-26" stroke="#6d3c2b" stroke-width="3"/>
+                <path d="M520 272 l18 7 -18 7Z" fill="#d9a441"/>
+                <!-- Strohballen davor -->
+                <g fill="#e2c078" stroke="#c9a458" stroke-width="2">
+                    <circle cx="700" cy="456" r="17"/>
+                    <circle cx="732" cy="462" r="12"/>
+                </g>
+            </g>
+        </g>
+
+        <!-- Zaun -->
+        <g data-par="0.10" stroke="#c99a63" stroke-width="5" stroke-linecap="round" opacity="0.95">
+            <path d="M0 512 H1200 M0 532 H1200"/>
+            <g stroke-width="7">
+                <path d="M60 496 v52 M240 496 v52 M420 496 v52 M600 496 v52 M780 496 v52 M960 496 v52 M1140 496 v52"/>
+            </g>
+        </g>
+
+        <!-- Vordergrund-Wiese mit Gräsern -->
+        <g data-par="0.14">
+            <path d="M0 548 C 220 528, 380 566, 620 548 C 860 530, 1010 566, 1200 546 L1200 620 L0 620Z"
+                  fill="url(#wiese2)"/>
+            <g class="halme" stroke="#557a42" stroke-width="3" stroke-linecap="round" fill="none">
+                <path d="M40 620 q 6 -40 -2 -60"/><path d="M96 620 q -8 -46 4 -66"/>
+                <path d="M168 620 q 8 -38 -4 -56"/><path d="M246 620 q -6 -50 6 -70"/>
+                <path d="M330 620 q 8 -42 -2 -60"/><path d="M418 620 q -8 -44 4 -64"/>
+                <path d="M506 620 q 6 -38 -4 -58"/><path d="M598 620 q -6 -48 6 -68"/>
+                <path d="M690 620 q 8 -40 -2 -58"/><path d="M782 620 q -8 -46 4 -66"/>
+                <path d="M874 620 q 6 -38 -4 -56"/><path d="M966 620 q -6 -50 6 -70"/>
+                <path d="M1058 620 q 8 -42 -2 -60"/><path d="M1146 620 q -8 -44 4 -62"/>
+            </g>
+            <!-- ein paar Blüten -->
+            <g fill="#f0e2a8">
+                <circle cx="120" cy="576" r="5"/><circle cx="360" cy="592" r="4"/>
+                <circle cx="640" cy="580" r="5"/><circle cx="900" cy="596" r="4"/>
+                <circle cx="1100" cy="578" r="5"/>
+            </g>
+        </g>
+
+        <!-- Vögel -->
+        <g stroke="#8a6c52" stroke-width="2.5" fill="none" opacity="0.6" class="voegel">
+            <path d="M150 150 q 12 -10 24 0 q 12 -10 24 0"/>
+            <path d="M232 118 q 9 -8 18 0 q 9 -8 18 0"/>
+        </g>
+    </svg>
+
+    <div class="hero-inner">
+        <p class="kicker">Save the Date</p>
+
+        <p class="names">
+            Bastian
+            <span class="amp">&amp;</span>
+            <span class="ph">[Name]</span>
+        </p>
+
+        <p class="hero-sub">Wir feiern Hölzerne Hochzeit – zehn Jahre.</p>
+
+        <!-- Zehn Jahresringe -->
+        <svg class="rings" viewBox="0 0 200 200" role="img" aria-label="Zehn Jahresringe – zehn Jahre verheiratet" data-reveal>
+            <circle class="ring" cx="100" cy="100" r="34"/>
+            <circle class="ring" cx="100" cy="100" r="41"/>
+            <circle class="ring" cx="100" cy="100" r="48"/>
+            <circle class="ring" cx="100" cy="100" r="55"/>
+            <circle class="ring" cx="100" cy="100" r="62"/>
+            <circle class="ring" cx="100" cy="100" r="69"/>
+            <circle class="ring" cx="100" cy="100" r="76"/>
+            <circle class="ring" cx="100" cy="100" r="83"/>
+            <circle class="ring" cx="100" cy="100" r="90"/>
+            <circle class="ring ring-10" cx="100" cy="100" r="96"/>
+            <text class="ring-num" x="100" y="122">10</text>
+        </svg>
+
+        <div class="dateline">
+            <span class="d-day">12</span>
+            <span class="d-side">
+                <span class="d-mon">Juni 2027</span>
+                <span class="d-wd">Samstag</span>
+            </span>
+        </div>
+
+        <p class="place">
+            <b>Bauernhof Bauer Bues</b><br>
+            Groß Denkte bei Wolfenbüttel
+        </p>
+
+        <div class="btn-row" style="margin-top:24px">
+            <button class="btn btn-primary" data-ics type="button">Termin merken</button>
+            <a class="btn btn-ghost" href="holz2.html">Alle Details</a>
+        </div>
+    </div>
+
+    <span class="scroll-hint">mehr</span>
+</header>
+
+<!-- ══ Die knappen Fakten ════════════════════════════════════ -->
+<section>
+    <div class="wrap">
+        <div class="section-head" data-reveal>
+            <span class="kicker">Die kurze Fassung</span>
+            <h2>Mehr müsst ihr erst mal nicht wissen</h2>
+            <div class="countdown" id="countdown" aria-label="Countdown bis zum Fest">
+                <span class="cd"><b data-cd="d">–</b><span>Tage</span></span>
+                <span class="cd"><b data-cd="h">–</b><span>Std</span></span>
+                <span class="cd"><b data-cd="m">–</b><span>Min</span></span>
+                <span class="cd"><b data-cd="s">–</b><span>Sek</span></span>
+            </div>
+        </div>
+
+        <div class="facts" data-reveal>
+            <div><span class="k">Anlass</span><span class="v">Hölzerne Hochzeit<small>Zehn Jahre verheiratet – und das wollen wir richtig feiern.</small></span></div>
+            <div><span class="k">Wann</span><span class="v">Samstag, 12. Juni 2027<small>nachmittags bis abends, 14 – 20 Uhr <span class="tbc" title="Uhrzeit noch nicht endgültig bestätigt">?</span></small></span></div>
+            <div><span class="k">Wo</span><span class="v">Bauer Bues, Groß Denkte<small>Erlebnisbauernhof bei Wolfenbüttel – der ganze Hof gehört an dem Tag uns.</small></span></div>
+            <div><span class="k">Für wen</span><span class="v">Ihr. Und eure Kinder.<small>Ausdrücklich mit Kind und Kegel – kein Kind muss zu Hause bleiben.</small></span></div>
+            <div><span class="k">Und jetzt</span><span class="v">Nichts tun außer notieren<small>Die richtige Einladung mit allen Details kommt rechtzeitig hinterher.</small></span></div>
+        </div>
+
+        <p class="quote" style="margin-top:44px" data-reveal>
+            „Kein Saal, keine Sitzordnung, keine Kinderbetreuung im Nebenraum –
+            ein Hof, ein Nachmittag, alle zusammen.“
+        </p>
+
+        <div class="btn-row" style="margin-top:36px" data-reveal>
+            <button class="btn btn-primary" data-ics type="button">In den Kalender eintragen</button>
+            <a class="btn btn-ghost" href="holz2.html">Was uns vorschwebt →</a>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <svg class="orn" viewBox="0 0 132 20" aria-hidden="true">
+        <path d="M2 10 H50"/><path d="M82 10 H130"/>
+        <circle cx="66" cy="10" r="5"/><circle cx="66" cy="10" r="9"/>
+    </svg>
+    <p style="margin-top:14px">Wir freuen uns auf euch.<br>
+       <span class="ph">[Bastian &amp; Name]</span></p>
+</footer>
+
+</div>
+
+<script src="js/holz.js"></script>
+</body>
+</html>

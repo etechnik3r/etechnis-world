@@ -19,7 +19,9 @@ erweitert wird. Als **Progressive Web App** installierbar.
 ├── sw.js                              Service Worker (Offline + Update-Erkennung)
 ├── manifest.webmanifest               PWA-Manifest
 ├── icons/                             App-Icons (SVG + PNG, inkl. maskable)
-└── img/                               Bilder zu den Themen
+├── img/                               Bilder zu den Themen
+└── holz/                              Private Einladungsseiten (nicht verlinkt,
+                                       noindex) – siehe holz/README.md
 ```
 
 ## Design-System (wichtig für neue Rechner)
@@ -73,6 +75,16 @@ Monatsmittel ändern sich rückwirkend nicht, und es gibt keine frei nutzbare
 API dafür. Neue Monate werden beim Deploy einfach am Ende der `PRICES`-Liste
 ergänzt – der Rechner bleibt dadurch dauerhaft korrekt und funktioniert auch
 in Zukunft ohne externe Abhängigkeit.
+
+## Private Unterseiten (`holz/`)
+
+Im Ordner `holz/` liegen zwei eigenständige Seiten zur Hölzernen Hochzeit
+(Save the Date und ausführliche Einladung). Sie sind **absichtlich nicht von
+der Startseite verlinkt** und tragen `noindex` – erreichbar nur über den
+direkten Link. Der Ordner bringt CSS, JS und Bilder selbst mit und lässt sich
+komplett auf einen anderen Webspace verschieben. Details in
+`holz/README.md`. Der Service Worker liefert alles unter `/holz/` bewusst
+network-first aus, damit dort nie veraltete Angaben stehen.
 
 ## Hinweise
 

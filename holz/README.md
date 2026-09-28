@@ -19,9 +19,15 @@ holz/
 ├── holz2.html      Ausführliche Einladung
 ├── css/holz.css    Design (warm, "Papier & Holz")
 ├── js/holz.js      Countdown, Kalender-Datei (.ics), Einblendungen, Parallax
-└── img/
-    ├── favicon.svg Jahresringe als Icon
-    └── vorschau.png Vorschaubild für WhatsApp/Signal/Mail (1200×630)
+├── img/
+│   ├── favicon.svg Jahresringe als Icon
+│   └── vorschau.png Vorschaubild für WhatsApp/Signal/Mail (1200×630)
+└── flyer/          Save-the-Date als Bild zum Verschicken
+    ├── content.md          Inhalt, was bewusst fehlt, wie neu erzeugen
+    ├── save-the-date.html  Quelle des Bildes
+    ├── save-the-date.png   fertiges Bild, 2160×2700 (4:5)
+    ├── render.js           HTML → PNG mit Playwright
+    └── fonts/              Cormorant Garamond + Jost (SIL OFL)
 ```
 
 ## Nicht auffindbar, nur über den Link
@@ -46,7 +52,7 @@ holz/
 
 Alle Platzhalter sind auf den Seiten **rot und kursiv** markiert (`.ph`):
 
-1. **Name der Braut** – in beiden Dateien: `<span class="ph">[Name]</span>`,
+1. **Name der Braut: Merle** (im Flyer schon drin) – auf den Seiten noch offen, in beiden Dateien: `<span class="ph">[Name]</span>`,
    zusätzlich im `data-title` am `<body>` und im Footer.
 2. **Das exakte Datum.** Aktuell steht überall **Samstag, 12. Juni 2027**
    (ein plausibler Samstag im Juni). Zu ändern an drei Stellen je Datei:

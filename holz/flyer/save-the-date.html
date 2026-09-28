@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<title>Save the Date · Flyer</title>
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+
+<!-- Quelle für save-the-date.png (WhatsApp-Bild). Wird mit render.js bei
+     1080 × 1350 CSS-Pixeln und Faktor 2 abfotografiert. Inhalt: content.md -->
+
+<style>
+@font-face { font-family: "Cormorant"; font-weight: 500; font-style: normal; src: url("fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant"; font-weight: 600; font-style: normal; src: url("fonts/cormorant-garamond-latin-600-normal.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant"; font-weight: 400; font-style: italic; src: url("fonts/cormorant-garamond-latin-400-italic.woff2") format("woff2"); }
+@font-face { font-family: "Cormorant"; font-weight: 500; font-style: italic; src: url("fonts/cormorant-garamond-latin-500-italic.woff2") format("woff2"); }
+@font-face { font-family: "Jost"; font-weight: 400; font-style: normal; src: url("fonts/jost-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Jost"; font-weight: 500; font-style: normal; src: url("fonts/jost-latin-500-normal.woff2") format("woff2"); }
+
+:root {
+    --paper:   #fbf5ea;
+    --paper-2: #f4e9d8;
+    --ink:     #2b211a;
+    --text:    #4a3a2e;
+    --muted:   #7d6852;
+    --wood:    #97552b;
+    --wood-2:  #c4833f;
+    --gold:    #d9a441;
+
+    --serif: "Cormorant", "Palatino Linotype", Palatino, Georgia, serif;
+    --sans:  "Jost", "Helvetica Neue", Arial, sans-serif;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1080px; height: 1350px; overflow: hidden; }
+body {
+    background: var(--paper);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    font-kerning: normal;
+    font-variant-numeric: lining-nums;
+}
+
+.flyer {
+    position: relative;
+    width: 1080px;
+    height: 1350px;
+    overflow: hidden;
+    background:
+        radial-gradient(70% 45% at 82% 6%, rgba(255, 226, 168, 0.55), transparent 70%),
+        linear-gradient(180deg, var(--paper) 0%, var(--paper) 55%, var(--paper-2) 100%);
+}
+
+/* Feines Papierkorn */
+.flyer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
+}
+
+/* Doppelte Haarlinie als Rahmen */
+.frame {
+    position: absolute;
+    inset: 34px;
+    border: 2px solid rgba(151, 85, 43, 0.38);
+    overflow: hidden;
+}
+.frame::after {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    border: 1px solid rgba(151, 85, 43, 0.22);
+    pointer-events: none;
+}
+
+.content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 52px;
+}
+
+.kicker {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 22px;
+    letter-spacing: 0.44em;
+    padding-left: 0.44em;          /* Sperrung optisch mittig halten */
+    text-transform: uppercase;
+    color: var(--wood);
+}
+
+.rings {
+    display: block;
+    width: 212px;
+    height: 212px;
+    margin-top: 30px;
+}
+
+.title {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 128px;
+    line-height: 1;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+    margin-top: 26px;
+}
+
+.occasion {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 56px;
+    line-height: 1.1;
+    color: var(--wood);
+    margin-top: 4px;
+}
+
+.names {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: 58px;
+    line-height: 1.1;
+    color: var(--text);
+    margin-top: 22px;
+}
+.names .amp {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--wood-2);
+    padding: 0 0.08em;
+}
+
+.orn {
+    display: block;
+    width: 300px;
+    height: 24px;
+    margin: 26px 0 24px;
+}
+.orn path, .orn circle { fill: none; stroke: var(--wood-2); stroke-width: 1.6; }
+
+.weekday {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 21px;
+    letter-spacing: 0.44em;
+    padding-left: 0.44em;
+    text-transform: uppercase;
+    color: var(--wood);
+}
+
+.date {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 84px;
+    line-height: 1.05;
+    color: var(--ink);
+    margin-top: 6px;
+}
+
+.venue {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 42px;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-top: 24px;
+}
+
+.address {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 22px;
+    letter-spacing: 0.03em;
+    line-height: 1.5;
+    color: var(--muted);
+    margin-top: 6px;
+}
+
+.motto {
+    font-family: var(--serif);
+    font-style: italic;
+    font-weight: 500;
+    font-size: 40px;
+    line-height: 1.2;
+    color: var(--wood);
+    margin-top: 18px;
+}
+
+/* Hof als Linienzeichnung am unteren Rand */
+.farm {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    width: calc(100% - 20px);
+    height: auto;
+    z-index: 1;
+}
+.farm .l  { fill: none; stroke: var(--wood); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.farm .l2 { fill: none; stroke: var(--wood); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; opacity: 0.6; }
+.farm .f  { fill: var(--wood); opacity: 0.08; stroke: none; }
+.farm .f2 { fill: var(--wood); opacity: 0.14; stroke: none; }
+</style>
+</head>
+<body>
+
+<main class="flyer">
+<div class="frame">
+
+    <div class="content">
+        <p class="kicker">Save the Date</p>
+
+        <!-- Zehn Jahresringe, Pfade werden unten per Skript erzeugt -->
+        <svg class="rings" id="rings" viewBox="0 0 200 200" role="img" aria-label="Zehn Jahresringe"></svg>
+
+        <h1 class="title">Zehn Jahre</h1>
+        <p class="occasion">Hölzerne Hochzeit</p>
+        <p class="names">Merle <span class="amp">&amp;</span> Bastian</p>
+
+        <svg class="orn" viewBox="0 0 300 24" aria-hidden="true">
+            <path d="M8 12 H122"/><path d="M178 12 H292"/>
+            <circle cx="150" cy="12" r="4.5"/><circle cx="150" cy="12" r="9.5"/>
+        </svg>
+
+        <p class="weekday">Samstag</p>
+        <p class="date">12. Juni 2027</p>
+
+        <p class="venue">Erlebnisbauernhof Bauer Bues</p>
+        <p class="address">Hauptstraße 18 · 38321 Groß Denkte · bei Wolfenbüttel</p>
+
+        <p class="motto">Mit Kind und Kegel.</p>
+    </div>
+
+    <!-- Der Hof: Baum, Scheune, Wohnhaus, Strohballen, Zaun -->
+    <svg class="farm" viewBox="0 0 988 240" aria-hidden="true">
+        <!-- ferne Hügel -->
+        <path class="l2" d="M0 146 C 100 130, 200 134, 290 146 M700 146 C 790 132, 890 130, 988 142"/>
+
+        <!-- Vögel -->
+        <path class="l2" d="M112 40 q 9 -8 18 0 q 9 -8 18 0 M162 20 q 7 -6 14 0 q 7 -6 14 0"/>
+
+        <!-- Baum links -->
+        <path class="f" d="M140 114 a 30 30 0 0 1 22 -46 a 36 36 0 0 1 64 -4 a 30 30 0 0 1 20 50 a 26 26 0 0 1 -28 24 h-52 a 28 28 0 0 1 -26 -24 z"/>
+        <path class="l" d="M140 114 a 30 30 0 0 1 22 -46 a 36 36 0 0 1 64 -4 a 30 30 0 0 1 20 50 a 26 26 0 0 1 -28 24 h-52 a 28 28 0 0 1 -26 -24 z"/>
+        <path class="l" d="M186 138 L183 186 M202 138 L205 186 M194 138 v-22 M194 124 l-12 -10 M194 120 l12 -12"/>
+
+        <!-- Scheune -->
+        <path class="f"  d="M340 110 L494 52 L648 110 H626 V186 H362 V110 Z"/>
+        <path class="l"  d="M336 112 L494 51 L652 112"/>
+        <path class="l"  d="M362 103 V186 M626 103 V186"/>
+        <path class="l2" d="M362 134 H460 M528 134 H626 M362 160 H460 M528 160 H626 M416 110 V186 M572 110 V186"/>
+        <!-- Heuboden-Luke -->
+        <path class="l"  d="M477 70 h34 v28 h-34 z"/>
+        <path class="l2" d="M494 70 v28"/>
+        <!-- Tor -->
+        <path class="f2" d="M460 186 v-36 a34 34 0 0 1 68 0 v36 z"/>
+        <path class="l"  d="M460 186 v-36 a34 34 0 0 1 68 0 v36"/>
+        <path class="l2" d="M494 116 V186 M464 142 L524 184 M524 142 L464 184"/>
+        <!-- Wetterhahn -->
+        <path class="l"  d="M494 51 V32"/>
+        <path class="l"  d="M494 34 l12 4.5 l-12 4.5"/>
+
+        <!-- Strohballen -->
+        <circle class="f2" cx="666" cy="172" r="14"/>
+        <circle class="l"  cx="666" cy="172" r="14"/>
+        <path   class="l2" d="M666 172 m -7 0 a 7 7 0 1 1 7 7 a 4 4 0 1 1 -3 -5"/>
+        <circle class="f2" cx="692" cy="177" r="9"/>
+        <circle class="l"  cx="692" cy="177" r="9"/>
+
+        <!-- Wohnhaus -->
+        <path class="f"  d="M732 131 L786 100 L840 131 V186 H732 Z"/>
+        <path class="l"  d="M720 134 L786 96 L852 134"/>
+        <path class="l"  d="M732 127 V186 M840 127 V186"/>
+        <path class="l"  d="M820 115 V90 h12 V122"/>
+        <path class="l2" d="M746 144 h20 v18 h-20 z M756 144 v18 M806 144 h20 v18 h-20 z M816 144 v18"/>
+        <path class="l"  d="M776 186 v-28 h20 v28"/>
+
+        <!-- Boden -->
+        <path class="l"  d="M0 186 C 160 178, 320 190, 494 184 C 670 178, 830 190, 988 182"/>
+
+        <!-- Gräser -->
+        <path class="l2" d="M64 192 q 3 -14 -1 -22 M72 192 q -2 -12 3 -18 M292 190 q 3 -12 -1 -20 M298 190 q -2 -10 3 -16
+                            M712 190 q 3 -14 -1 -22 M720 190 q -2 -12 3 -18 M912 188 q 3 -12 -1 -20 M918 188 q -2 -10 3 -16"/>
+
+        <!-- Zaun im Vordergrund -->
+        <path class="l2" d="M0 206 H988 M0 222 H988"/>
+        <path class="l"  d="M30 198 V240 M184 198 V240 M338 198 V240 M494 198 V240 M648 198 V240 M802 198 V240 M958 198 V240" style="opacity:.75"/>
+    </svg>
+
+</div>
+</main>
+
+<script>
+/* Zehn Jahresringe: gemeinsame, sanfte Verformung (wie bei echtem Holz)
+   plus ein wenig Eigenleben pro Ring. Fester Seed, damit jeder Render
+   identisch aussieht. */
+(function () {
+    var NS = "http://www.w3.org/2000/svg";
+    var svg = document.getElementById("rings");
+    var seed = 10;
+    function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+
+    function shape(t) {
+        return 0.030 * Math.sin(2 * t + 0.6)
+             + 0.016 * Math.sin(3 * t + 2.1)
+             + 0.007 * Math.sin(5 * t + 4.0);
+    }
+
+    function ringPath(r, jitter, phase) {
+        var d = "", N = 180;
+        for (var i = 0; i <= N; i++) {
+            var t = i / N * Math.PI * 2;
+            var rr = r * (1 + shape(t)) + jitter * Math.sin(7 * t + phase);
+            var x = 100 + rr * Math.cos(t);
+            var y = 100 + rr * Math.sin(t);
+            d += (i ? "L" : "M") + x.toFixed(2) + " " + y.toFixed(2);
+        }
+        return d + "Z";
+    }
+
+    function add(tag, attrs) {
+        var el = document.createElementNS(NS, tag);
+        for (var k in attrs) el.setAttribute(k, attrs[k]);
+        svg.appendChild(el);
+        return el;
+    }
+
+    var defs = document.createElementNS(NS, "defs");
+    defs.innerHTML =
+        '<radialGradient id="holz" cx="50%" cy="50%" r="50%">' +
+        '<stop offset="0%" stop-color="#e9c88f" stop-opacity="0.55"/>' +
+        '<stop offset="70%" stop-color="#d9a86a" stop-opacity="0.30"/>' +
+        '<stop offset="100%" stop-color="#c4833f" stop-opacity="0.38"/>' +
+        '</radialGradient>';
+    svg.appendChild(defs);
+
+    /* Jahresbreiten: unterschiedlich, wie gute und magere Jahre */
+    var r = 28, radii = [];
+    for (var i = 0; i < 10; i++) {
+        r += (i === 0 ? 0 : 6.2 + rnd() * 2.4);
+        radii.push(r);
+    }
+    var scale = 88 / radii[9];
+    radii = radii.map(function (x) { return x * scale; });
+
+    /* Holzscheibe als Fläche unter den Ringen, Rinde als Rand */
+    add("path", { d: ringPath(radii[9] + 5, 0.4, 1.3), fill: "url(#holz)", stroke: "none" });
+    add("path", { d: ringPath(radii[9] + 5, 0.4, 1.3), fill: "none",
+                  stroke: "#97552b", "stroke-width": 3.2, "stroke-linejoin": "round" });
+
+    radii.forEach(function (rad, idx) {
+        add("path", {
+            d: ringPath(rad, 0.35 + rnd() * 0.35, rnd() * 6.28),
+            fill: "none",
+            stroke: "#97552b",
+            "stroke-width": (idx === 9 ? 1.6 : 1.0 + rnd() * 0.5).toFixed(2),
+            "stroke-opacity": (0.45 + rnd() * 0.35).toFixed(2)
+        });
+    });
+
+    var num = add("text", {
+        x: 100, y: 100, "text-anchor": "middle", "dominant-baseline": "central",
+        "font-family": "Cormorant, Georgia, serif", "font-weight": 600,
+        "font-size": 34, fill: "#2b211a"
+    });
+    num.textContent = "10";
+})();
+</script>
+</body>
+</html>

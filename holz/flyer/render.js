@@ -2,12 +2,12 @@
    render.js — fotografiert save-the-date.html als PNG ab
    Aufruf (aus dem Repo-Wurzelverzeichnis):
      NODE_PATH="$(npm root -g)" node holz/flyer/render.js
-   Ergebnis: holz/flyer/save-the-date.png, 2160 × 2700 px (4:5)
+   Ergebnis: holz/flyer/save-the-date.png, 2160 × 3840 px (9:16)
    ============================================================ */
 const path = require("path");
 const { chromium } = require("playwright");
 
-const W = 1080, H = 1350, SCALE = 2;
+const W = 1080, H = 1920, SCALE = 2;
 
 (async () => {
     const browser = await chromium.launch();

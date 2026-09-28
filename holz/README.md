@@ -25,7 +25,7 @@ holz/
 └── flyer/          Save-the-Date als Bild zum Verschicken
     ├── content.md          Inhalt, was bewusst fehlt, wie neu erzeugen
     ├── save-the-date.html  Quelle des Bildes
-    ├── save-the-date.png   fertiges Bild, 2160×2700 (4:5)
+    ├── save-the-date.png   fertiges Bild, 2160×3840 (9:16)
     ├── render.js           HTML → PNG mit Playwright
     └── fonts/              Cormorant Garamond + Jost (SIL OFL)
 ```

@@ -9,7 +9,12 @@
 <meta name="referrer" content="no-referrer">
 
 <!-- Quelle für save-the-date.png (WhatsApp-Bild). Wird mit render.js bei
-     1080 × 1350 CSS-Pixeln und Faktor 2 abfotografiert. Inhalt: content.md -->
+     1080 × 1920 CSS-Pixeln (9:16) und Faktor 2 abfotografiert.
+     Inhalt: content.md
+
+     Schriftgrößen: Auf dem Handy wird das Bild auf ca. 390 pt Breite
+     gezeigt, also Faktor ~0,36. Kleinste Schrift 36 px ≈ 13 pt,
+     Fließzeilen ≥ 54 px ≈ 19 pt. -->
 
 <style>
 @font-face { font-family: "Cormorant"; font-weight: 500; font-style: normal; src: url("fonts/cormorant-garamond-latin-500-normal.woff2") format("woff2"); }
@@ -24,17 +29,18 @@
     --paper-2: #f4e9d8;
     --ink:     #2b211a;
     --text:    #4a3a2e;
-    --muted:   #7d6852;
     --wood:    #97552b;
     --wood-2:  #c4833f;
-    --gold:    #d9a441;
 
     --serif: "Cormorant", "Palatino Linotype", Palatino, Georgia, serif;
     --sans:  "Jost", "Helvetica Neue", Arial, sans-serif;
+
+    --W: 1080px;
+    --H: 1920px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 1080px; height: 1350px; overflow: hidden; }
+html, body { width: var(--W); height: var(--H); overflow: hidden; }
 body {
     background: var(--paper);
     color: var(--text);
@@ -46,12 +52,12 @@ body {
 
 .flyer {
     position: relative;
-    width: 1080px;
-    height: 1350px;
+    width: var(--W);
+    height: var(--H);
     overflow: hidden;
     background:
-        radial-gradient(70% 45% at 82% 6%, rgba(255, 226, 168, 0.55), transparent 70%),
-        linear-gradient(180deg, var(--paper) 0%, var(--paper) 55%, var(--paper-2) 100%);
+        radial-gradient(70% 35% at 82% 4%, rgba(255, 226, 168, 0.55), transparent 70%),
+        linear-gradient(180deg, var(--paper) 0%, var(--paper) 60%, var(--paper-2) 100%);
 }
 
 /* Feines Papierkorn */
@@ -86,30 +92,32 @@ body {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding-top: 52px;
+    padding: 64px 40px 0;
 }
 
-.kicker {
+/* Gesperrte Versalien-Labels */
+.label {
     font-family: var(--sans);
     font-weight: 500;
-    font-size: 22px;
-    letter-spacing: 0.44em;
-    padding-left: 0.44em;          /* Sperrung optisch mittig halten */
+    font-size: 38px;
+    line-height: 1.2;
+    letter-spacing: 0.36em;
+    padding-left: 0.36em;          /* Sperrung optisch mittig halten */
     text-transform: uppercase;
     color: var(--wood);
 }
 
 .rings {
     display: block;
-    width: 212px;
-    height: 212px;
-    margin-top: 30px;
+    width: 224px;
+    height: 224px;
+    margin-top: 32px;
 }
 
 .title {
     font-family: var(--serif);
     font-weight: 500;
-    font-size: 128px;
+    font-size: 164px;
     line-height: 1;
     letter-spacing: -0.005em;
     color: var(--ink);
@@ -120,81 +128,72 @@ body {
     font-family: var(--serif);
     font-style: italic;
     font-weight: 500;
-    font-size: 56px;
+    font-size: 82px;
     line-height: 1.1;
     color: var(--wood);
-    margin-top: 4px;
+    margin-top: 10px;
 }
 
 .names {
     font-family: var(--serif);
     font-weight: 500;
-    font-size: 58px;
+    font-size: 94px;
     line-height: 1.1;
     color: var(--text);
-    margin-top: 22px;
+    margin-top: 26px;
 }
 .names .amp {
     font-style: italic;
     font-weight: 400;
     color: var(--wood-2);
-    padding: 0 0.08em;
+    padding: 0 0.06em;
 }
 
 .orn {
     display: block;
-    width: 300px;
-    height: 24px;
-    margin: 26px 0 24px;
+    width: 380px;
+    height: 30px;
+    margin: 32px 0 30px;
 }
-.orn path, .orn circle { fill: none; stroke: var(--wood-2); stroke-width: 1.6; }
+.orn path, .orn circle { fill: none; stroke: var(--wood-2); stroke-width: 2.2; }
 
-.weekday {
-    font-family: var(--sans);
+.slogan {
+    font-family: var(--serif);
+    font-style: italic;
     font-weight: 500;
-    font-size: 21px;
-    letter-spacing: 0.44em;
-    padding-left: 0.44em;
-    text-transform: uppercase;
-    color: var(--wood);
+    font-size: 64px;
+    line-height: 1.2;
+    color: var(--text);
 }
+
+.weekday { margin-top: 36px; }
 
 .date {
     font-family: var(--serif);
     font-weight: 600;
-    font-size: 84px;
+    font-size: 146px;
     line-height: 1.05;
     color: var(--ink);
     margin-top: 6px;
 }
 
-.venue {
+.place {
     font-family: var(--serif);
     font-weight: 600;
-    font-size: 42px;
+    font-size: 62px;
     line-height: 1.2;
     color: var(--ink);
-    margin-top: 24px;
-}
-
-.address {
-    font-family: var(--sans);
-    font-weight: 400;
-    font-size: 22px;
-    letter-spacing: 0.03em;
-    line-height: 1.5;
-    color: var(--muted);
-    margin-top: 6px;
+    margin-top: 32px;
 }
 
 .motto {
     font-family: var(--serif);
     font-style: italic;
     font-weight: 500;
-    font-size: 40px;
+    font-size: 58px;
     line-height: 1.2;
     color: var(--wood);
-    margin-top: 18px;
+    margin-top: 16px;
 }
 
 /* Hof als Linienzeichnung am unteren Rand */
@@ -218,7 +217,7 @@ body {
 <div class="frame">
 
     <div class="content">
-        <p class="kicker">Save the Date</p>
+        <p class="label">Save the Date</p>
 
         <!-- Zehn Jahresringe, Pfade werden unten per Skript erzeugt -->
         <svg class="rings" id="rings" viewBox="0 0 200 200" role="img" aria-label="Zehn Jahresringe"></svg>
@@ -227,22 +226,23 @@ body {
         <p class="occasion">Hölzerne Hochzeit</p>
         <p class="names">Merle <span class="amp">&amp;</span> Bastian</p>
 
-        <svg class="orn" viewBox="0 0 300 24" aria-hidden="true">
-            <path d="M8 12 H122"/><path d="M178 12 H292"/>
-            <circle cx="150" cy="12" r="4.5"/><circle cx="150" cy="12" r="9.5"/>
+        <svg class="orn" viewBox="0 0 380 30" aria-hidden="true">
+            <path d="M10 15 H156"/><path d="M224 15 H370"/>
+            <circle cx="190" cy="15" r="5.5"/><circle cx="190" cy="15" r="12"/>
         </svg>
 
-        <p class="weekday">Samstag</p>
+        <p class="slogan">Manche Tage sind es wert,<br>gefeiert zu werden.</p>
+
+        <p class="label weekday">Samstag</p>
         <p class="date">12. Juni 2027</p>
 
-        <p class="venue">Erlebnisbauernhof Bauer Bues</p>
-        <p class="address">Hauptstraße 18 · 38321 Groß Denkte · bei Wolfenbüttel</p>
-
+        <!-- Hof bewusst nicht genannt – nur: Bauernhof, Region -->
+        <p class="place">Auf einem Bauernhof<br>bei Wolfenbüttel</p>
         <p class="motto">Mit Kind und Kegel.</p>
     </div>
 
     <!-- Der Hof: Baum, Scheune, Wohnhaus, Strohballen, Zaun -->
-    <svg class="farm" viewBox="0 0 988 240" aria-hidden="true">
+    <svg class="farm" viewBox="40 0 908 240" aria-hidden="true">
         <!-- ferne Hügel -->
         <path class="l2" d="M0 146 C 100 130, 200 134, 290 146 M700 146 C 790 132, 890 130, 988 142"/>
 

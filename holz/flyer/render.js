@@ -21,10 +21,8 @@ const W = 1080, H = 1920, SCALE = 2;
     // Alle Schnitte explizit laden, bevor abfotografiert wird
     await page.evaluate(async () => {
         await Promise.all([
-            document.fonts.load('500 20px "Cormorant"'),
-            document.fonts.load('600 20px "Cormorant"'),
-            document.fonts.load('italic 400 20px "Cormorant"'),
-            document.fonts.load('italic 500 20px "Cormorant"'),
+            document.fonts.load('500 20px "Literata"'),
+            document.fonts.load('italic 500 20px "Literata"'),
             document.fonts.load('400 20px "Jost"'),
             document.fonts.load('500 20px "Jost"'),
         ]);

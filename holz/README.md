@@ -27,7 +27,7 @@ holz/
     ├── save-the-date.html  Quelle des Bildes
     ├── save-the-date.png   fertiges Bild, 2160×3840 (9:16)
     ├── render.js           HTML → PNG mit Playwright
-    └── fonts/              Cormorant Garamond + Jost (SIL OFL)
+    └── fonts/              Literata + Jost (SIL OFL)
 ```
 
 ## Nicht auffindbar, nur über den Link

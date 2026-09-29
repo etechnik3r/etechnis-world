@@ -4,10 +4,16 @@ Zwei Versionen als Bild zum Verschicken per WhatsApp, beide 2160 × 3840 px
 im Hochformat 9:16 (füllt aktuelle Handys in voller Breite, passt auch als
 WhatsApp-Status):
 
-| Datei                  | Version                                              |
-|------------------------|------------------------------------------------------|
-| `save-the-date.png`    | **1** – Jahresringe, „Zehn Jahre“, Hof-Zeichnung     |
-| `save-the-date-v2.png` | **2** – nach handschriftlicher Vorlage, Foto im Kreis |
+| Datei                          | Version                                              |
+|--------------------------------|------------------------------------------------------|
+| `save-the-date.png` / `.pdf`   | **1** – Jahresringe, „Zehn Jahre“, Hof-Zeichnung     |
+| `save-the-date-v2.png` / `.pdf`| **2** – nach handschriftlicher Vorlage, Foto im Kreis |
+
+Die PDFs haben dasselbe Format (810 × 1440 pt ≈ 286 × 508 mm), sind
+vektoriell und enthalten echten, kopierbaren Text. Jost ist als Schrift
+eingebettet; Literata legt Chromium wegen der variablen Achsen als
+Vektorkonturen (Type 3) ab – sieht überall gleich aus, lässt sich in
+Canva & Co. aber nicht als Text weiterbearbeiten.
 
 ---
 
@@ -107,7 +113,8 @@ NODE_PATH="$(npm root -g)" node holz/flyer/render.js
 ```
 
 Braucht Playwright mit Chromium. Das Skript rendert beide Seiten mit
-1080 × 1920 CSS-Pixeln bei Faktor 2. Wird ein Text länger, prüfen, dass
+1080 × 1920 CSS-Pixeln bei Faktor 2 als PNG und druckt sie zusätzlich
+als PDF. Wird ein Text länger, prüfen, dass
 er nicht in die Zeichnung am unteren Rand läuft.
 
 ## Beim Verschicken

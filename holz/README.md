@@ -25,11 +25,11 @@ holz/
 └── flyer/          Save-the-Date als Bild zum Verschicken
     ├── content.md             Inhalt beider Versionen, wie neu erzeugen
     ├── save-the-date.html     Version 1 (Jahresringe, Hof-Zeichnung)
-    ├── save-the-date.png      fertiges Bild, 2160×3840 (9:16)
+    ├── save-the-date.png/.pdf fertiges Bild 2160×3840 (9:16) und PDF
     ├── save-the-date-v2.html  Version 2 (Foto im Kreis, nach Vorlage)
-    ├── save-the-date-v2.png   fertiges Bild, 2160×3840 (9:16)
+    ├── save-the-date-v2.png/.pdf  fertiges Bild und PDF
     ├── foto.jpg               Foto für Version 2 – nur lokal, per .gitignore raus
-    ├── render.js              HTML → PNG mit Playwright (beide Versionen)
+    ├── render.js              HTML → PNG + PDF mit Playwright (beide Versionen)
     └── fonts/                 Literata + Jost (SIL OFL)
 ```
 

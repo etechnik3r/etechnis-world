@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<title>Save the Date · Flyer · Version 2</title>
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+
+<!-- Quelle für save-the-date-v2.png – Version 2 nach handschriftlicher
+     Vorlage (Foto im Kreis, Text zum Mitkommen mit Kindern).
+     Wird mit render.js bei 1080 × 1920 CSS-Pixeln (9:16) und Faktor 2
+     abfotografiert. Inhalt: content.md
+
+     Foto: Liegt foto.jpg neben dieser Datei, kommt es automatisch in den
+     Kreis. Sonst steht dort eine Holzscheibe als Platzhalter.
+
+     Lesbarkeit: siehe save-the-date.html – Faktor ~0,36 auf dem Handy,
+     opsz = tatsächliche Größe auf dem Display. -->
+
+<style>
+@font-face { font-family: "Literata"; font-weight: 200 900; font-style: normal; src: url("fonts/literata-latin-opsz-normal.woff2") format("woff2"); }
+@font-face { font-family: "Literata"; font-weight: 200 900; font-style: italic; src: url("fonts/literata-latin-opsz-italic.woff2") format("woff2"); }
+@font-face { font-family: "Jost"; font-weight: 400; font-style: normal; src: url("fonts/jost-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "Jost"; font-weight: 500; font-style: normal; src: url("fonts/jost-latin-500-normal.woff2") format("woff2"); }
+
+:root {
+    --paper:   #fbf5ea;
+    --paper-2: #f4e9d8;
+    --ink:     #2b211a;
+    --text:    #3f3128;
+    --soft:    #5e4a3b;
+    --wood:    #97552b;
+    --wood-2:  #c4833f;
+
+    --serif: "Literata", Georgia, serif;
+    --sans:  "Jost", "Helvetica Neue", Arial, sans-serif;
+
+    --W: 1080px;
+    --H: 1920px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: var(--W); height: var(--H); overflow: hidden; }
+body {
+    background: var(--paper);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    font-kerning: normal;
+    font-variant-numeric: lining-nums;
+    hyphens: manual;
+}
+
+/* Optische Größe = Größe auf dem Handy-Display (CSS-px × 0,36) */
+.serif { font-family: var(--serif); font-variation-settings: "opsz" var(--opsz, 18); }
+
+.flyer {
+    position: relative;
+    width: var(--W);
+    height: var(--H);
+    overflow: hidden;
+    background:
+        radial-gradient(70% 35% at 82% 4%, rgba(255, 226, 168, 0.55), transparent 70%),
+        linear-gradient(180deg, var(--paper) 0%, var(--paper) 60%, var(--paper-2) 100%);
+}
+
+/* Feines Papierkorn */
+.flyer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0.35;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E");
+}
+
+/* Doppelte Haarlinie als Rahmen */
+.frame {
+    position: absolute;
+    inset: 34px;
+    border: 2px solid rgba(151, 85, 43, 0.38);
+    overflow: hidden;
+}
+.frame::after {
+    content: "";
+    position: absolute;
+    inset: 9px;
+    border: 1px solid rgba(151, 85, 43, 0.22);
+    pointer-events: none;
+}
+
+.content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 44px 40px 0;
+}
+
+.headline {
+    --opsz: 26;
+    font-weight: 500;
+    font-size: 72px;
+    line-height: 1.1;
+    letter-spacing: -0.005em;
+    color: var(--ink);
+}
+
+/* Foto im Kreis, Jahresringe als Holzrahmen, Schrift im Bogen */
+.medal {
+    display: block;
+    width: 560px;
+    height: 560px;
+    margin-top: 10px;
+}
+.medal .arc {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 40px;
+    letter-spacing: 0.2em;
+    fill: var(--wood);
+}
+.medal .arc .we { fill: var(--ink); }
+.medal .ini {
+    font-family: var(--serif);
+    font-variation-settings: "opsz" 23;
+    font-weight: 600;
+    font-size: 60px;
+    fill: var(--ink);
+}
+
+.date {
+    --opsz: 42;
+    font-weight: 560;
+    font-size: 116px;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin-top: 6px;
+}
+
+/* Gesperrte Versalien-Labels */
+.label {
+    font-family: var(--sans);
+    font-weight: 500;
+    font-size: 44px;
+    line-height: 1.2;
+    letter-spacing: 0.3em;
+    padding-left: 0.3em;           /* Sperrung optisch mittig halten */
+    text-transform: uppercase;
+    color: var(--wood);
+    margin-top: 4px;
+}
+
+.text {
+    --opsz: 18;
+    font-weight: 430;
+    font-size: 50px;
+    line-height: 1.34;
+    color: var(--text);
+    margin-top: 28px;
+    text-wrap: balance;
+}
+.text + .text { margin-top: 18px; }
+
+.closing {
+    --opsz: 20;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 54px;
+    line-height: 1.25;
+    color: var(--wood);
+    margin-top: 26px;
+}
+
+.info {
+    --opsz: 16;
+    font-weight: 430;
+    font-size: 42px;
+    line-height: 1.3;
+    color: var(--soft);
+    margin-top: 14px;
+}
+
+/* Zaun, Wiese, Strohballen als schmaler Streifen am unteren Rand */
+.strip {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    width: calc(100% - 20px);
+    height: auto;
+    z-index: 1;
+}
+.strip .l  { fill: none; stroke: var(--wood); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.strip .l2 { fill: none; stroke: var(--wood); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; opacity: 0.6; }
+.strip .f2 { fill: var(--wood); opacity: 0.14; stroke: none; }
+</style>
+</head>
+<body>
+
+<main class="flyer">
+<div class="frame">
+
+    <div class="content">
+        <h1 class="serif headline">Wir haben etwas zu feiern</h1>
+
+        <!-- Medaillon: Inhalt (Foto oder Holzscheibe) wird unten per Skript gebaut -->
+        <svg class="medal" id="medal" viewBox="0 0 560 560" role="img"
+             aria-label="Foto von Merle und Bastian im Holzrahmen – 10 Jahre wir, Hölzerne Hochzeit">
+            <defs>
+                <radialGradient id="holz" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%"   stop-color="#e9c88f" stop-opacity="0.55"/>
+                    <stop offset="70%"  stop-color="#d9a86a" stop-opacity="0.30"/>
+                    <stop offset="100%" stop-color="#c4833f" stop-opacity="0.38"/>
+                </radialGradient>
+                <clipPath id="fotoClip"><circle cx="280" cy="280" r="156"/></clipPath>
+                <!-- oben im Uhrzeigersinn, unten gegen – so steht beides aufrecht -->
+                <path id="arcTop" d="M56 280 A224 224 0 0 1 504 280"/>
+                <path id="arcBot" d="M28 280 A252 252 0 0 0 532 280"/>
+            </defs>
+
+            <g id="wood"></g>
+
+            <text class="arc"><textPath href="#arcTop" startOffset="50%" text-anchor="middle">10 JAHRE <tspan class="we">WIR</tspan></textPath></text>
+            <text class="arc"><textPath href="#arcBot" startOffset="50%" text-anchor="middle">HÖLZERNE HOCHZEIT</textPath></text>
+
+            <text class="ini" x="42"  y="280" text-anchor="middle" dominant-baseline="central">M</text>
+            <text class="ini" x="518" y="280" text-anchor="middle" dominant-baseline="central">B</text>
+        </svg>
+
+        <p class="serif date">12. Juni 2027</p>
+        <p class="label">Samstag · 15 Uhr</p>
+
+        <p class="serif text">Ob Groß oder Klein – ihr seid mit euren Kindern herzlich
+           eingeladen, diesen besonderen Tag mit uns zu verbringen.</p>
+        <p class="serif text">Freut euch auf Stroh in den Haaren, leckeres Essen, lautes
+           Kinderlachen und jede Menge herzlicher Begegnungen.</p>
+
+        <p class="serif closing">Also: Termin vormerken<br>und Vorfreude sammeln.</p>
+        <p class="serif info">Weitere Infos gibt’s mit der Einladung.</p>
+    </div>
+
+    <!-- Wiese mit Strohballen und Zaun -->
+    <svg class="strip" viewBox="0 0 988 100" aria-hidden="true">
+        <circle class="f2" cx="150" cy="26" r="14"/>
+        <circle class="l"  cx="150" cy="26" r="14"/>
+        <path   class="l2" d="M150 26 m -7 0 a 7 7 0 1 1 7 7 a 4 4 0 1 1 -3 -5"/>
+        <circle class="f2" cx="176" cy="31" r="9"/>
+        <circle class="l"  cx="176" cy="31" r="9"/>
+        <circle class="f2" cx="826" cy="28" r="12"/>
+        <circle class="l"  cx="826" cy="28" r="12"/>
+        <path   class="l2" d="M826 28 m -6 0 a 6 6 0 1 1 6 6 a 3.5 3.5 0 1 1 -2.5 -4.5"/>
+
+        <path class="l"  d="M0 40 C 160 32, 320 44, 494 38 C 670 32, 830 44, 988 36"/>
+        <path class="l2" d="M64 46 q 3 -14 -1 -22 M72 46 q -2 -12 3 -18 M322 44 q 3 -12 -1 -20 M328 44 q -2 -10 3 -16
+                            M612 44 q 3 -14 -1 -22 M620 44 q -2 -12 3 -18 M912 42 q 3 -12 -1 -20 M918 42 q -2 -10 3 -16"/>
+
+        <path class="l2" d="M0 62 H988 M0 78 H988"/>
+        <path class="l"  d="M30 54 V100 M184 54 V100 M338 54 V100 M494 54 V100 M648 54 V100 M802 54 V100 M958 54 V100" style="opacity:.75"/>
+    </svg>
+
+</div>
+</main>
+
+<script>
+/* Medaillon: Foto (falls foto.jpg vorhanden) im Kern, darum zehn
+   Jahresringe als Holzrahmen. Ohne Foto wird es eine ganze Holzscheibe.
+   Fester Seed, damit jeder Render identisch aussieht. */
+(function () {
+    var NS = "http://www.w3.org/2000/svg";
+    var CX = 280, CY = 280;
+    var R_FOTO = 156, R_RING = 190, R_BARK = 194;
+
+    /* Bildausschnitt: zoom > 1 vergrößert, dx/dy verschieben (in Einheiten
+       der 560er-Zeichenfläche, positiv = nach rechts/unten) */
+    var FOTO = { src: "foto.jpg", zoom: 1, dx: 0, dy: 0 };
+
+    var wood = document.getElementById("wood");
+    var seed = 10;
+    function rnd() { seed = (seed * 16807) % 2147483647; return (seed - 1) / 2147483646; }
+
+    function shape(t) {
+        return 0.55 * Math.sin(2 * t + 0.6)
+             + 0.30 * Math.sin(3 * t + 2.1)
+             + 0.15 * Math.sin(5 * t + 4.0);
+    }
+
+    /* Verformung wächst nach außen – innen schmiegt sich der Ring ans Foto */
+    function ringPath(r, rIn, amp, jitter, phase) {
+        var d = "", N = 240;
+        var k = (r - rIn) / (R_BARK - rIn);
+        for (var i = 0; i <= N; i++) {
+            var t = i / N * Math.PI * 2;
+            var rr = r + amp * k * shape(t) + jitter * Math.sin(7 * t + phase);
+            d += (i ? "L" : "M") + (CX + rr * Math.cos(t)).toFixed(2) + " " + (CY + rr * Math.sin(t)).toFixed(2);
+        }
+        return d + "Z";
+    }
+
+    function add(parent, tag, attrs) {
+        var el = document.createElementNS(NS, tag);
+        for (var k in attrs) el.setAttribute(k, attrs[k]);
+        parent.appendChild(el);
+        return el;
+    }
+
+    function done() { document.documentElement.setAttribute("data-ready", "1"); }
+
+    function build(withFoto) {
+        var rIn = withFoto ? R_FOTO + 3 : 22;
+        var amp = 4;
+
+        /* Scheibe und Rinde */
+        add(wood, "path", { d: ringPath(R_BARK, rIn, amp, 0.5, 1.3), fill: "url(#holz)", stroke: "none" });
+
+        /* zehn Jahresringe, unterschiedlich breit */
+        var steps = [], sum = 0;
+        for (var i = 0; i < 10; i++) { var w = 0.8 + rnd() * 0.5; steps.push(w); sum += w; }
+        var r = rIn;
+        steps.forEach(function (w, idx) {
+            r += (R_RING - rIn) * w / sum;
+            add(wood, "path", {
+                d: ringPath(r, rIn, amp, 0.25 + rnd() * 0.3, rnd() * 6.28),
+                fill: "none",
+                stroke: "#97552b",
+                "stroke-width": (idx === 9 ? 2.2 : 1.3 + rnd() * 0.6).toFixed(2),
+                "stroke-opacity": (0.45 + rnd() * 0.35).toFixed(2)
+            });
+        });
+
+        add(wood, "path", { d: ringPath(R_BARK, rIn, amp, 0.5, 1.3), fill: "none",
+                            stroke: "#97552b", "stroke-width": 5, "stroke-linejoin": "round" });
+
+        if (!withFoto) {
+            add(wood, "circle", { cx: CX, cy: CY, r: 4, fill: "#97552b", "fill-opacity": 0.5 });
+            done();
+            return;
+        }
+
+        /* Foto im Kern */
+        var s = 2 * R_FOTO * FOTO.zoom;
+        var img = add(wood, "image", {
+            href: FOTO.src,
+            x: CX - s / 2 + FOTO.dx, y: CY - s / 2 + FOTO.dy, width: s, height: s,
+            preserveAspectRatio: "xMidYMid slice",
+            "clip-path": "url(#fotoClip)"
+        });
+        add(wood, "circle", { cx: CX, cy: CY, r: R_FOTO, fill: "none",
+                              stroke: "#97552b", "stroke-width": 3 });
+        img.addEventListener("load", done);
+        img.addEventListener("error", done);
+    }
+
+    var probe = new Image();
+    probe.onload  = function () { build(true); };
+    probe.onerror = function () { build(false); };
+    probe.src = FOTO.src;
+})();
+</script>
+</body>
+</html>

@@ -316,3 +316,41 @@ table.data td:first-child { text-align: left; color: var(--muted); }
 .footnote { font-size: var(--fs-xs); color: var(--faint); margin-top: 16px; line-height: 1.6; }
 
 @media (max-width: 900px) { .tool { padding-top: 72px; } }
+
+/* ── Ratgeber / Artikel (Fließtext-Seiten) ─────────────────── */
+.guide { margin-top: 22px; }
+.guide-lead { font-size: var(--fs-base); color: var(--text); line-height: 1.7; margin: 18px 0 22px; }
+.guide .panel h2 {
+    font-size: var(--fs-md);
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+.guide .g-num { font-family: var(--mono); color: var(--accent); font-size: var(--fs-sm); }
+.guide h3 { font-size: var(--fs-sm); color: var(--accent-2); margin: 14px 0 6px; font-weight: 700; }
+.guide p, .guide li { font-size: var(--fs-sm); color: var(--muted); line-height: 1.65; }
+.guide p + p { margin-top: 8px; }
+.guide b { color: var(--text); }
+.guide ol, .guide ul { padding-left: 20px; }
+.guide li + li { margin-top: 6px; }
+.guide li::marker { color: var(--accent); }
+.guide .warn {
+    margin-top: 12px;
+    padding: 10px 14px;
+    border-left: 3px solid var(--series-b);
+    background: var(--panel-2);
+    border-radius: var(--r-sm);
+}
+.packlist { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0 !important; }
+.packlist li {
+    margin: 0 !important;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--panel-2);
+    color: var(--text);
+}
+.guide .bottomline { border-color: var(--accent); }

@@ -85,6 +85,14 @@ Nacht, Essen & Trinken und Packliste. Reine Textseite; die Artikel-Bausteine
 (`.guide`, `.guide-lead`, `.warn`, `.packlist`) liegen in `css/tools.css`
 und sind für weitere Ratgeber-Seiten wiederverwendbar.
 
+**Quellenangaben wie in einer wissenschaftlichen Arbeit:** Jede Zahl und jede
+Aussage aus der Literatur trägt eine hochgestellte Fußnote (`<sup class="fn">`),
+die auf das nummerierte Quellenverzeichnis am Seitenende (`#quelle-n`) springt;
+von dort führt ↩ zurück zur ersten Textstelle (`#ref-n`). Nummeriert wird in
+der Reihenfolge des ersten Auftretens, Fachartikel werden mit DOI zitiert.
+Eine Druckansicht (`@media print` in `tools.css`) blendet Navigation und
+Hintergrund aus und druckt hell, die URLs stehen ausgeschrieben im Verzeichnis.
+
 ## Private Unterseiten (`holz/`)
 
 Im Ordner `holz/` liegen zwei eigenständige Seiten zur Hölzernen Hochzeit

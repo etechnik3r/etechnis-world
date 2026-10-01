@@ -11,6 +11,7 @@ erweitert wird. Als **Progressive Web App** installierbar.
 /
 ├── index.html                         Startseite mit Navigation und allen Themen
 ├── elektroauto-kostenvergleich.html   Rechner: Kostenvergleich Verbrenner vs. Elektroauto
+├── elektroauto-nachtfahrt.html        Ratgeber: Langstrecke – Tipps für Nachtfahrten
 ├── css/
 │   ├── site.css                       Design-System (Tokens) + Basis + Navigation
 │   └── tools.css                      Wiederverwendbare Bausteine für Rechner/Tools
@@ -44,7 +45,7 @@ Look & Feel passt ohne zusätzliches Styling.
 ## Navigation & Themen
 
 Links liegt eine feste Navigationsleiste (mobil als ausklappbares Menü),
-die die Themen gruppiert: **Elektromobilität** (inkl. Kostenvergleich Elektroauto),
+die die Themen gruppiert: **Elektromobilität** (inkl. Nachtfahrt-Ratgeber und Kostenvergleich Elektroauto),
 **Energie & Wärme**, **Weitere Themen**. Ganz unten ein Zahnrad-Menü mit
 „App installieren" und „Nach Updates suchen".
 
@@ -75,6 +76,14 @@ Monatsmittel ändern sich rückwirkend nicht, und es gibt keine frei nutzbare
 API dafür. Neue Monate werden beim Deploy einfach am Ende der `PRICES`-Liste
 ergänzt – der Rechner bleibt dadurch dauerhaft korrekt und funktioniert auch
 in Zukunft ohne externe Abhängigkeit.
+
+## Ratgeber: Langstrecke – Nachtfahrt mit dem Elektroauto
+
+`elektroauto-nachtfahrt.html` – „Ladepause als Kraftpause“: Kaffee-Nap im
+Ladestopp, Sitzposition, Schlafumgebung, Aufwachen, Fahrstrategie für die
+Nacht, Essen & Trinken und Packliste. Reine Textseite; die Artikel-Bausteine
+(`.guide`, `.guide-lead`, `.warn`, `.packlist`) liegen in `css/tools.css`
+und sind für weitere Ratgeber-Seiten wiederverwendbar.
 
 ## Private Unterseiten (`holz/`)
 

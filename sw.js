@@ -4,7 +4,7 @@
    geänderten Service Worker, installiert ihn und die Seite zeigt
    das "Neue Version verfügbar"-Banner (siehe js/app.js).
    ============================================================ */
-const CACHE = "ew-cache-v14";
+const CACHE = "ew-cache-v15";
 
 // Kern-Dateien (App-Shell). Relative Pfade, damit es auch unter
 // einem Unterverzeichnis (GitHub Pages) funktioniert.
@@ -12,6 +12,7 @@ const CORE = [
     "./",
     "index.html",
     "elektroauto-kostenvergleich.html",
+    "elektroauto-nachtfahrt.html",
     "css/site.css",
     "css/tools.css",
     "js/app.js",

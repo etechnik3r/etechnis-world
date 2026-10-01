@@ -6,7 +6,7 @@
 (function () {
     "use strict";
 
-    var APP_VERSION = "2026.08.26";
+    var APP_VERSION = "2026.10.01";
     var $ = function (id) { return document.getElementById(id); };
 
     /* ── Immer oben starten (keine Wiederherstellung alter Scrollposition) ──

@@ -354,3 +354,32 @@ table.data td:first-child { text-align: left; color: var(--muted); }
     color: var(--text);
 }
 .guide .bottomline { border-color: var(--accent); }
+
+/* ── Fußnoten & Quellenverzeichnis (wissenschaftliche Zitierweise) ── */
+sup.fn { font-size: 0.7em; line-height: 0; margin-left: 1px; font-family: var(--mono); }
+sup.fn a { color: var(--accent); text-decoration: none; padding: 0 1px; }
+sup.fn a:hover { text-decoration: underline; }
+.sources h2 { margin-bottom: 8px; }
+.guide .src-note { font-size: var(--fs-xs); color: var(--faint); margin-bottom: 12px; }
+.src-list { padding-left: 28px !important; }
+.guide .src-list li { font-size: var(--fs-xs); line-height: 1.6; scroll-margin-top: 24px; }
+.guide .src-list li + li { margin-top: 8px; }
+.guide .src-list li::marker { font-family: var(--mono); }
+.src-url { color: var(--accent); word-break: break-all; text-decoration: none; }
+.src-url:hover { text-decoration: underline; }
+.src-back { color: var(--faint); text-decoration: none; margin-left: 4px; }
+.src-back:hover { color: var(--accent); }
+.src-list li:target { background: var(--accent-weak); border-radius: var(--r-sm); outline: 4px solid var(--accent-weak); }
+sup.fn a:target { background: var(--accent-weak); border-radius: 3px; }
+
+/* ── Druckansicht: heller, ohne Navigation, Links ausgeschrieben ── */
+@media print {
+    :root { --text: #000; --muted: #222; --faint: #444; --accent: #000; --accent-2: #000; --panel: #fff; --panel-2: #fff; --line: #bbb; }
+    body { background: #fff !important; color: #000; }
+    .sidebar, .nav-toggle, .nav-backdrop, .update-banner, .tech-bg, .tech-pulses, .backlink, .src-back { display: none !important; }
+    .page { margin: 0 !important; }
+    .tool { max-width: none; padding: 0; }
+    .panel { break-inside: avoid; border-color: #bbb; }
+    .sources { break-inside: auto; }
+    .src-url { word-break: break-all; }
+}
